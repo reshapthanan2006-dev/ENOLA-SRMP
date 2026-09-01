@@ -1,0 +1,6 @@
+@SRMP_HostAddress = http://localhost:5085
+
+GET {{SRMP_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
