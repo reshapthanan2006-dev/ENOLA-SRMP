@@ -1,3 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using SRMP.Data;
+using SRMP.Interfaces;
+using SRMP.Repositories;
+using SRMP.Services;
 
 namespace SRMP
 {
@@ -7,10 +12,22 @@ namespace SRMP
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Database
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("DefaultConnection")
+                ));
 
+            // Add services to the container.
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
+            builder.Services.AddScoped<IApplicationService, ApplicationService>();
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<IContactRequestRepository, ContactRequestRepository>();
+            builder.Services.AddScoped<IContactRequestService, ContactRequestService>();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -26,7 +43,6 @@ namespace SRMP
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
