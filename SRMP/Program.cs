@@ -1,3 +1,6 @@
+using SRMP.Interfaces.Services;
+using SRMP.Services;
+
 
 namespace SRMP
 {
@@ -10,6 +13,10 @@ namespace SRMP
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            builder.Services.AddScoped<IMatchingService, MatchingService>();
+
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
