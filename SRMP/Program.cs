@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SRMP.Data;
 using SRMP.Interfaces;
 using SRMP.Repositories;
+using SRMP.Interfaces.Services;
 using SRMP.Services;
 
 namespace SRMP
@@ -21,10 +22,18 @@ namespace SRMP
             // Add services to the container.
             builder.Services.AddControllers();
 
+            // Matching Engine
+            builder.Services.AddScoped<IMatchingService, MatchingService>();
+
+            // Application services
             builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
             builder.Services.AddScoped<IApplicationService, ApplicationService>();
+
+            // Notification services
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
+
+            // Contact request services
             builder.Services.AddScoped<IContactRequestRepository, ContactRequestRepository>();
             builder.Services.AddScoped<IContactRequestService, ContactRequestService>();
 
