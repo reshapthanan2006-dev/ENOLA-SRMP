@@ -37,6 +37,12 @@ namespace SRMP
             builder.Services.AddScoped<IContactRequestRepository, ContactRequestRepository>();
             builder.Services.AddScoped<IContactRequestService, ContactRequestService>();
 
+            builder.Services.AddScoped<IEmployerCompanyRepository, EmployerCompanyRepository>();
+            builder.Services.AddScoped<IEmployerCompanyService, EmployerCompanyService>();
+
+            builder.Services.AddScoped<IJobVacancyRepository, JobVacancyRepository>();
+            builder.Services.AddScoped<IJobVacancyService, JobVacancyService>();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

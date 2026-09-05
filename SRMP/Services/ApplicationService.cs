@@ -8,13 +8,16 @@ namespace SRMP.Services
     {
         private readonly IApplicationRepository _applicationRepository;
         private readonly INotificationService _notificationService;
+        private readonly IJobVacancyService _jobVacancyService;
 
         public ApplicationService(
             IApplicationRepository applicationRepository,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IJobVacancyService jobVacancyService)
         {
             _applicationRepository = applicationRepository;
             _notificationService = notificationService;
+            _jobVacancyService = jobVacancyService;
         }
 
         public async Task<ApplicationResponseDto> CreateApplicationAsync(
@@ -72,8 +75,19 @@ namespace SRMP.Services
             int employerId,
             int jobVacancyId)
         {
-            // Employer ownership validation will be added
-            // when JobVacancy repository/service is integrated.
+            var vacancy =
+                await _jobVacancyService.GetByIdAsync(jobVacancyId);
+
+            if (vacancy == null)
+            {
+                throw new KeyNotFoundException("Vacancy not found.");
+            }
+
+            if (vacancy.EmployerId != employerId)
+            {
+                throw new UnauthorizedAccessException(
+                    "You are not allowed to view applicants for this vacancy.");
+            }
 
             var applications =
                 await _applicationRepository.GetByVacancyAsync(jobVacancyId);
@@ -99,6 +113,20 @@ namespace SRMP.Services
             if (application == null)
             {
                 return null;
+            }
+
+            var vacancy =
+                await _jobVacancyService.GetByIdAsync(application.JobVacancyId);
+
+            if (vacancy == null)
+            {
+                return null;
+            }
+
+            if (vacancy.EmployerId != employerId)
+            {
+                throw new UnauthorizedAccessException(
+                    "You are not allowed to update this application.");
             }
 
             application.Status = dto.Status;

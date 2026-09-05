@@ -54,12 +54,29 @@ namespace SRMP.Controllers
             int jobVacancyId,
             [FromQuery] int employerId)
         {
-            var result = await _applicationService
-                .GetApplicationsByVacancyAsync(
-                    employerId,
-                    jobVacancyId);
+            try
+            {
+                var result = await _applicationService
+                    .GetApplicationsByVacancyAsync(
+                        employerId,
+                        jobVacancyId);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new
+                {
+                    message = ex.Message
+                });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
         // Employer updates application status

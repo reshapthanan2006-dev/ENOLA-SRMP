@@ -20,6 +20,8 @@ namespace SRMP.Data
 
         public DbSet<ContactRequest> ContactRequests { get; set; }
 
+        public DbSet<EmployerCompany> EmployerCompanies { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -76,6 +78,18 @@ namespace SRMP.Data
                 .WithMany()
                 .HasForeignKey(c => c.ApplicationId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // EmployerCompany relationship
+            modelBuilder.Entity<EmployerCompany>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(c => c.EmployerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // One company profile per employer
+            modelBuilder.Entity<EmployerCompany>()
+                .HasIndex(c => c.EmployerId)
+                .IsUnique();
         }
     }
 }
