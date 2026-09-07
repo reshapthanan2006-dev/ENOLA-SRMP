@@ -17,9 +17,21 @@ namespace SRMP.Services
             return await _repository.GetByIdAsync(id);
         }
 
-        public async Task<List<JobVacancy>> GetByEmployerIdAsync(int employerId)
+        public async Task<List<JobVacancy>> GetByEmployerIdAsync(
+            int employerId)
         {
             return await _repository.GetByEmployerIdAsync(employerId);
+        }
+
+        public async Task<List<JobVacancy>> SearchOpenVacanciesAsync(
+            string? keyword,
+            string? location,
+            int? minExperience)
+        {
+            return await _repository.SearchOpenVacanciesAsync(
+                keyword,
+                location,
+                minExperience);
         }
 
         public async Task CreateAsync(JobVacancy vacancy)

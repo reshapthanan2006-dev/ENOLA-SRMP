@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SRMP.Data;
 
@@ -11,9 +12,11 @@ using SRMP.Data;
 namespace SRMP.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260907064213_AddJobSeekerProfile")]
+    partial class AddJobSeekerProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,44 +126,6 @@ namespace SRMP.Migrations
                         .IsUnique();
 
                     b.ToTable("EmployerCompanies");
-                });
-
-            modelBuilder.Entity("SRMP.Models.JobSeekerCv", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("FileSize")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("OriginalFileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StoredFileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("JobSeekerCvs");
                 });
 
             modelBuilder.Entity("SRMP.Models.JobSeekerProfile", b =>

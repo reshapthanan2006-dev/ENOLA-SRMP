@@ -8,6 +8,11 @@ namespace SRMP.Interfaces
 
         Task<List<JobVacancy>> GetByEmployerIdAsync(int employerId);
 
+        Task<List<JobVacancy>> SearchOpenVacanciesAsync(
+            string? keyword,
+            string? location,
+            int? minExperience);
+
         Task CreateAsync(JobVacancy vacancy);
 
         Task UpdateAsync(JobVacancy vacancy);

@@ -1,13 +1,10 @@
-﻿namespace SRMP.Models
+﻿namespace SRMP.DTOs.JobSeeker
 {
-    public class JobSeekerProfile
+    public class JobSeekerProfileResponseDto
     {
         public int Id { get; set; }
 
-        // Relationship with authenticated User
         public int UserId { get; set; }
-
-        public User User { get; set; } = null!;
 
         public List<string> Skills { get; set; } = new();
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SRMP.Models;
+using System.Text.Json;
 
 namespace SRMP.Data
 {
@@ -21,6 +22,10 @@ namespace SRMP.Data
         public DbSet<ContactRequest> ContactRequests { get; set; }
 
         public DbSet<EmployerCompany> EmployerCompanies { get; set; }
+
+        public DbSet<JobSeekerProfile> JobSeekerProfiles { get; set; }
+
+        public DbSet<JobSeekerCv> JobSeekerCvs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -90,6 +95,52 @@ namespace SRMP.Data
             modelBuilder.Entity<EmployerCompany>()
                 .HasIndex(c => c.EmployerId)
                 .IsUnique();
+
+            // Job Seeker Profile relationship
+            modelBuilder.Entity<JobSeekerProfile>()
+                .HasOne(p => p.User)
+                .WithOne()
+                .HasForeignKey<JobSeekerProfile>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // One profile per Job Seeker
+            modelBuilder.Entity<JobSeekerProfile>()
+                .HasIndex(p => p.UserId)
+                .IsUnique();
+
+            // Job Seeker Profile → User
+            modelBuilder.Entity<JobSeekerProfile>()
+                .HasOne(p => p.User)
+                .WithOne()
+                .HasForeignKey<JobSeekerProfile>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // One profile per user
+            modelBuilder.Entity<JobSeekerProfile>()
+                .HasIndex(p => p.UserId)
+                .IsUnique();
+
+            modelBuilder.Entity<JobSeekerCv>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(cv => cv.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<JobSeekerCv>()
+                .HasIndex(cv => cv.UserId)
+                .IsUnique();
+
+            // Store Skills as JSON
+            modelBuilder.Entity<JobSeekerProfile>()
+                .Property(p => p.Skills)
+                .HasConversion(
+                    skills => JsonSerializer.Serialize(
+                        skills,
+                        (JsonSerializerOptions?)null),
+                    skills => JsonSerializer.Deserialize<List<string>>(
+                        skills,
+                        (JsonSerializerOptions?)null) ?? new List<string>()
+                );
         }
     }
 }

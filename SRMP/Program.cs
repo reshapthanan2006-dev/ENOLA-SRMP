@@ -46,6 +46,12 @@ namespace SRMP
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddScoped<IJobSeekerProfileRepository, JobSeekerProfileRepository>();
+            builder.Services.AddScoped<IJobSeekerProfileService, JobSeekerProfileService>();
+
+            builder.Services.AddScoped<IJobSeekerCvRepository, JobSeekerCvRepository>();
+            builder.Services.AddScoped<IJobSeekerCvService, JobSeekerCvService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

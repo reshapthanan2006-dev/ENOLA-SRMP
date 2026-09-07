@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SRMP.DTOs.JobSeeker;
 using SRMP.Interfaces;
+using SRMP.Interfaces.Services;
 using SRMP.Models;
+using System.Security.Claims;
 
 namespace SRMP.Controllers
 {
@@ -9,10 +13,17 @@ namespace SRMP.Controllers
     public class JobVacancyController : ControllerBase
     {
         private readonly IJobVacancyService _service;
+        private readonly IJobSeekerProfileRepository _profileRepository;
+        private readonly IMatchingService _matchingService;
 
-        public JobVacancyController(IJobVacancyService service)
+        public JobVacancyController(
+            IJobVacancyService service,
+            IJobSeekerProfileRepository profileRepository,
+            IMatchingService matchingService)
         {
             _service = service;
+            _profileRepository = profileRepository;
+            _matchingService = matchingService;
         }
 
         [HttpGet("{id}")]
@@ -32,6 +43,90 @@ namespace SRMP.Controllers
             var vacancies = await _service.GetByEmployerIdAsync(employerId);
 
             return Ok(vacancies);
+        }
+
+        [HttpGet("search")]
+        [Authorize(Roles = "JobSeeker")]
+        public async Task<IActionResult> Search(
+            [FromQuery] string? keyword,
+            [FromQuery] string? location,
+            [FromQuery] int? minExperience)
+        {
+            var vacancies = await _service.SearchOpenVacanciesAsync(
+                keyword,
+                location,
+                minExperience);
+
+            return Ok(vacancies);
+        }
+
+        [HttpGet("{id}/jobseeker-detail")]
+        [Authorize(Roles = "JobSeeker")]
+        public async Task<IActionResult> GetJobSeekerJobDetail(int id)
+        {
+            var userIdClaim = User.FindFirst(
+                ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null ||
+                !int.TryParse(userIdClaim.Value, out var userId))
+            {
+                return Unauthorized();
+            }
+
+            var profile =
+                await _profileRepository.GetByUserIdAsync(userId);
+
+            if (profile == null)
+            {
+                return NotFound(new
+                {
+                    message = "Job seeker profile not found."
+                });
+            }
+
+            var vacancy = await _service.GetByIdAsync(id);
+
+            if (vacancy == null)
+            {
+                return NotFound(new
+                {
+                    message = "Vacancy not found."
+                });
+            }
+
+            var requiredSkills = vacancy.RequiredSkills
+                .Split(
+                    ',',
+                    StringSplitOptions.RemoveEmptyEntries |
+                    StringSplitOptions.TrimEntries)
+                .ToList();
+
+            var matchingVacancy = new Vacancy
+            {
+                Id = vacancy.JobVacancyId,
+                RequiredSkills = requiredSkills,
+                RequiredExperienceYears =
+                    vacancy.RequiredExperience
+            };
+
+            var matchResult = _matchingService.CalculateMatch(
+                profile,
+                matchingVacancy);
+
+            var response = new JobSeekerJobDetailDto
+            {
+                JobVacancyId = vacancy.JobVacancyId,
+                Title = vacancy.Title,
+                Description = vacancy.Description,
+                RequiredSkills = vacancy.RequiredSkills,
+                RequiredExperience = vacancy.RequiredExperience,
+                Location = vacancy.Location,
+                IsOpen = vacancy.IsOpen,
+                MatchScore = matchResult.MatchScore,
+                MissingSkills = matchResult.MissingSkills
+            };
+
+            return Ok(response);
         }
 
         [HttpPost]

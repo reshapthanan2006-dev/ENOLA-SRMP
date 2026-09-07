@@ -20,10 +20,49 @@ namespace SRMP.Repositories
                 .FirstOrDefaultAsync(v => v.JobVacancyId == id);
         }
 
-        public async Task<List<JobVacancy>> GetByEmployerIdAsync(int employerId)
+        public async Task<List<JobVacancy>> GetByEmployerIdAsync(
+            int employerId)
         {
             return await _context.JobVacancies
                 .Where(v => v.EmployerId == employerId)
+                .OrderByDescending(v => v.CreatedAt)
+                .ToListAsync();
+        }
+
+        public async Task<List<JobVacancy>> SearchOpenVacanciesAsync(
+            string? keyword,
+            string? location,
+            int? minExperience)
+        {
+            var query = _context.JobVacancies
+                .Where(v => v.IsOpen)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                keyword = keyword.Trim();
+
+                query = query.Where(v =>
+                    v.Title.Contains(keyword) ||
+                    v.Description.Contains(keyword) ||
+                    v.RequiredSkills.Contains(keyword));
+            }
+
+            if (!string.IsNullOrWhiteSpace(location))
+            {
+                location = location.Trim();
+
+                query = query.Where(v =>
+                    v.Location.Contains(location));
+            }
+
+            if (minExperience.HasValue)
+            {
+                query = query.Where(v =>
+                    v.RequiredExperience <= minExperience.Value);
+            }
+
+            return await query
                 .OrderByDescending(v => v.CreatedAt)
                 .ToListAsync();
         }
@@ -37,7 +76,8 @@ namespace SRMP.Repositories
         public async Task UpdateAsync(JobVacancy vacancy)
         {
             var existingVacancy = await _context.JobVacancies
-                .FirstOrDefaultAsync(v => v.JobVacancyId == vacancy.JobVacancyId);
+                .FirstOrDefaultAsync(
+                    v => v.JobVacancyId == vacancy.JobVacancyId);
 
             if (existingVacancy == null)
                 throw new KeyNotFoundException("Vacancy not found.");
