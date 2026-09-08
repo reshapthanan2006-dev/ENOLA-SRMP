@@ -21,12 +21,18 @@ namespace SRMP.Services
         public async Task<AuthResponseDto> RegisterAsync(
             RegisterDto dto)
         {
-            // Administrator accounts cannot be created
-            // through public registration.
+            // Administrator accounts cannot be created  through public registration
+           
             if (dto.Role == UserRole.Administrator)
             {
                 throw new UnauthorizedAccessException(
                     "Administrator accounts cannot be registered publicly.");
+            }
+            if (dto.Role != UserRole.JobSeeker &&
+    dto.Role != UserRole.Employer)
+            {
+                throw new InvalidOperationException(
+                    "Invalid registration role.");
             }
 
             var email = dto.Email.Trim().ToLowerInvariant();

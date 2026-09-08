@@ -19,12 +19,32 @@ namespace SRMP.Controllers
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(
-            [FromBody] RegisterDto dto)
+    [FromBody] RegisterDto dto)
         {
-            var result = await _authService.RegisterAsync(dto);
+            try
+            {
+                var result = await _authService.RegisterAsync(dto);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new
+                {
+                    message = ex.Message
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
+
+
+
 
         [AllowAnonymous]
         [HttpPost("login")]
