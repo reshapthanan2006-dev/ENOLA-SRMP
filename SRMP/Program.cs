@@ -1,9 +1,13 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SRMP.Data;
+using SRMP.Helpers;
 using SRMP.Interfaces;
-using SRMP.Repositories;
 using SRMP.Interfaces.Services;
+using SRMP.Repositories;
 using SRMP.Services;
+using System.Text;
 
 namespace SRMP
 {
@@ -22,6 +26,53 @@ namespace SRMP
             // Add services to the container.
             builder.Services.AddControllers();
 
+            // Authentication services - mem 1
+            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
+            // Admin services - mem 1
+            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
+
+            // JWT Helper - mem 1
+            builder.Services.AddScoped<JwtHelper>();
+
+            // JWT Authentication- mem 1
+            builder.Services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    var jwtKey = builder.Configuration["Jwt:Key"];
+
+                    if (string.IsNullOrWhiteSpace(jwtKey))
+                    {
+                        throw new InvalidOperationException(
+                            "JWT key is not configured.");
+                    }
+
+                    options.TokenValidationParameters =
+                        new TokenValidationParameters
+                        {
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey =
+                                new SymmetricSecurityKey(
+                                    Encoding.UTF8.GetBytes(jwtKey)),
+
+                            ValidateIssuer = true,
+                            ValidIssuer =
+                                builder.Configuration["Jwt:Issuer"],
+
+                            ValidateAudience = true,
+                            ValidAudience =
+                                builder.Configuration["Jwt:Audience"],
+
+                            ValidateLifetime = true,
+                            ClockSkew = TimeSpan.Zero
+                        };
+                });
+
+            builder.Services.AddAuthorization();
+
             // Matching Engine
             builder.Services.AddScoped<IMatchingService, MatchingService>();
 
@@ -37,9 +88,11 @@ namespace SRMP
             builder.Services.AddScoped<IContactRequestRepository, ContactRequestRepository>();
             builder.Services.AddScoped<IContactRequestService, ContactRequestService>();
 
+            // Employer company services
             builder.Services.AddScoped<IEmployerCompanyRepository, EmployerCompanyRepository>();
             builder.Services.AddScoped<IEmployerCompanyService, EmployerCompanyService>();
 
+            // Job vacancy services
             builder.Services.AddScoped<IJobVacancyRepository, JobVacancyRepository>();
             builder.Services.AddScoped<IJobVacancyService, JobVacancyService>();
 
@@ -57,6 +110,8 @@ namespace SRMP
 
             app.UseHttpsRedirection();
 
+            // JWT Authentication must come before Authorization - mem 1 thaan
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
