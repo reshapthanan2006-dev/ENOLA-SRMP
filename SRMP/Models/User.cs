@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SRMP.Models
 {
@@ -8,6 +9,7 @@ namespace SRMP.Models
 
         [Required]
         [MaxLength(100)]
+        [Column("Name")]
         public string FullName { get; set; } = string.Empty;
 
         [Required]

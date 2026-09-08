@@ -29,11 +29,21 @@ namespace SRMP.Controllers
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(
-            [FromBody] LoginDto dto)
+    [FromBody] LoginDto dto)
         {
-            var result = await _authService.LoginAsync(dto);
+            try
+            {
+                var result = await _authService.LoginAsync(dto);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new
+                {
+                    message = ex.Message
+                });
+            }
         }
     }
 }

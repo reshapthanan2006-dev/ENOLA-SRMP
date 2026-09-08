@@ -39,7 +39,10 @@ namespace SRMP.Repositories
 
         public async Task<int> GetTotalApplicationsAsync()
         {
-            return await _context.Applications.CountAsync();
+            return await _context.Database
+                .SqlQueryRaw<int>(
+                    "SELECT COUNT(*) AS [Value] FROM [JobApplications]")
+                .SingleAsync();
         }
 
         public async Task<User> UpdateUserAsync(User user)

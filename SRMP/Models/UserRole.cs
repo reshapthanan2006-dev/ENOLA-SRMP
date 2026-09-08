@@ -2,8 +2,8 @@
 {
     public enum UserRole
     {
-        JobSeeker,
-        Employer,
-        Administrator
+        JobSeeker = 1,
+        Employer = 2,
+        Administrator = 3
     }
 }
