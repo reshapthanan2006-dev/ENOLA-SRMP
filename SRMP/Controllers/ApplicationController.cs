@@ -79,6 +79,37 @@ namespace SRMP.Controllers
             }
         }
 
+        // Employer views ranked applicants for a vacancy
+        [HttpGet("vacancy/{jobVacancyId}/ranked")]
+        public async Task<IActionResult> GetRankedApplicants(
+            int jobVacancyId,
+            [FromQuery] int employerId)
+        {
+            try
+            {
+                var result = await _applicationService
+                    .GetRankedApplicantsAsync(
+                        employerId,
+                        jobVacancyId);
+
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new
+                {
+                    message = ex.Message
+                });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
         // Employer updates application status
         [HttpPut("{applicationId}/status")]
         public async Task<IActionResult> UpdateApplicationStatus(
