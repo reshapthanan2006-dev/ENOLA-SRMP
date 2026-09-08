@@ -2,7 +2,7 @@
 
 namespace SRMP.DTOs
 {
-    public class MatchRequest
+    public class MatchRequestDto
     {
         public JobSeekerProfile Profile { get; set; } = new();
 

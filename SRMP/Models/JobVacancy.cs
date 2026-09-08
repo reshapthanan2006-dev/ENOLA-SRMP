@@ -18,6 +18,8 @@ namespace SRMP.Models
 
         public int RequiredExperience { get; set; }
 
+        public string RequiredEducation { get; set; } = string.Empty;
+
         [MaxLength(100)]
         public string Location { get; set; } = string.Empty;
 

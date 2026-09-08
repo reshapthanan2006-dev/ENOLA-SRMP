@@ -1,4 +1,5 @@
 ﻿using SRMP.DTOs;
+using SRMP.Models;
 
 namespace SRMP.Interfaces
 {
@@ -19,5 +20,9 @@ namespace SRMP.Interfaces
             int employerId,
             int applicationId,
             UpdateApplicationStatusDto dto);
+
+        Task<List<MatchResult>> GetRankedApplicantsAsync(
+            int employerId,
+            int jobVacancyId);
     }
 }
