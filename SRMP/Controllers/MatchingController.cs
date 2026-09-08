@@ -19,7 +19,7 @@ namespace SRMP.Controllers
 
         [HttpPost("calculate")]
         public ActionResult<MatchResult> CalculateMatch(
-        MatchRequest request)
+        MatchRequestDto request)
         {
             var result = _matchingService.CalculateMatch(
                 request.Profile,
@@ -30,7 +30,7 @@ namespace SRMP.Controllers
 
         [HttpPost("rank")]
         public ActionResult<List<MatchResult>> RankCandidates(
-        RankRequest request)
+        RankRequestDto request)
         {
             var results = _matchingService.RankCandidates(
                 request.Candidates,

@@ -2,7 +2,7 @@
 
 namespace SRMP.DTOs
 {
-    public class RankRequest
+    public class RankRequestDto
     {
         public List<JobSeekerProfile> Candidates { get; set; } = new();
 
