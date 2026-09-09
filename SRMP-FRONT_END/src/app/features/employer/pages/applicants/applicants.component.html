@@ -1,1 +1,58 @@
-<p>applicants works!</p>
+<section class="applicants-page">
+
+  <h2>Ranked Applicants</h2>
+
+  @if (isLoading) {
+
+    <p>Loading applicants...</p>
+
+  } @else if (errorMessage) {
+
+    <p>{{ errorMessage }}</p>
+
+  } @else if (applicants.length === 0) {
+
+    <p>No applicants found.</p>
+
+  } @else {
+
+    <div class="applicant-list">
+
+      @for (applicant of applicants; track applicant.candidateId) {
+
+        <div class="applicant-card">
+
+          <div class="applicant-info">
+
+            <h3>
+              Candidate #{{ applicant.candidateId }}
+            </h3>
+
+            @if (applicant.missingSkills.length > 0) {
+
+              <p>
+                Missing skills:
+                {{ applicant.missingSkills | skillList }}
+              </p>
+
+            } @else {
+
+              <p>No missing skills</p>
+
+            }
+
+          </div>
+
+          <app-score-badge
+            [score]="applicant.matchScore">
+          </app-score-badge>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</section>

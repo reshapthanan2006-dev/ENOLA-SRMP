@@ -1,0 +1,45 @@
+.applicants-page {
+  padding: 24px;
+}
+
+.applicants-page h2 {
+  margin-bottom: 20px;
+}
+
+.applicant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.applicant-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.applicant-info h3 {
+  margin: 0 0 8px;
+}
+
+.applicant-info p {
+  margin: 0;
+  color: #4b5563;
+}
+
+@media (max-width: 600px) {
+  .applicants-page {
+    padding: 16px;
+  }
+
+  .applicant-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
