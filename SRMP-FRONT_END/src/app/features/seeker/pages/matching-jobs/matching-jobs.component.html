@@ -1,1 +1,68 @@
-<p>matching-jobs works!</p>
+<section class="matching-job-page">
+
+  <h2>Matching Job</h2>
+
+  @if (isLoading) {
+
+    <p>Loading job...</p>
+
+  } @else if (errorMessage) {
+
+    <p>{{ errorMessage }}</p>
+
+  } @else if (job) {
+
+    <div class="job-card">
+
+      <div class="job-header">
+
+        <div>
+          <h3>{{ job.title }}</h3>
+          <p>{{ job.location }}</p>
+        </div>
+
+        <app-score-badge
+          [score]="job.matchScore">
+        </app-score-badge>
+
+      </div>
+
+      <p>
+        {{ job.description }}
+      </p>
+
+      <p>
+        <strong>Required experience:</strong>
+        {{ job.requiredExperience }} years
+      </p>
+
+      <p>
+        <strong>Required skills:</strong>
+        {{ job.requiredSkills }}
+      </p>
+
+      <div class="missing-skills">
+
+        <h4>Missing Skills</h4>
+
+        @if (job.missingSkills.length > 0) {
+
+          <p>{{ job.missingSkills | skillList }}</p>
+
+        } @else {
+
+          <p>Your profile covers every required skill.</p>
+
+        }
+
+      </div>
+
+    </div>
+
+  } @else {
+
+    <p>Select a job to view your match details.</p>
+
+  }
+
+</section>
