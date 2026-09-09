@@ -28,12 +28,12 @@
       </div>
 
       <p>
-        {{ job.description }}
+        {{ job.description | shortText: 150}}
       </p>
 
       <p>
         <strong>Required experience:</strong>
-        {{ job.requiredExperience }} years
+        {{ job.requiredExperience | experienceYears }}
       </p>
 
       <p>

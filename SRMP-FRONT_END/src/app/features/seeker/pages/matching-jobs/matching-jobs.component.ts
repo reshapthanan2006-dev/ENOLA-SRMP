@@ -4,13 +4,17 @@ import { MatchingJob } from '../../../matching/models/matching-job.model';
 import { MatchingService } from '../../../matching/services/matching.service';
 import { ScoreBadgeComponent } from '../../../../shared/components/score-badge/score-badge.component';
 import { SkillListPipe } from '../../../../shared/pipes/skill-list.pipe';
+import { ExperienceYearsPipe } from '../../../../shared/pipes/experience-years.pipe';
+import { ShortTextPipe } from '../../../../shared/pipes/short-text.pipe';
 
 @Component({
   selector: 'app-matching-jobs',
   standalone: true,
   imports: [
     ScoreBadgeComponent,
-    SkillListPipe
+    SkillListPipe,
+    ExperienceYearsPipe,
+    ShortTextPipe
   ],
   templateUrl: './matching-jobs.component.html',
   styleUrl: './matching-jobs.component.css'
