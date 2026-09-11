@@ -1,1 +1,93 @@
-<p>applicant-profile works!</p>
+<section class="applicant-profile-page">
+
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">EMPLOYER WORKSPACE</span>
+      <h1>Applicant Profile</h1>
+      <p>Review the applicant's profile and qualifications.</p>
+    </div>
+
+    <div class="header-accent"></div>
+  </header>
+
+  @if (isLoading) {
+    <div class="profile-card loading-card">
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton skeleton-short"></div>
+    </div>
+  }
+
+  @else if (errorMessage) {
+    <div class="message-card error-card">
+      <strong>Unable to load profile</strong>
+      <p>{{ errorMessage }}</p>
+    </div>
+  }
+
+  @else if (profile) {
+    <div class="profile-card">
+
+      <div class="profile-top">
+        <div class="profile-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"></path>
+          </svg>
+        </div>
+
+        <div>
+          <span class="profile-label">CANDIDATE PROFILE</span>
+          <h2>Applicant #{{ profile.userId }}</h2>
+          <p>Profile information provided by the job seeker.</p>
+        </div>
+      </div>
+
+      <div class="profile-grid">
+
+        <article class="info-card">
+          <span class="info-label">Experience</span>
+          <strong>{{ profile.experienceYears }} years</strong>
+        </article>
+
+        <article class="info-card">
+          <span class="info-label">Education</span>
+          <strong>{{ profile.education }}</strong>
+        </article>
+
+        <article class="info-card">
+          <span class="info-label">Location</span>
+          <strong>{{ profile.location }}</strong>
+        </article>
+
+      </div>
+
+      <section class="skills-section">
+        <div class="section-heading">
+          <span class="info-label">Skills</span>
+          <h3>Candidate Skills</h3>
+        </div>
+
+        @if (profile.skills.length > 0) {
+          <div class="skill-list">
+            @for (skill of profile.skills; track skill) {
+              <span class="skill-chip">{{ skill }}</span>
+            }
+          </div>
+        } @else {
+          <p class="empty-text">No skills have been added to this profile.</p>
+        }
+      </section>
+
+    </div>
+  }
+
+  @else {
+    <div class="message-card">
+      <strong>No applicant profile available.</strong>
+      <p>Select an applicant to view profile details.</p>
+    </div>
+  }
+
+</section>

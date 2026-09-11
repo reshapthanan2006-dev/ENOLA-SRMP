@@ -4,8 +4,11 @@
     <div>
       <p class="eyebrow">Employer workspace</p>
       <h2>Ranked Applicants</h2>
-      <p class="page-subtitle">Review applicants ranked by their match with this vacancy.</p>
+      <p class="page-subtitle">
+        Review applicants ranked by their match with this vacancy.
+      </p>
     </div>
+
     <span class="header-accent" aria-hidden="true"></span>
   </header>
 
@@ -13,10 +16,36 @@
 
     <div class="loading-state" role="status">
       <div class="applicant-skeleton-list" aria-hidden="true">
-        <div class="applicant-skeleton"><div><span class="skeleton skeleton-label"></span><span class="skeleton skeleton-name"></span><span class="skeleton skeleton-detail"></span></div><span class="skeleton skeleton-score"></span></div>
-        <div class="applicant-skeleton"><div><span class="skeleton skeleton-label"></span><span class="skeleton skeleton-name"></span><span class="skeleton skeleton-detail"></span></div><span class="skeleton skeleton-score"></span></div>
-        <div class="applicant-skeleton"><div><span class="skeleton skeleton-label"></span><span class="skeleton skeleton-name"></span><span class="skeleton skeleton-detail"></span></div><span class="skeleton skeleton-score"></span></div>
+
+        <div class="applicant-skeleton">
+          <div>
+            <span class="skeleton skeleton-label"></span>
+            <span class="skeleton skeleton-name"></span>
+            <span class="skeleton skeleton-detail"></span>
+          </div>
+          <span class="skeleton skeleton-score"></span>
+        </div>
+
+        <div class="applicant-skeleton">
+          <div>
+            <span class="skeleton skeleton-label"></span>
+            <span class="skeleton skeleton-name"></span>
+            <span class="skeleton skeleton-detail"></span>
+          </div>
+          <span class="skeleton skeleton-score"></span>
+        </div>
+
+        <div class="applicant-skeleton">
+          <div>
+            <span class="skeleton skeleton-label"></span>
+            <span class="skeleton skeleton-name"></span>
+            <span class="skeleton skeleton-detail"></span>
+          </div>
+          <span class="skeleton skeleton-score"></span>
+        </div>
+
       </div>
+
       <p>Loading applicants...</p>
     </div>
 
@@ -24,6 +53,7 @@
 
     <div class="error-state" role="alert">
       <span class="state-icon" aria-hidden="true">!</span>
+
       <div>
         <p class="state-title">Unable to load data</p>
         <p>{{ errorMessage }}</p>
@@ -33,24 +63,44 @@
   } @else if (applicants.length === 0) {
 
     <div class="empty-state">
+
       <div class="empty-copy">
+
         <div class="empty-icon-box" aria-hidden="true">
           <svg viewBox="0 0 64 64" role="presentation">
-            <rect x="10" y="12" width="44" height="40" rx="5"></rect>
+            <rect
+              x="10"
+              y="12"
+              width="44"
+              height="40"
+              rx="5">
+            </rect>
+
             <circle cx="25" cy="29" r="6"></circle>
             <circle cx="39" cy="29" r="6"></circle>
-            <path d="M16 46c1-6 5-9 10-9s9 3 10 9M30 46c1-6 5-9 10-9s9 3 10 9"></path>
+
+            <path
+              d="M16 46c1-6 5-9 10-9s9 3 10 9M30 46c1-6 5-9 10-9s9 3 10 9">
+            </path>
           </svg>
         </div>
+
         <p class="eyebrow">Candidate pipeline</p>
+
         <h3>No applicants found.</h3>
-        <p>Matching candidates will appear here when applications are available.</p>
+
+        <p>
+          Matching candidates will appear here when applications are available.
+        </p>
+
       </div>
+
       <div class="empty-list-visual" aria-hidden="true">
         <div><span></span><b></b><i></i></div>
         <div><span></span><b></b><i></i></div>
         <div><span></span><b></b><i></i></div>
       </div>
+
     </div>
 
   } @else {
@@ -63,7 +113,10 @@
 
           <div class="applicant-info">
 
-            <p class="candidate-label">Candidate</p>
+            <p class="candidate-label">
+              Candidate
+            </p>
+
             <h3>
               Candidate #{{ applicant.jobSeekerId }}
             </h3>
@@ -77,15 +130,28 @@
 
             } @else {
 
-              <p class="no-skill-gap">No missing skills</p>
+              <p class="no-skill-gap">
+                No missing skills
+              </p>
 
             }
 
           </div>
 
-          <app-score-badge
-            [score]="applicant.matchScore">
-          </app-score-badge>
+          <div class="applicant-actions">
+
+            <app-score-badge
+              [score]="applicant.matchScore">
+            </app-score-badge>
+
+            <button
+              type="button"
+              class="view-profile-button"
+              (click)="viewProfile(applicant.jobSeekerId)">
+              View Profile
+            </button>
+
+          </div>
 
         </article>
 
