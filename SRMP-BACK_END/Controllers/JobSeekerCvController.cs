@@ -18,6 +18,7 @@ namespace SRMP.Controllers
             _service = service;
         }
 
+        // Get CV metadata
         [HttpGet]
         public async Task<IActionResult> GetCv()
         {
@@ -26,7 +27,8 @@ namespace SRMP.Controllers
             if (userId == null)
                 return Unauthorized();
 
-            var cv = await _service.GetCvAsync(userId.Value);
+            var cv = await _service.GetCvAsync(
+                userId.Value);
 
             if (cv == null)
             {
@@ -39,6 +41,7 @@ namespace SRMP.Controllers
             return Ok(cv);
         }
 
+        // Upload CV
         [HttpPost("upload")]
         [RequestSizeLimit(5 * 1024 * 1024)]
         public async Task<IActionResult> UploadCv(
@@ -66,6 +69,43 @@ namespace SRMP.Controllers
             }
         }
 
+        // Download actual CV file
+        [HttpGet("download")]
+        public async Task<IActionResult> DownloadCv()
+        {
+            var userId = GetUserId();
+
+            if (userId == null)
+                return Unauthorized();
+
+            try
+            {
+                var result = await _service.DownloadCvAsync(
+                    userId.Value);
+
+                if (result == null)
+                {
+                    return NotFound(new
+                    {
+                        message = "CV not found."
+                    });
+                }
+
+                return File(
+                    result.Value.FileBytes,
+                    result.Value.ContentType,
+                    result.Value.FileName);
+            }
+            catch (FileNotFoundException ex)
+            {
+                return NotFound(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        // Delete CV
         [HttpDelete]
         public async Task<IActionResult> DeleteCv()
         {
@@ -76,7 +116,8 @@ namespace SRMP.Controllers
 
             try
             {
-                await _service.DeleteCvAsync(userId.Value);
+                await _service.DeleteCvAsync(
+                    userId.Value);
 
                 return Ok(new
                 {
@@ -94,16 +135,18 @@ namespace SRMP.Controllers
 
         private int? GetUserId()
         {
-            var userIdClaim = User.FindFirst(
-                ClaimTypes.NameIdentifier);
+            var userIdClaim =
+                User.FindFirst(ClaimTypes.NameIdentifier);
 
             if (userIdClaim == null)
                 return null;
 
             if (!int.TryParse(
-                    userIdClaim.Value,
-                    out var userId))
+                userIdClaim.Value,
+                out var userId))
+            {
                 return null;
+            }
 
             return userId;
         }

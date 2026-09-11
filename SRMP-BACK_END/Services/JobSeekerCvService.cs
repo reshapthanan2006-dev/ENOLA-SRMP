@@ -16,7 +16,9 @@ namespace SRMP.Services
             _repository = repository;
         }
 
-        public async Task<JobSeekerCvResponseDto?> GetCvAsync(int userId)
+        // Get CV metadata
+        public async Task<JobSeekerCvResponseDto?> GetCvAsync(
+            int userId)
         {
             var cv = await _repository.GetByUserIdAsync(userId);
 
@@ -26,32 +28,44 @@ namespace SRMP.Services
             return MapToResponseDto(cv);
         }
 
+        // Upload CV
         public async Task<JobSeekerCvResponseDto> UploadCvAsync(
             int userId,
             IFormFile file)
         {
             if (file == null || file.Length == 0)
-                throw new ArgumentException("CV file is required.");
+            {
+                throw new ArgumentException(
+                    "CV file is required.");
+            }
 
             const long maxFileSize = 5 * 1024 * 1024;
 
             if (file.Length > maxFileSize)
-                throw new ArgumentException("CV file size must not exceed 5 MB.");
+            {
+                throw new ArgumentException(
+                    "CV file size must not exceed 5 MB.");
+            }
 
             var allowedExtensions = new[]
             {
-                    ".pdf",
-                    ".doc",
-                    ".docx"
-};
+                ".pdf",
+                ".doc",
+                ".docx"
+            };
 
-            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+            var extension = Path
+                .GetExtension(file.FileName)
+                .ToLowerInvariant();
 
             if (!allowedExtensions.Contains(extension))
+            {
                 throw new ArgumentException(
                     "Only PDF, DOC, and DOCX files are allowed.");
+            }
 
-            var existingCv = await _repository.GetByUserIdAsync(userId);
+            var existingCv =
+                await _repository.GetByUserIdAsync(userId);
 
             var uploadsFolder = Path.Combine(
                 Directory.GetCurrentDirectory(),
@@ -103,12 +117,50 @@ namespace SRMP.Services
             return MapToResponseDto(cv);
         }
 
-        public async Task DeleteCvAsync(int userId)
+        // Download actual CV file
+        public async Task<(
+            byte[] FileBytes,
+            string ContentType,
+            string FileName)?> DownloadCvAsync(
+                int userId)
         {
-            var cv = await _repository.GetByUserIdAsync(userId);
+            var cv =
+                await _repository.GetByUserIdAsync(userId);
 
             if (cv == null)
-                throw new KeyNotFoundException("CV not found.");
+                return null;
+
+            if (!File.Exists(cv.FilePath))
+            {
+                throw new FileNotFoundException(
+                    "CV file was not found on the server.");
+            }
+
+            var fileBytes =
+                await File.ReadAllBytesAsync(cv.FilePath);
+
+            var contentType =
+                string.IsNullOrWhiteSpace(cv.ContentType)
+                    ? "application/octet-stream"
+                    : cv.ContentType;
+
+            return (
+                fileBytes,
+                contentType,
+                cv.OriginalFileName);
+        }
+
+        // Delete CV
+        public async Task DeleteCvAsync(int userId)
+        {
+            var cv =
+                await _repository.GetByUserIdAsync(userId);
+
+            if (cv == null)
+            {
+                throw new KeyNotFoundException(
+                    "CV not found.");
+            }
 
             if (File.Exists(cv.FilePath))
             {
