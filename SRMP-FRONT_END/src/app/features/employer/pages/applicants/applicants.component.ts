@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { MatchResult } from '../../../matching/models/match-result.model';
 import { MatchingService } from '../../../matching/services/matching.service';
@@ -15,13 +16,33 @@ import { SkillListPipe } from '../../../../shared/pipes/skill-list.pipe';
   templateUrl: './applicants.component.html',
   styleUrl: './applicants.component.css'
 })
-export class ApplicantsComponent {
+export class ApplicantsComponent implements OnInit {
 
   applicants: MatchResult[] = [];
+
+  jobVacancyId = 0;
+
   isLoading = false;
   errorMessage = '';
 
-  constructor(private matchingService: MatchingService) { }
+  constructor(
+    private matchingService: MatchingService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
+
+  ngOnInit(): void {
+
+    this.jobVacancyId =
+      Number(this.route.snapshot.paramMap.get('jobVacancyId'));
+
+    if (!this.jobVacancyId) {
+      this.errorMessage = 'Vacancy information is missing.';
+      return;
+    }
+
+    this.loadApplicants(this.jobVacancyId);
+  }
 
   loadApplicants(jobVacancyId: number): void {
 
@@ -43,4 +64,13 @@ export class ApplicantsComponent {
       });
   }
 
+  viewProfile(jobSeekerId: number): void {
+
+    this.router.navigate([
+      '/employer/vacancies',
+      this.jobVacancyId,
+      'applicants',
+      jobSeekerId
+    ]);
+  }
 }
