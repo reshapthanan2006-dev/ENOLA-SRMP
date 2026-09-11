@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SRMP.DTOs;
 using SRMP.Interfaces;
+using System.Security.Claims;
 
 namespace SRMP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ApplicationController : ControllerBase
     {
         private readonly IApplicationService _applicationService;
@@ -17,14 +20,19 @@ namespace SRMP.Controllers
 
         // Job Seeker applies for a vacancy
         [HttpPost]
+        [Authorize(Roles = "JobSeeker")]
         public async Task<IActionResult> CreateApplication(
-            [FromQuery] int jobSeekerId,
             [FromBody] CreateApplicationDto dto)
         {
+            var jobSeekerId = GetUserId();
+
+            if (jobSeekerId == null)
+                return Unauthorized();
+
             try
             {
                 var result = await _applicationService
-                    .CreateApplicationAsync(jobSeekerId, dto);
+                    .CreateApplicationAsync(jobSeekerId.Value, dto);
 
                 return Ok(result);
             }
@@ -39,26 +47,36 @@ namespace SRMP.Controllers
 
         // Job Seeker views own applications
         [HttpGet("my")]
-        public async Task<IActionResult> GetMyApplications(
-            [FromQuery] int jobSeekerId)
+        [Authorize(Roles = "JobSeeker")]
+        public async Task<IActionResult> GetMyApplications()
         {
+            var jobSeekerId = GetUserId();
+
+            if (jobSeekerId == null)
+                return Unauthorized();
+
             var result = await _applicationService
-                .GetMyApplicationsAsync(jobSeekerId);
+                .GetMyApplicationsAsync(jobSeekerId.Value);
 
             return Ok(result);
         }
 
         // Employer views applications for a vacancy
         [HttpGet("vacancy/{jobVacancyId}")]
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> GetApplicationsByVacancy(
-            int jobVacancyId,
-            [FromQuery] int employerId)
+            int jobVacancyId)
         {
+            var employerId = GetUserId();
+
+            if (employerId == null)
+                return Unauthorized();
+
             try
             {
                 var result = await _applicationService
                     .GetApplicationsByVacancyAsync(
-                        employerId,
+                        employerId.Value,
                         jobVacancyId);
 
                 return Ok(result);
@@ -70,26 +88,28 @@ namespace SRMP.Controllers
                     message = ex.Message
                 });
             }
-            catch (UnauthorizedAccessException ex)
+            catch (UnauthorizedAccessException)
             {
-                return Unauthorized(new
-                {
-                    message = ex.Message
-                });
+                return Forbid();
             }
         }
 
         // Employer views ranked applicants for a vacancy
         [HttpGet("vacancy/{jobVacancyId}/ranked")]
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> GetRankedApplicants(
-            int jobVacancyId,
-            [FromQuery] int employerId)
+            int jobVacancyId)
         {
+            var employerId = GetUserId();
+
+            if (employerId == null)
+                return Unauthorized();
+
             try
             {
                 var result = await _applicationService
                     .GetRankedApplicantsAsync(
-                        employerId,
+                        employerId.Value,
                         jobVacancyId);
 
                 return Ok(result);
@@ -101,37 +121,61 @@ namespace SRMP.Controllers
                     message = ex.Message
                 });
             }
-            catch (UnauthorizedAccessException ex)
+            catch (UnauthorizedAccessException)
             {
-                return Unauthorized(new
-                {
-                    message = ex.Message
-                });
+                return Forbid();
             }
         }
 
         // Employer updates application status
         [HttpPut("{applicationId}/status")]
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> UpdateApplicationStatus(
             int applicationId,
-            [FromQuery] int employerId,
             [FromBody] UpdateApplicationStatusDto dto)
         {
-            var result = await _applicationService
-                .UpdateApplicationStatusAsync(
-                    employerId,
-                    applicationId,
-                    dto);
+            var employerId = GetUserId();
 
-            if (result == null)
+            if (employerId == null)
+                return Unauthorized();
+
+            try
             {
-                return NotFound(new
-                {
-                    message = "Application not found."
-                });
-            }
+                var result = await _applicationService
+                    .UpdateApplicationStatusAsync(
+                        employerId.Value,
+                        applicationId,
+                        dto);
 
-            return Ok(result);
+                if (result == null)
+                {
+                    return NotFound(new
+                    {
+                        message = "Application not found."
+                    });
+                }
+
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
+        }
+
+        // Get logged-in user id from JWT
+        private int? GetUserId()
+        {
+            var userIdClaim = User.FindFirst(
+                ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+                return null;
+
+            if (!int.TryParse(userIdClaim.Value, out var userId))
+                return null;
+
+            return userId;
         }
     }
 }

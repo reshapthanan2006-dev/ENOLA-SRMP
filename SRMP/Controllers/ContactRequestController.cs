@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SRMP.DTOs;
 using SRMP.Interfaces;
+using System.Security.Claims;
 
 namespace SRMP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ContactRequestController : ControllerBase
     {
         private readonly IContactRequestService _contactRequestService;
@@ -18,14 +21,21 @@ namespace SRMP.Controllers
 
         // Employer sends a contact request
         [HttpPost]
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> CreateContactRequest(
-            [FromQuery] int employerId,
             [FromBody] CreateContactRequestDto dto)
         {
+            var employerId = GetUserId();
+
+            if (employerId == null)
+                return Unauthorized();
+
             try
             {
                 var result = await _contactRequestService
-                    .CreateContactRequestAsync(employerId, dto);
+                    .CreateContactRequestAsync(
+                        employerId.Value,
+                        dto);
 
                 return Ok(result);
             }
@@ -40,38 +50,53 @@ namespace SRMP.Controllers
 
         // Job Seeker views received contact requests
         [HttpGet("my")]
-        public async Task<IActionResult> GetMyRequests(
-            [FromQuery] int jobSeekerId)
+        [Authorize(Roles = "JobSeeker")]
+        public async Task<IActionResult> GetMyRequests()
         {
+            var jobSeekerId = GetUserId();
+
+            if (jobSeekerId == null)
+                return Unauthorized();
+
             var result = await _contactRequestService
-                .GetMyRequestsAsync(jobSeekerId);
+                .GetMyRequestsAsync(jobSeekerId.Value);
 
             return Ok(result);
         }
 
         // Employer views sent contact requests
         [HttpGet("sent")]
-        public async Task<IActionResult> GetSentRequests(
-            [FromQuery] int employerId)
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> GetSentRequests()
         {
+            var employerId = GetUserId();
+
+            if (employerId == null)
+                return Unauthorized();
+
             var result = await _contactRequestService
-                .GetSentRequestsAsync(employerId);
+                .GetSentRequestsAsync(employerId.Value);
 
             return Ok(result);
         }
 
         // Job Seeker accepts or declines a contact request
         [HttpPut("{contactRequestId}/respond")]
+        [Authorize(Roles = "JobSeeker")]
         public async Task<IActionResult> RespondToRequest(
             int contactRequestId,
-            [FromQuery] int jobSeekerId,
             [FromQuery] string status)
         {
+            var jobSeekerId = GetUserId();
+
+            if (jobSeekerId == null)
+                return Unauthorized();
+
             try
             {
                 var result = await _contactRequestService
                     .RespondToRequestAsync(
-                        jobSeekerId,
+                        jobSeekerId.Value,
                         contactRequestId,
                         status);
 
@@ -79,7 +104,8 @@ namespace SRMP.Controllers
                 {
                     return NotFound(new
                     {
-                        message = "Contact request not found or access denied."
+                        message =
+                            "Contact request not found or access denied."
                     });
                 }
 
@@ -92,6 +118,25 @@ namespace SRMP.Controllers
                     message = ex.Message
                 });
             }
+        }
+
+        // Get logged-in User ID from JWT
+        private int? GetUserId()
+        {
+            var userIdClaim = User.FindFirst(
+                ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+                return null;
+
+            if (!int.TryParse(
+                userIdClaim.Value,
+                out var userId))
+            {
+                return null;
+            }
+
+            return userId;
         }
     }
 }

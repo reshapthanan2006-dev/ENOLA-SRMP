@@ -1,46 +1,59 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SRMP.Interfaces;
+using System.Security.Claims;
 
 namespace SRMP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "JobSeeker")]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;
 
-        public NotificationController(INotificationService notificationService)
+        public NotificationController(
+            INotificationService notificationService)
         {
             _notificationService = notificationService;
         }
 
-        // Job Seeker views notifications
+        // Job Seeker views own notifications
         [HttpGet("my")]
-        public async Task<IActionResult> GetMyNotifications(
-            [FromQuery] int jobSeekerId)
+        public async Task<IActionResult> GetMyNotifications()
         {
+            var jobSeekerId = GetUserId();
+
+            if (jobSeekerId == null)
+                return Unauthorized();
+
             var result = await _notificationService
-                .GetMyNotificationsAsync(jobSeekerId);
+                .GetMyNotificationsAsync(jobSeekerId.Value);
 
             return Ok(result);
         }
 
-        // Mark notification as read
+        // Job Seeker marks own notification as read
         [HttpPut("{notificationId}/read")]
         public async Task<IActionResult> MarkAsRead(
-            int notificationId,
-            [FromQuery] int jobSeekerId)
+            int notificationId)
         {
+            var jobSeekerId = GetUserId();
+
+            if (jobSeekerId == null)
+                return Unauthorized();
+
             var result = await _notificationService
                 .MarkAsReadAsync(
-                    jobSeekerId,
+                    jobSeekerId.Value,
                     notificationId);
 
             if (!result)
             {
                 return NotFound(new
                 {
-                    message = "Notification not found or access denied."
+                    message =
+                        "Notification not found or access denied."
                 });
             }
 
@@ -48,6 +61,25 @@ namespace SRMP.Controllers
             {
                 message = "Notification marked as read."
             });
+        }
+
+        // Get logged-in User ID from JWT
+        private int? GetUserId()
+        {
+            var userIdClaim = User.FindFirst(
+                ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+                return null;
+
+            if (!int.TryParse(
+                userIdClaim.Value,
+                out var userId))
+            {
+                return null;
+            }
+
+            return userId;
         }
     }
 }
