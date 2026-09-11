@@ -120,25 +120,26 @@ namespace SRMP.Controllers
                 });
             }
 
-            // Logged-in employer must own this company
+            // Employer can update only own company
             if (existingCompany.EmployerId != employerId.Value)
             {
                 return Forbid();
             }
 
-            company.EmployerCompanyId = id;
+            // Update the already tracked entity
+            existingCompany.CompanyName = company.CompanyName;
+            existingCompany.Description = company.Description;
 
-            // Never trust EmployerId from frontend
-            company.EmployerId = employerId.Value;
+            // Do not take EmployerId from frontend
+            existingCompany.EmployerId = employerId.Value;
 
-            // Keep original created date
-            company.CreatedAt = existingCompany.CreatedAt;
+            // Keep original CreatedAt
+            // Update only UpdatedAt
+            existingCompany.UpdatedAt = DateTime.UtcNow;
 
-            company.UpdatedAt = DateTime.UtcNow;
+            await _service.UpdateCompanyAsync(existingCompany);
 
-            await _service.UpdateCompanyAsync(company);
-
-            return Ok(company);
+            return Ok(existingCompany);
         }
 
         // Get logged-in User ID from JWT

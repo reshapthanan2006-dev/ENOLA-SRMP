@@ -5,6 +5,8 @@ using SRMP.Data;
 using SRMP.Helpers;
 using SRMP.Interfaces;
 using SRMP.Interfaces.Services;
+using SRMP.Middelware;
+using SRMP.Models;
 using SRMP.Repositories;
 using SRMP.Services;
 using System.Text;
@@ -15,36 +17,54 @@ namespace SRMP
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            var builder =
+                WebApplication.CreateBuilder(args);
 
             // Database
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("DefaultConnection")
-                ));
+            builder.Services.AddDbContext<AppDbContext>(
+                options =>
+                    options.UseSqlServer(
+                        builder.Configuration
+                            .GetConnectionString(
+                                "DefaultConnection")));
 
-            // Add services to the container
+            // Controllers
             builder.Services.AddControllers();
 
-            // Authentication services - mem 1
-            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-            builder.Services.AddScoped<IAuthService, AuthService>();
+            // Authentication services
+            builder.Services.AddScoped<
+                IAuthRepository,
+                AuthRepository>();
 
-            // Admin services - mem 1
-            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
-            builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<
+                IAuthService,
+                AuthService>();
 
-            // JWT Helper - mem 1
+            // Admin services
+            builder.Services.AddScoped<
+                IAdminRepository,
+                AdminRepository>();
+
+            builder.Services.AddScoped<
+                IAdminService,
+                AdminService>();
+
+            // JWT Helper
             builder.Services.AddScoped<JwtHelper>();
 
-            // JWT Authentication - mem 1
+            // JWT Authentication
             builder.Services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddAuthentication(
+                    JwtBearerDefaults
+                        .AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    var jwtKey = builder.Configuration["Jwt:Key"];
+                    var jwtKey =
+                        builder.Configuration[
+                            "Jwt:Key"];
 
-                    if (string.IsNullOrWhiteSpace(jwtKey))
+                    if (string.IsNullOrWhiteSpace(
+                        jwtKey))
                     {
                         throw new InvalidOperationException(
                             "JWT key is not configured.");
@@ -57,17 +77,20 @@ namespace SRMP
 
                             IssuerSigningKey =
                                 new SymmetricSecurityKey(
-                                    Encoding.UTF8.GetBytes(jwtKey)),
+                                    Encoding.UTF8.GetBytes(
+                                        jwtKey)),
 
                             ValidateIssuer = true,
 
                             ValidIssuer =
-                                builder.Configuration["Jwt:Issuer"],
+                                builder.Configuration[
+                                    "Jwt:Issuer"],
 
                             ValidateAudience = true,
 
                             ValidAudience =
-                                builder.Configuration["Jwt:Audience"],
+                                builder.Configuration[
+                                    "Jwt:Audience"],
 
                             ValidateLifetime = true,
 
@@ -80,19 +103,24 @@ namespace SRMP
             // CORS for Angular frontend
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AngularFrontend", policy =>
-                {
-                    policy
-                        .WithOrigins("http://localhost:4200")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
+                options.AddPolicy(
+                    "AngularFrontend",
+                    policy =>
+                    {
+                        policy
+                            .WithOrigins(
+                                "http://localhost:4200")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
             });
 
             // Matching Engine
-            builder.Services.AddScoped<IMatchingService, MatchingService>();
+            builder.Services.AddScoped<
+                IMatchingService,
+                MatchingService>();
 
-            // Application services
+            // Application
             builder.Services.AddScoped<
                 IApplicationRepository,
                 ApplicationRepository>();
@@ -101,7 +129,7 @@ namespace SRMP
                 IApplicationService,
                 ApplicationService>();
 
-            // Notification services
+            // Notification
             builder.Services.AddScoped<
                 INotificationRepository,
                 NotificationRepository>();
@@ -110,7 +138,7 @@ namespace SRMP
                 INotificationService,
                 NotificationService>();
 
-            // Contact request services
+            // Contact Request
             builder.Services.AddScoped<
                 IContactRequestRepository,
                 ContactRequestRepository>();
@@ -119,7 +147,7 @@ namespace SRMP
                 IContactRequestService,
                 ContactRequestService>();
 
-            // Employer company services
+            // Employer Company
             builder.Services.AddScoped<
                 IEmployerCompanyRepository,
                 EmployerCompanyRepository>();
@@ -128,7 +156,7 @@ namespace SRMP
                 IEmployerCompanyService,
                 EmployerCompanyService>();
 
-            // Job vacancy services
+            // Job Vacancy
             builder.Services.AddScoped<
                 IJobVacancyRepository,
                 JobVacancyRepository>();
@@ -137,7 +165,7 @@ namespace SRMP
                 IJobVacancyService,
                 JobVacancyService>();
 
-            // Job Seeker Profile services
+            // Job Seeker Profile
             builder.Services.AddScoped<
                 IJobSeekerProfileRepository,
                 JobSeekerProfileRepository>();
@@ -146,7 +174,7 @@ namespace SRMP
                 IJobSeekerProfileService,
                 JobSeekerProfileService>();
 
-            // Job Seeker CV services
+            // Job Seeker CV
             builder.Services.AddScoped<
                 IJobSeekerCvRepository,
                 JobSeekerCvRepository>();
@@ -158,62 +186,156 @@ namespace SRMP
             // Swagger
             builder.Services.AddEndpointsApiExplorer();
 
-            builder.Services.AddSwaggerGen(options =>
-            {
-                options.AddSecurityDefinition(
-                    "Bearer",
-                    new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                    {
-                        Name = "Authorization",
-                        Type =
-                            Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-                        Scheme = "bearer",
-                        BearerFormat = "JWT",
-                        In =
-                            Microsoft.OpenApi.Models.ParameterLocation.Header,
-                        Description = "Enter JWT token"
-                    });
-
-                options.AddSecurityRequirement(
-                    new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-                    {
+            builder.Services.AddSwaggerGen(
+                options =>
+                {
+                    options.AddSecurityDefinition(
+                        "Bearer",
+                        new Microsoft.OpenApi.Models
+                            .OpenApiSecurityScheme
                         {
-                            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                            Name = "Authorization",
+
+                            Type =
+                                Microsoft.OpenApi.Models
+                                    .SecuritySchemeType
+                                    .Http,
+
+                            Scheme = "bearer",
+
+                            BearerFormat = "JWT",
+
+                            In =
+                                Microsoft.OpenApi.Models
+                                    .ParameterLocation
+                                    .Header,
+
+                            Description =
+                                "Enter JWT token"
+                        });
+
+                    options.AddSecurityRequirement(
+                        new Microsoft.OpenApi.Models
+                            .OpenApiSecurityRequirement
+                        {
                             {
-                                Reference =
-                                    new Microsoft.OpenApi.Models.OpenApiReference
-                                    {
-                                        Type =
-                                            Microsoft.OpenApi.Models
-                                                .ReferenceType
-                                                .SecurityScheme,
+                                new Microsoft.OpenApi.Models
+                                    .OpenApiSecurityScheme
+                                {
+                                    Reference =
+                                        new Microsoft.OpenApi.Models
+                                            .OpenApiReference
+                                        {
+                                            Type =
+                                                Microsoft.OpenApi.Models
+                                                    .ReferenceType
+                                                    .SecurityScheme,
 
-                                        Id = "Bearer"
-                                    }
-                            },
+                                            Id = "Bearer"
+                                        }
+                                },
 
-                            Array.Empty<string>()
-                        }
-                    });
-            });
+                                Array.Empty<string>()
+                            }
+                        });
+                });
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline
+
+            // =========================================
+            // Development Admin Seed
+            // =========================================
+            if (app.Environment.IsDevelopment())
+            {
+                using var scope =
+                    app.Services.CreateScope();
+
+                var dbContext =
+                    scope.ServiceProvider
+                        .GetRequiredService<AppDbContext>();
+
+                var adminEmail =
+                    builder.Configuration[
+                        "SeedAdmin:Email"];
+
+                var adminPassword =
+                    builder.Configuration[
+                        "SeedAdmin:Password"];
+
+                var adminFullName =
+                    builder.Configuration[
+                        "SeedAdmin:FullName"]
+                    ?? "Test Administrator";
+
+                if (!string.IsNullOrWhiteSpace(
+                        adminEmail) &&
+                    !string.IsNullOrWhiteSpace(
+                        adminPassword))
+                {
+                    adminEmail =
+                        adminEmail
+                            .Trim()
+                            .ToLowerInvariant();
+
+                    var adminExists =
+                        dbContext.Users.Any(
+                            user =>
+                                user.Email ==
+                                adminEmail);
+
+                    if (!adminExists)
+                    {
+                        var admin =
+                            new User
+                            {
+                                FullName =
+                                    adminFullName,
+
+                                Email =
+                                    adminEmail,
+
+                                Role =
+                                    UserRole.Administrator,
+
+                                IsActive = true,
+
+                                CreatedAt =
+                                    DateTime.UtcNow
+                            };
+
+                        admin.PasswordHash =
+                            PasswordHelper.HashPassword(
+                                admin,
+                                adminPassword);
+
+                        dbContext.Users.Add(admin);
+
+                        dbContext.SaveChanges();
+                    }
+                }
+            }
+
+
+            // Swagger
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
+            // Global Exception Middleware
+            app.UseMiddleware<ExceptionMiddleware>();
+
             app.UseHttpsRedirection();
 
-            // Allow Angular frontend
+            // Angular CORS
             app.UseCors("AngularFrontend");
 
-            // JWT Authentication must come before Authorization
+            // Authentication
             app.UseAuthentication();
 
+            // Authorization
             app.UseAuthorization();
 
             app.MapControllers();
