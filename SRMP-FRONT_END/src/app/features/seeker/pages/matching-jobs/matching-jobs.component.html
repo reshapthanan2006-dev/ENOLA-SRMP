@@ -41,7 +41,7 @@
         {{ job.requiredSkills }}
       </p>
 
-      <div class="missing-skills">
+      <div class="missing-skills" [appHighlight]="job.missingSkills.length > 0">
 
         <h4>Missing Skills</h4>
 

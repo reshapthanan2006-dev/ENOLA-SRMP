@@ -6,6 +6,7 @@ import { ScoreBadgeComponent } from '../../../../shared/components/score-badge/s
 import { SkillListPipe } from '../../../../shared/pipes/skill-list.pipe';
 import { ExperienceYearsPipe } from '../../../../shared/pipes/experience-years.pipe';
 import { ShortTextPipe } from '../../../../shared/pipes/short-text.pipe';
+import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
 
 @Component({
   selector: 'app-matching-jobs',
@@ -14,7 +15,8 @@ import { ShortTextPipe } from '../../../../shared/pipes/short-text.pipe';
     ScoreBadgeComponent,
     SkillListPipe,
     ExperienceYearsPipe,
-    ShortTextPipe
+    ShortTextPipe,
+    HighlightDirective
   ],
   templateUrl: './matching-jobs.component.html',
   styleUrl: './matching-jobs.component.css'
