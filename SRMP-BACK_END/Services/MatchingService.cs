@@ -12,18 +12,36 @@ namespace SRMP.Services
             profile.Skills ??= new List<string>();
             vacancy.RequiredSkills ??= new List<string>();
 
-            var missingSkills = GetMissingSkills(profile, vacancy);
+            // Normalize candidate skills:
+            // trim spaces + remove empty + remove duplicates
+            var candidateSkills = profile.Skills
+                .Where(skill => !string.IsNullOrWhiteSpace(skill))
+                .Select(skill => skill.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            // Normalize required skills:
+            // trim spaces + remove empty + remove duplicates
+            var requiredSkills = vacancy.RequiredSkills
+                .Where(skill => !string.IsNullOrWhiteSpace(skill))
+                .Select(skill => skill.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var missingSkills = GetMissingSkills(
+                candidateSkills,
+                requiredSkills);
 
             // -----------------------------
             // 1. Skills Score - 50%
             // -----------------------------
-            var matchedSkills = vacancy.RequiredSkills
-                .Count(skill =>
-                    profile.Skills.Contains(
-                        skill,
+            var matchedSkills = requiredSkills
+                .Count(requiredSkill =>
+                    candidateSkills.Contains(
+                        requiredSkill,
                         StringComparer.OrdinalIgnoreCase));
 
-            var totalSkills = vacancy.RequiredSkills.Count;
+            var totalSkills = requiredSkills.Count;
 
             double skillScore = totalSkills == 0
                 ? 0
@@ -84,15 +102,27 @@ namespace SRMP.Services
                     2,
                     MidpointRounding.AwayFromZero),
 
-                SkillsScore = Math.Round(skillScore, 2),
-                ExperienceScore = Math.Round(experienceScore, 2),
-                EducationScore = Math.Round(educationScore, 2),
-                LocationScore = Math.Round(locationScore, 2),
+                SkillsScore = Math.Round(
+                    skillScore,
+                    2),
+
+                ExperienceScore = Math.Round(
+                    experienceScore,
+                    2),
+
+                EducationScore = Math.Round(
+                    educationScore,
+                    2),
+
+                LocationScore = Math.Round(
+                    locationScore,
+                    2),
 
                 MissingSkills = missingSkills
             };
         }
 
+        // Public method used by interface / other services
         public List<string> GetMissingSkills(
             JobSeekerProfile profile,
             Vacancy vacancy)
@@ -100,14 +130,34 @@ namespace SRMP.Services
             profile.Skills ??= new List<string>();
             vacancy.RequiredSkills ??= new List<string>();
 
-            var missingSkills = vacancy.RequiredSkills
+            var candidateSkills = profile.Skills
+                .Where(skill => !string.IsNullOrWhiteSpace(skill))
+                .Select(skill => skill.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var requiredSkills = vacancy.RequiredSkills
+                .Where(skill => !string.IsNullOrWhiteSpace(skill))
+                .Select(skill => skill.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            return GetMissingSkills(
+                candidateSkills,
+                requiredSkills);
+        }
+
+        // Internal helper for normalized skill lists
+        private List<string> GetMissingSkills(
+            List<string> candidateSkills,
+            List<string> requiredSkills)
+        {
+            return requiredSkills
                 .Where(requiredSkill =>
-                    !profile.Skills.Contains(
+                    !candidateSkills.Contains(
                         requiredSkill,
                         StringComparer.OrdinalIgnoreCase))
                 .ToList();
-
-            return missingSkills;
         }
 
         private double GetEducationScore(
@@ -119,10 +169,14 @@ namespace SRMP.Services
                 return 0;
             }
 
-            int candidateLevel = GetEducationLevel(candidateEducation);
-            int requiredLevel = GetEducationLevel(requiredEducation);
+            int candidateLevel =
+                GetEducationLevel(candidateEducation);
 
-            if (candidateLevel >= requiredLevel && requiredLevel > 0)
+            int requiredLevel =
+                GetEducationLevel(requiredEducation);
+
+            if (candidateLevel >= requiredLevel &&
+                requiredLevel > 0)
             {
                 return 100;
             }
@@ -130,7 +184,8 @@ namespace SRMP.Services
             return 0;
         }
 
-        private int GetEducationLevel(string education)
+        private int GetEducationLevel(
+            string education)
         {
             if (string.IsNullOrWhiteSpace(education))
             {
@@ -186,8 +241,11 @@ namespace SRMP.Services
                 return 0;
             }
 
-            string candidate = candidateLocation.Trim().ToLower();
-            string vacancy = vacancyLocation.Trim().ToLower();
+            string candidate =
+                candidateLocation.Trim().ToLower();
+
+            string vacancy =
+                vacancyLocation.Trim().ToLower();
 
             // Same city / exact location
             if (candidate == vacancy)
@@ -198,10 +256,14 @@ namespace SRMP.Services
             // Location format expected:
             // City, District
             var candidateParts = candidate
-                .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                .Split(
+                    ',',
+                    StringSplitOptions.RemoveEmptyEntries);
 
             var vacancyParts = vacancy
-                .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                .Split(
+                    ',',
+                    StringSplitOptions.RemoveEmptyEntries);
 
             if (candidateParts.Length >= 2 &&
                 vacancyParts.Length >= 2)
@@ -213,7 +275,8 @@ namespace SRMP.Services
                     vacancyParts[1].Trim();
 
                 // Same district
-                if (candidateDistrict == vacancyDistrict)
+                if (candidateDistrict ==
+                    vacancyDistrict)
                 {
                     return 50;
                 }
@@ -230,11 +293,16 @@ namespace SRMP.Services
             var results = candidates
                 .Select(candidate =>
                     CalculateMatch(candidate, vacancy))
-                .OrderByDescending(result => result.MatchScore)
-                .ThenByDescending(result => result.SkillsScore)
-                .ThenByDescending(result => result.ExperienceScore)
-                .ThenByDescending(result => result.EducationScore)
-                .ThenByDescending(result => result.LocationScore)
+                .OrderByDescending(
+                    result => result.MatchScore)
+                .ThenByDescending(
+                    result => result.SkillsScore)
+                .ThenByDescending(
+                    result => result.ExperienceScore)
+                .ThenByDescending(
+                    result => result.EducationScore)
+                .ThenByDescending(
+                    result => result.LocationScore)
                 .ToList();
 
             return results;
