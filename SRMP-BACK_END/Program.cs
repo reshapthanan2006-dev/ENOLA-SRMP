@@ -26,6 +26,18 @@ namespace SRMP
             // Add services to the container.
             builder.Services.AddControllers();
 
+            // Allow Angular frontend to call the API
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularFrontend", policy =>
+                {
+                    policy
+                        .WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             // Authentication services - mem 1
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -142,6 +154,10 @@ namespace SRMP
             }
 
             app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseCors("AllowAngularFrontend");
 
             // JWT Authentication must come before Authorization - mem 1 thaan
             app.UseAuthentication();
