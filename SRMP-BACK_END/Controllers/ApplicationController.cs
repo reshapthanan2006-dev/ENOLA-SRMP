@@ -1,30 +1,42 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SRMP.DTOs;
 using SRMP.Interfaces;
+using System.Security.Claims;
 
 namespace SRMP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ApplicationController : ControllerBase
     {
         private readonly IApplicationService _applicationService;
 
-        public ApplicationController(IApplicationService applicationService)
+        public ApplicationController(
+            IApplicationService applicationService)
         {
             _applicationService = applicationService;
         }
 
-        // Job Seeker applies for a vacancy
+        // Job Seeker applies for vacancy
         [HttpPost]
+        [Authorize(Roles = "JobSeeker")]
         public async Task<IActionResult> CreateApplication(
-            [FromQuery] int jobSeekerId,
             [FromBody] CreateApplicationDto dto)
         {
+            var jobSeekerId = GetUserId();
+
+            if (jobSeekerId == null)
+                return Unauthorized();
+
             try
             {
-                var result = await _applicationService
-                    .CreateApplicationAsync(jobSeekerId, dto);
+                var result =
+                    await _applicationService
+                        .CreateApplicationAsync(
+                            jobSeekerId.Value,
+                            dto);
 
                 return Ok(result);
             }
@@ -35,31 +47,51 @@ namespace SRMP.Controllers
                     message = ex.Message
                 });
             }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
         // Job Seeker views own applications
         [HttpGet("my")]
-        public async Task<IActionResult> GetMyApplications(
-            [FromQuery] int jobSeekerId)
+        [Authorize(Roles = "JobSeeker")]
+        public async Task<IActionResult> GetMyApplications()
         {
-            var result = await _applicationService
-                .GetMyApplicationsAsync(jobSeekerId);
+            var jobSeekerId = GetUserId();
+
+            if (jobSeekerId == null)
+                return Unauthorized();
+
+            var result =
+                await _applicationService
+                    .GetMyApplicationsAsync(
+                        jobSeekerId.Value);
 
             return Ok(result);
         }
 
-        // Employer views applications for a vacancy
+        // Employer views applications for vacancy
         [HttpGet("vacancy/{jobVacancyId}")]
-        public async Task<IActionResult> GetApplicationsByVacancy(
-            int jobVacancyId,
-            [FromQuery] int employerId)
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult>
+            GetApplicationsByVacancy(int jobVacancyId)
         {
+            var employerId = GetUserId();
+
+            if (employerId == null)
+                return Unauthorized();
+
             try
             {
-                var result = await _applicationService
-                    .GetApplicationsByVacancyAsync(
-                        employerId,
-                        jobVacancyId);
+                var result =
+                    await _applicationService
+                        .GetApplicationsByVacancyAsync(
+                            employerId.Value,
+                            jobVacancyId);
 
                 return Ok(result);
             }
@@ -70,27 +102,30 @@ namespace SRMP.Controllers
                     message = ex.Message
                 });
             }
-            catch (UnauthorizedAccessException ex)
+            catch (UnauthorizedAccessException)
             {
-                return Unauthorized(new
-                {
-                    message = ex.Message
-                });
+                return Forbid();
             }
         }
 
-        // Employer views ranked applicants for a vacancy
+        // Employer views ranked applicants
         [HttpGet("vacancy/{jobVacancyId}/ranked")]
-        public async Task<IActionResult> GetRankedApplicants(
-            int jobVacancyId,
-            [FromQuery] int employerId)
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult>
+            GetRankedApplicants(int jobVacancyId)
         {
+            var employerId = GetUserId();
+
+            if (employerId == null)
+                return Unauthorized();
+
             try
             {
-                var result = await _applicationService
-                    .GetRankedApplicantsAsync(
-                        employerId,
-                        jobVacancyId);
+                var result =
+                    await _applicationService
+                        .GetRankedApplicantsAsync(
+                            employerId.Value,
+                            jobVacancyId);
 
                 return Ok(result);
             }
@@ -101,37 +136,75 @@ namespace SRMP.Controllers
                     message = ex.Message
                 });
             }
-            catch (UnauthorizedAccessException ex)
+            catch (UnauthorizedAccessException)
             {
-                return Unauthorized(new
-                {
-                    message = ex.Message
-                });
+                return Forbid();
             }
         }
 
         // Employer updates application status
         [HttpPut("{applicationId}/status")]
-        public async Task<IActionResult> UpdateApplicationStatus(
-            int applicationId,
-            [FromQuery] int employerId,
-            [FromBody] UpdateApplicationStatusDto dto)
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult>
+            UpdateApplicationStatus(
+                int applicationId,
+                [FromBody] UpdateApplicationStatusDto dto)
         {
-            var result = await _applicationService
-                .UpdateApplicationStatusAsync(
-                    employerId,
-                    applicationId,
-                    dto);
+            var employerId = GetUserId();
 
-            if (result == null)
+            if (employerId == null)
+                return Unauthorized();
+
+            try
             {
-                return NotFound(new
+                var result =
+                    await _applicationService
+                        .UpdateApplicationStatusAsync(
+                            employerId.Value,
+                            applicationId,
+                            dto);
+
+                if (result == null)
                 {
-                    message = "Application not found."
+                    return NotFound(new
+                    {
+                        message = "Application not found."
+                    });
+                }
+
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
                 });
             }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
+        }
 
-            return Ok(result);
+        // Get logged-in User ID from JWT
+        private int? GetUserId()
+        {
+            var userIdClaim =
+                User.FindFirst(
+                    ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+                return null;
+
+            if (!int.TryParse(
+                userIdClaim.Value,
+                out var userId))
+            {
+                return null;
+            }
+
+            return userId;
         }
     }
 }

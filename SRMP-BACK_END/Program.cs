@@ -23,13 +23,13 @@ namespace SRMP
                     builder.Configuration.GetConnectionString("DefaultConnection")
                 ));
 
-            // Add services to the container.
+            // Controllers
             builder.Services.AddControllers();
 
-            // Allow Angular frontend to call the API
+            // CORS for Angular frontend
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAngularFrontend", policy =>
+                options.AddPolicy("AngularFrontend", policy =>
                 {
                     policy
                         .WithOrigins("http://localhost:4200")
@@ -38,18 +38,18 @@ namespace SRMP
                 });
             });
 
-            // Authentication services - mem 1
+            // Authentication services - Member 1
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
 
-            // Admin services - mem 1
+            // Admin services - Member 1
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IAdminService, AdminService>();
 
-            // JWT Helper - mem 1
+            // JWT Helper - Member 1
             builder.Services.AddScoped<JwtHelper>();
 
-            // JWT Authentication- mem 1
+            // JWT Authentication - Member 1
             builder.Services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -66,6 +66,7 @@ namespace SRMP
                         new TokenValidationParameters
                         {
                             ValidateIssuerSigningKey = true,
+
                             IssuerSigningKey =
                                 new SymmetricSecurityKey(
                                     Encoding.UTF8.GetBytes(jwtKey)),
@@ -89,64 +90,113 @@ namespace SRMP
             builder.Services.AddScoped<IMatchingService, MatchingService>();
 
             // Application services
-            builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
-            builder.Services.AddScoped<IApplicationService, ApplicationService>();
+            builder.Services.AddScoped<
+                IApplicationRepository,
+                ApplicationRepository>();
+
+            builder.Services.AddScoped<
+                IApplicationService,
+                ApplicationService>();
 
             // Notification services
-            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
-            builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<
+                INotificationRepository,
+                NotificationRepository>();
+
+            builder.Services.AddScoped<
+                INotificationService,
+                NotificationService>();
 
             // Contact request services
-            builder.Services.AddScoped<IContactRequestRepository, ContactRequestRepository>();
-            builder.Services.AddScoped<IContactRequestService, ContactRequestService>();
+            builder.Services.AddScoped<
+                IContactRequestRepository,
+                ContactRequestRepository>();
+
+            builder.Services.AddScoped<
+                IContactRequestService,
+                ContactRequestService>();
 
             // Employer company services
-            builder.Services.AddScoped<IEmployerCompanyRepository, EmployerCompanyRepository>();
-            builder.Services.AddScoped<IEmployerCompanyService, EmployerCompanyService>();
+            builder.Services.AddScoped<
+                IEmployerCompanyRepository,
+                EmployerCompanyRepository>();
+
+            builder.Services.AddScoped<
+                IEmployerCompanyService,
+                EmployerCompanyService>();
 
             // Job vacancy services
-            builder.Services.AddScoped<IJobVacancyRepository, JobVacancyRepository>();
-            builder.Services.AddScoped<IJobVacancyService, JobVacancyService>();
+            builder.Services.AddScoped<
+                IJobVacancyRepository,
+                JobVacancyRepository>();
 
+            builder.Services.AddScoped<
+                IJobVacancyService,
+                JobVacancyService>();
+
+            // Job Seeker Profile services
+            builder.Services.AddScoped<
+                IJobSeekerProfileRepository,
+                JobSeekerProfileRepository>();
+
+            builder.Services.AddScoped<
+                IJobSeekerProfileService,
+                JobSeekerProfileService>();
+
+            // Job Seeker CV services
+            builder.Services.AddScoped<
+                IJobSeekerCvRepository,
+                JobSeekerCvRepository>();
+
+            builder.Services.AddScoped<
+                IJobSeekerCvService,
+                JobSeekerCvService>();
+
+            // Swagger
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddSwaggerGen(options =>
             {
-                options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-                    Description = "Enter JWT token"
-                });
+                options.AddSecurityDefinition(
+                    "Bearer",
+                    new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                    {
+                        Name = "Authorization",
+                        Type =
+                            Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                        Scheme = "bearer",
+                        BearerFormat = "JWT",
+                        In =
+                            Microsoft.OpenApi.Models.ParameterLocation.Header,
+                        Description = "Enter JWT token"
+                    });
 
-                options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-    {
-        {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-            {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
+                options.AddSecurityRequirement(
+                    new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                    {
+                        {
+                            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                            {
+                                Reference =
+                                    new Microsoft.OpenApi.Models.OpenApiReference
+                                    {
+                                        Type =
+                                            Microsoft.OpenApi.Models
+                                                .ReferenceType
+                                                .SecurityScheme,
+
+                                        Id = "Bearer"
+                                    }
+                            },
+
+                            Array.Empty<string>()
+                        }
+                    });
             });
-
-            builder.Services.AddScoped<IJobSeekerProfileRepository, JobSeekerProfileRepository>();
-            builder.Services.AddScoped<IJobSeekerProfileService, JobSeekerProfileService>();
-
-            builder.Services.AddScoped<IJobSeekerCvRepository, JobSeekerCvRepository>();
-            builder.Services.AddScoped<IJobSeekerCvService, JobSeekerCvService>();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Configure the HTTP request pipeline
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -155,12 +205,12 @@ namespace SRMP
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
+            // Allow Angular frontend
+            app.UseCors("AngularFrontend");
 
-            app.UseCors("AllowAngularFrontend");
-
-            // JWT Authentication must come before Authorization - mem 1 thaan
+            // Authentication must come before Authorization
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.MapControllers();

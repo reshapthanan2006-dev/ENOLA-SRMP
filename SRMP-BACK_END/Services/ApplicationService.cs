@@ -27,14 +27,37 @@ namespace SRMP.Services
             _matchingService = matchingService;
         }
 
+        // -------------------------------------------------
+        // Job Seeker applies for a vacancy
+        // -------------------------------------------------
         public async Task<ApplicationResponseDto> CreateApplicationAsync(
             int jobSeekerId,
             CreateApplicationDto dto)
         {
-            var existingApplication =
-                await _applicationRepository.GetByJobSeekerAndVacancyAsync(
-                    jobSeekerId,
+            // Check vacancy exists
+            var vacancy =
+                await _jobVacancyService.GetByIdAsync(
                     dto.JobVacancyId);
+
+            if (vacancy == null)
+            {
+                throw new KeyNotFoundException(
+                    "Vacancy not found.");
+            }
+
+            // Job Seeker can apply only to open vacancy
+            if (!vacancy.IsOpen)
+            {
+                throw new InvalidOperationException(
+                    "This vacancy is closed. You cannot apply.");
+            }
+
+            // Check duplicate application
+            var existingApplication =
+                await _applicationRepository
+                    .GetByJobSeekerAndVacancyAsync(
+                        jobSeekerId,
+                        dto.JobVacancyId);
 
             if (existingApplication != null)
             {
@@ -42,6 +65,7 @@ namespace SRMP.Services
                     "You have already applied for this job.");
             }
 
+            // Create application
             var application = new Application
             {
                 JobSeekerId = jobSeekerId,
@@ -62,34 +86,57 @@ namespace SRMP.Services
             };
         }
 
-        public async Task<List<ApplicationResponseDto>> GetMyApplicationsAsync(
-            int jobSeekerId)
+        // -------------------------------------------------
+        // Job Seeker views own applications
+        // -------------------------------------------------
+        public async Task<List<ApplicationResponseDto>>
+            GetMyApplicationsAsync(int jobSeekerId)
         {
             var applications =
-                await _applicationRepository.GetByJobSeekerAsync(jobSeekerId);
+                await _applicationRepository
+                    .GetByJobSeekerAsync(jobSeekerId);
 
-            return applications.Select(a => new ApplicationResponseDto
-            {
-                ApplicationId = a.ApplicationId,
-                JobSeekerId = a.JobSeekerId,
-                JobVacancyId = a.JobVacancyId,
-                Status = a.Status,
-                AppliedAt = a.AppliedAt
-            }).ToList();
+            return applications
+                .Select(application =>
+                    new ApplicationResponseDto
+                    {
+                        ApplicationId =
+                            application.ApplicationId,
+
+                        JobSeekerId =
+                            application.JobSeekerId,
+
+                        JobVacancyId =
+                            application.JobVacancyId,
+
+                        Status =
+                            application.Status,
+
+                        AppliedAt =
+                            application.AppliedAt
+                    })
+                .ToList();
         }
 
-        public async Task<List<ApplicationResponseDto>> GetApplicationsByVacancyAsync(
-            int employerId,
-            int jobVacancyId)
+        // -------------------------------------------------
+        // Employer views applications for own vacancy
+        // -------------------------------------------------
+        public async Task<List<ApplicationResponseDto>>
+            GetApplicationsByVacancyAsync(
+                int employerId,
+                int jobVacancyId)
         {
             var vacancy =
-                await _jobVacancyService.GetByIdAsync(jobVacancyId);
+                await _jobVacancyService.GetByIdAsync(
+                    jobVacancyId);
 
             if (vacancy == null)
             {
-                throw new KeyNotFoundException("Vacancy not found.");
+                throw new KeyNotFoundException(
+                    "Vacancy not found.");
             }
 
+            // Employer must own vacancy
             if (vacancy.EmployerId != employerId)
             {
                 throw new UnauthorizedAccessException(
@@ -97,25 +144,43 @@ namespace SRMP.Services
             }
 
             var applications =
-                await _applicationRepository.GetByVacancyAsync(jobVacancyId);
+                await _applicationRepository
+                    .GetByVacancyAsync(jobVacancyId);
 
-            return applications.Select(a => new ApplicationResponseDto
-            {
-                ApplicationId = a.ApplicationId,
-                JobSeekerId = a.JobSeekerId,
-                JobVacancyId = a.JobVacancyId,
-                Status = a.Status,
-                AppliedAt = a.AppliedAt
-            }).ToList();
+            return applications
+                .Select(application =>
+                    new ApplicationResponseDto
+                    {
+                        ApplicationId =
+                            application.ApplicationId,
+
+                        JobSeekerId =
+                            application.JobSeekerId,
+
+                        JobVacancyId =
+                            application.JobVacancyId,
+
+                        Status =
+                            application.Status,
+
+                        AppliedAt =
+                            application.AppliedAt
+                    })
+                .ToList();
         }
 
-        public async Task<ApplicationResponseDto?> UpdateApplicationStatusAsync(
-            int employerId,
-            int applicationId,
-            UpdateApplicationStatusDto dto)
+        // -------------------------------------------------
+        // Employer updates application status
+        // -------------------------------------------------
+        public async Task<ApplicationResponseDto?>
+            UpdateApplicationStatusAsync(
+                int employerId,
+                int applicationId,
+                UpdateApplicationStatusDto dto)
         {
             var application =
-                await _applicationRepository.GetByIdAsync(applicationId);
+                await _applicationRepository
+                    .GetByIdAsync(applicationId);
 
             if (application == null)
             {
@@ -123,128 +188,212 @@ namespace SRMP.Services
             }
 
             var vacancy =
-                await _jobVacancyService.GetByIdAsync(application.JobVacancyId);
+                await _jobVacancyService.GetByIdAsync(
+                    application.JobVacancyId);
 
             if (vacancy == null)
             {
                 return null;
             }
 
+            // Employer must own the vacancy
             if (vacancy.EmployerId != employerId)
             {
                 throw new UnauthorizedAccessException(
                     "You are not allowed to update this application.");
             }
 
-            application.Status = dto.Status;
+            // Allowed application statuses
+            var allowedStatuses = new[]
+            {
+                "Pending",
+                "Shortlisted",
+                "Rejected",
+                "Accepted"
+            };
 
-            await _applicationRepository.UpdateAsync(application);
+            var newStatus =
+                allowedStatuses.FirstOrDefault(
+                    status => string.Equals(
+                        status,
+                        dto.Status?.Trim(),
+                        StringComparison.OrdinalIgnoreCase));
 
-            await _notificationService.CreateNotificationAsync(
-                application.JobSeekerId,
-                application.ApplicationId,
-                $"Your application status has been updated to {application.Status}."
-            );
+            if (newStatus == null)
+            {
+                throw new ArgumentException(
+                    "Invalid status. Allowed statuses are: Pending, Shortlisted, Rejected, Accepted.");
+            }
+
+            application.Status = newStatus;
+
+            await _applicationRepository
+                .UpdateAsync(application);
+
+            // Notify Job Seeker
+            await _notificationService
+                .CreateNotificationAsync(
+                    application.JobSeekerId,
+                    application.ApplicationId,
+                    $"Your application status has been updated to {application.Status}."
+                );
 
             return new ApplicationResponseDto
             {
-                ApplicationId = application.ApplicationId,
-                JobSeekerId = application.JobSeekerId,
-                JobVacancyId = application.JobVacancyId,
-                Status = application.Status,
-                AppliedAt = application.AppliedAt
+                ApplicationId =
+                    application.ApplicationId,
+
+                JobSeekerId =
+                    application.JobSeekerId,
+
+                JobVacancyId =
+                    application.JobVacancyId,
+
+                Status =
+                    application.Status,
+
+                AppliedAt =
+                    application.AppliedAt
             };
         }
 
-        public async Task<List<MatchResult>> GetRankedApplicantsAsync(
-            int employerId,
-            int jobVacancyId)
+        // -------------------------------------------------
+        // Employer views ranked applicants
+        // -------------------------------------------------
+        public async Task<List<RankedApplicantResponseDto>>
+            GetRankedApplicantsAsync(
+                int employerId,
+                int jobVacancyId)
         {
-            // Get the selected vacancy
+            // Get vacancy
             var jobVacancy =
-                await _jobVacancyService.GetByIdAsync(jobVacancyId);
+                await _jobVacancyService
+                    .GetByIdAsync(jobVacancyId);
 
             if (jobVacancy == null)
             {
-                throw new KeyNotFoundException("Vacancy not found.");
+                throw new KeyNotFoundException(
+                    "Vacancy not found.");
             }
 
-            // Check employer ownership
+            // Employer must own the vacancy
             if (jobVacancy.EmployerId != employerId)
             {
                 throw new UnauthorizedAccessException(
                     "You are not allowed to view applicants for this vacancy.");
             }
 
-            // Get actual applications for this vacancy
+            // Get actual applications
             var applications =
-                await _applicationRepository.GetByVacancyAsync(jobVacancyId);
+                await _applicationRepository
+                    .GetByVacancyAsync(jobVacancyId);
 
-            var rankedApplicants = new List<RankedApplicant>();
+            var rankedApplicants =
+                new List<RankedApplicantResponseDto>();
 
             foreach (var application in applications)
             {
-                // JobSeekerId in Application points to the User
+                // Get Job Seeker profile
                 var profile =
-                    await _jobSeekerProfileRepository.GetByUserIdAsync(
-                        application.JobSeekerId);
+                    await _jobSeekerProfileRepository
+                        .GetByUserIdAsync(
+                            application.JobSeekerId);
 
-                // Skip applicants who do not have a profile
+                // Skip if profile does not exist
                 if (profile == null)
                 {
                     continue;
                 }
 
-                // Convert database vacancy to matching vacancy
+                // Convert JobVacancy to Vacancy
+                // used by MatchingService
                 var vacancy = new Vacancy
                 {
                     Id = jobVacancy.JobVacancyId,
-                    RequiredSkills = jobVacancy.RequiredSkills
-                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                        .Select(skill => skill.Trim())
-                        .ToList(),
+
+                    RequiredSkills =
+                        jobVacancy.RequiredSkills
+                            .Split(
+                                ',',
+                                StringSplitOptions.RemoveEmptyEntries |
+                                StringSplitOptions.TrimEntries)
+                            .ToList(),
+
                     RequiredExperienceYears =
                         jobVacancy.RequiredExperience,
+
                     RequiredEducation =
                         jobVacancy.RequiredEducation,
+
                     Location =
                         jobVacancy.Location
                 };
 
-                // Use the same MatchingService
+                // Calculate match using backend MatchingService
                 var matchResult =
-                    _matchingService.CalculateMatch(profile, vacancy);
+                    _matchingService.CalculateMatch(
+                        profile,
+                        vacancy);
 
-                rankedApplicants.Add(new RankedApplicant
-                {
-                    MatchResult = matchResult,
-                    AppliedAt = application.AppliedAt
-                });
+                rankedApplicants.Add(
+                    new RankedApplicantResponseDto
+                    {
+                        ApplicationId =
+                            application.ApplicationId,
+
+                        JobSeekerId =
+                            application.JobSeekerId,
+
+                        JobVacancyId =
+                            application.JobVacancyId,
+
+                        Status =
+                            application.Status,
+
+                        AppliedAt =
+                            application.AppliedAt,
+
+                        MatchScore =
+                            matchResult.MatchScore,
+
+                        SkillsScore =
+                            matchResult.SkillsScore,
+
+                        ExperienceScore =
+                            matchResult.ExperienceScore,
+
+                        EducationScore =
+                            matchResult.EducationScore,
+
+                        LocationScore =
+                            matchResult.LocationScore,
+
+                        MissingSkills =
+                            matchResult.MissingSkills
+                    });
             }
 
-            // Ranking:
-            // 1. Match score
-            // 2. Skills score
-            // 3. Experience score
-            // 4. Education score
-            // 5. Location score
-            // 6. Earlier application date
+            // Ranking order:
+            // 1. Match Score
+            // 2. Skills Score
+            // 3. Experience Score
+            // 4. Education Score
+            // 5. Location Score
+            // 6. Earlier Application Date
             return rankedApplicants
-                .OrderByDescending(x => x.MatchResult.MatchScore)
-                .ThenByDescending(x => x.MatchResult.SkillsScore)
-                .ThenByDescending(x => x.MatchResult.ExperienceScore)
-                .ThenByDescending(x => x.MatchResult.EducationScore)
-                .ThenByDescending(x => x.MatchResult.LocationScore)
-                .ThenBy(x => x.AppliedAt)
-                .Select(x => x.MatchResult)
+                .OrderByDescending(
+                    applicant => applicant.MatchScore)
+                .ThenByDescending(
+                    applicant => applicant.SkillsScore)
+                .ThenByDescending(
+                    applicant => applicant.ExperienceScore)
+                .ThenByDescending(
+                    applicant => applicant.EducationScore)
+                .ThenByDescending(
+                    applicant => applicant.LocationScore)
+                .ThenBy(
+                    applicant => applicant.AppliedAt)
                 .ToList();
-        }
-
-        private class RankedApplicant
-        {
-            public MatchResult MatchResult { get; set; } = new();
-
-            public DateTime AppliedAt { get; set; }
         }
     }
 }

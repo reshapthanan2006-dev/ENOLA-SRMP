@@ -11,6 +11,11 @@ namespace SRMP.Interfaces.Services
             int userId,
             IFormFile file);
 
+        Task<(
+            byte[] FileBytes,
+            string ContentType,
+            string FileName)?> DownloadCvAsync(int userId);
+
         Task DeleteCvAsync(int userId);
     }
 }

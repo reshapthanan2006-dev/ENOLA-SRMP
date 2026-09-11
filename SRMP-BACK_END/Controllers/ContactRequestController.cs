@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SRMP.DTOs;
 using SRMP.Interfaces;
+using System.Security.Claims;
 
 namespace SRMP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ContactRequestController : ControllerBase
     {
         private readonly IContactRequestService _contactRequestService;
@@ -16,18 +19,40 @@ namespace SRMP.Controllers
             _contactRequestService = contactRequestService;
         }
 
-        // Employer sends a contact request
+        // Employer sends contact request
         [HttpPost]
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> CreateContactRequest(
-            [FromQuery] int employerId,
             [FromBody] CreateContactRequestDto dto)
         {
+            var employerId = GetUserId();
+
+            if (employerId == null)
+                return Unauthorized();
+
             try
             {
-                var result = await _contactRequestService
-                    .CreateContactRequestAsync(employerId, dto);
+                var result =
+                    await _contactRequestService
+                        .CreateContactRequestAsync(
+                            employerId.Value,
+                            dto);
 
                 return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new
+                {
+                    message = ex.Message
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
             }
             catch (InvalidOperationException ex)
             {
@@ -36,50 +61,75 @@ namespace SRMP.Controllers
                     message = ex.Message
                 });
             }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
-        // Job Seeker views received contact requests
+        // Job Seeker views received requests
         [HttpGet("my")]
-        public async Task<IActionResult> GetMyRequests(
-            [FromQuery] int jobSeekerId)
+        [Authorize(Roles = "JobSeeker")]
+        public async Task<IActionResult> GetMyRequests()
         {
-            var result = await _contactRequestService
-                .GetMyRequestsAsync(jobSeekerId);
+            var jobSeekerId = GetUserId();
+
+            if (jobSeekerId == null)
+                return Unauthorized();
+
+            var result =
+                await _contactRequestService
+                    .GetMyRequestsAsync(
+                        jobSeekerId.Value);
 
             return Ok(result);
         }
 
-        // Employer views sent contact requests
+        // Employer views sent requests
         [HttpGet("sent")]
-        public async Task<IActionResult> GetSentRequests(
-            [FromQuery] int employerId)
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> GetSentRequests()
         {
-            var result = await _contactRequestService
-                .GetSentRequestsAsync(employerId);
+            var employerId = GetUserId();
+
+            if (employerId == null)
+                return Unauthorized();
+
+            var result =
+                await _contactRequestService
+                    .GetSentRequestsAsync(
+                        employerId.Value);
 
             return Ok(result);
         }
 
-        // Job Seeker accepts or declines a contact request
+        // Job Seeker accepts or declines request
         [HttpPut("{contactRequestId}/respond")]
+        [Authorize(Roles = "JobSeeker")]
         public async Task<IActionResult> RespondToRequest(
             int contactRequestId,
-            [FromQuery] int jobSeekerId,
             [FromQuery] string status)
         {
+            var jobSeekerId = GetUserId();
+
+            if (jobSeekerId == null)
+                return Unauthorized();
+
             try
             {
-                var result = await _contactRequestService
-                    .RespondToRequestAsync(
-                        jobSeekerId,
-                        contactRequestId,
-                        status);
+                var result =
+                    await _contactRequestService
+                        .RespondToRequestAsync(
+                            jobSeekerId.Value,
+                            contactRequestId,
+                            status);
 
                 if (result == null)
                 {
                     return NotFound(new
                     {
-                        message = "Contact request not found or access denied."
+                        message =
+                            "Contact request not found or access denied."
                     });
                 }
 
@@ -92,6 +142,26 @@ namespace SRMP.Controllers
                     message = ex.Message
                 });
             }
+        }
+
+        // Get logged-in User ID from JWT
+        private int? GetUserId()
+        {
+            var userIdClaim =
+                User.FindFirst(
+                    ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+                return null;
+
+            if (!int.TryParse(
+                    userIdClaim.Value,
+                    out var userId))
+            {
+                return null;
+            }
+
+            return userId;
         }
     }
 }

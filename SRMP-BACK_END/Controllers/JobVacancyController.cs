@@ -26,6 +26,7 @@ namespace SRMP.Controllers
             _matchingService = matchingService;
         }
 
+        // Get vacancy by id
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -37,14 +38,23 @@ namespace SRMP.Controllers
             return Ok(vacancy);
         }
 
-        [HttpGet("employer/{employerId}")]
-        public async Task<IActionResult> GetByEmployerId(int employerId)
+        // Employer views own vacancies
+        [HttpGet("my")]
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> GetMyVacancies()
         {
-            var vacancies = await _service.GetByEmployerIdAsync(employerId);
+            var employerId = GetUserId();
+
+            if (employerId == null)
+                return Unauthorized();
+
+            var vacancies = await _service
+                .GetByEmployerIdAsync(employerId.Value);
 
             return Ok(vacancies);
         }
 
+        // Job seeker searches open vacancies
         [HttpGet("search")]
         [Authorize(Roles = "JobSeeker")]
         public async Task<IActionResult> Search(
@@ -60,6 +70,7 @@ namespace SRMP.Controllers
             return Ok(vacancies);
         }
 
+        // Job seeker views vacancy with match details
         [HttpGet("{id}/jobseeker-detail")]
         [Authorize(Roles = "JobSeeker")]
         public async Task<IActionResult> GetJobSeekerJobDetail(int id)
@@ -129,9 +140,20 @@ namespace SRMP.Controllers
             return Ok(response);
         }
 
+        // Employer creates own vacancy
         [HttpPost]
-        public async Task<IActionResult> Create(JobVacancy vacancy)
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> Create(
+            JobVacancy vacancy)
         {
+            var employerId = GetUserId();
+
+            if (employerId == null)
+                return Unauthorized();
+
+            // EmployerId comes from JWT
+            vacancy.EmployerId = employerId.Value;
+
             await _service.CreateAsync(vacancy);
 
             return CreatedAtAction(
@@ -140,46 +162,89 @@ namespace SRMP.Controllers
                 vacancy);
         }
 
+        // Employer updates own vacancy
         [HttpPut("{id}")]
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> Update(
             int id,
             JobVacancy vacancy)
         {
-            var existingVacancy = await _service.GetByIdAsync(id);
+            var employerId = GetUserId();
+
+            if (employerId == null)
+                return Unauthorized();
+
+            var existingVacancy =
+                await _service.GetByIdAsync(id);
 
             if (existingVacancy == null)
                 return NotFound("Vacancy not found.");
 
-            if (existingVacancy.EmployerId != vacancy.EmployerId)
-                return Unauthorized(
-                    "You are not allowed to update this vacancy.");
+            // Employer can update only own vacancy
+            if (existingVacancy.EmployerId != employerId.Value)
+                return Forbid();
 
             vacancy.JobVacancyId = id;
+
+            // Never trust EmployerId from frontend
+            vacancy.EmployerId = employerId.Value;
 
             await _service.UpdateAsync(vacancy);
 
             return Ok(vacancy);
         }
 
+        // Employer closes own vacancy
         [HttpPut("{id}/close")]
-        public async Task<IActionResult> Close(
-            int id,
-            [FromQuery] int employerId)
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> Close(int id)
         {
+            var employerId = GetUserId();
+
+            if (employerId == null)
+                return Unauthorized();
+
             try
             {
-                await _service.CloseAsync(id, employerId);
+                await _service.CloseAsync(
+                    id,
+                    employerId.Value);
 
-                return Ok("Vacancy closed successfully.");
+                return Ok(new
+                {
+                    message = "Vacancy closed successfully."
+                });
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new
+                {
+                    message = ex.Message
+                });
             }
-            catch (UnauthorizedAccessException ex)
+            catch (UnauthorizedAccessException)
             {
-                return Unauthorized(ex.Message);
+                return Forbid();
             }
+        }
+
+        // Get logged-in user id from JWT
+        private int? GetUserId()
+        {
+            var userIdClaim =
+                User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+                return null;
+
+            if (!int.TryParse(
+                userIdClaim.Value,
+                out var userId))
+            {
+                return null;
+            }
+
+            return userId;
         }
     }
 }
