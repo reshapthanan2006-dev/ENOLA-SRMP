@@ -19,7 +19,7 @@ namespace SRMP.Controllers
             _contactRequestService = contactRequestService;
         }
 
-        // Employer sends a contact request
+        // Employer sends contact request
         [HttpPost]
         [Authorize(Roles = "Employer")]
         public async Task<IActionResult> CreateContactRequest(
@@ -32,12 +32,27 @@ namespace SRMP.Controllers
 
             try
             {
-                var result = await _contactRequestService
-                    .CreateContactRequestAsync(
-                        employerId.Value,
-                        dto);
+                var result =
+                    await _contactRequestService
+                        .CreateContactRequestAsync(
+                            employerId.Value,
+                            dto);
 
                 return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new
+                {
+                    message = ex.Message
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
             }
             catch (InvalidOperationException ex)
             {
@@ -46,9 +61,13 @@ namespace SRMP.Controllers
                     message = ex.Message
                 });
             }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
-        // Job Seeker views received contact requests
+        // Job Seeker views received requests
         [HttpGet("my")]
         [Authorize(Roles = "JobSeeker")]
         public async Task<IActionResult> GetMyRequests()
@@ -58,13 +77,15 @@ namespace SRMP.Controllers
             if (jobSeekerId == null)
                 return Unauthorized();
 
-            var result = await _contactRequestService
-                .GetMyRequestsAsync(jobSeekerId.Value);
+            var result =
+                await _contactRequestService
+                    .GetMyRequestsAsync(
+                        jobSeekerId.Value);
 
             return Ok(result);
         }
 
-        // Employer views sent contact requests
+        // Employer views sent requests
         [HttpGet("sent")]
         [Authorize(Roles = "Employer")]
         public async Task<IActionResult> GetSentRequests()
@@ -74,13 +95,15 @@ namespace SRMP.Controllers
             if (employerId == null)
                 return Unauthorized();
 
-            var result = await _contactRequestService
-                .GetSentRequestsAsync(employerId.Value);
+            var result =
+                await _contactRequestService
+                    .GetSentRequestsAsync(
+                        employerId.Value);
 
             return Ok(result);
         }
 
-        // Job Seeker accepts or declines a contact request
+        // Job Seeker accepts or declines request
         [HttpPut("{contactRequestId}/respond")]
         [Authorize(Roles = "JobSeeker")]
         public async Task<IActionResult> RespondToRequest(
@@ -94,11 +117,12 @@ namespace SRMP.Controllers
 
             try
             {
-                var result = await _contactRequestService
-                    .RespondToRequestAsync(
-                        jobSeekerId.Value,
-                        contactRequestId,
-                        status);
+                var result =
+                    await _contactRequestService
+                        .RespondToRequestAsync(
+                            jobSeekerId.Value,
+                            contactRequestId,
+                            status);
 
                 if (result == null)
                 {
@@ -123,15 +147,16 @@ namespace SRMP.Controllers
         // Get logged-in User ID from JWT
         private int? GetUserId()
         {
-            var userIdClaim = User.FindFirst(
-                ClaimTypes.NameIdentifier);
+            var userIdClaim =
+                User.FindFirst(
+                    ClaimTypes.NameIdentifier);
 
             if (userIdClaim == null)
                 return null;
 
             if (!int.TryParse(
-                userIdClaim.Value,
-                out var userId))
+                    userIdClaim.Value,
+                    out var userId))
             {
                 return null;
             }
