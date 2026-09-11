@@ -23,21 +23,33 @@ namespace SRMP
                     builder.Configuration.GetConnectionString("DefaultConnection")
                 ));
 
-            // Add services to the container
+            // Controllers
             builder.Services.AddControllers();
 
-            // Authentication services - mem 1
+            // CORS for Angular frontend
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AngularFrontend", policy =>
+                {
+                    policy
+                        .WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
+            // Authentication services - Member 1
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
 
-            // Admin services - mem 1
+            // Admin services - Member 1
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IAdminService, AdminService>();
 
-            // JWT Helper - mem 1
+            // JWT Helper - Member 1
             builder.Services.AddScoped<JwtHelper>();
 
-            // JWT Authentication - mem 1
+            // JWT Authentication - Member 1
             builder.Services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -60,34 +72,19 @@ namespace SRMP
                                     Encoding.UTF8.GetBytes(jwtKey)),
 
                             ValidateIssuer = true,
-
                             ValidIssuer =
                                 builder.Configuration["Jwt:Issuer"],
 
                             ValidateAudience = true,
-
                             ValidAudience =
                                 builder.Configuration["Jwt:Audience"],
 
                             ValidateLifetime = true,
-
                             ClockSkew = TimeSpan.Zero
                         };
                 });
 
             builder.Services.AddAuthorization();
-
-            // CORS for Angular frontend
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AngularFrontend", policy =>
-                {
-                    policy
-                        .WithOrigins("http://localhost:4200")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-            });
 
             // Matching Engine
             builder.Services.AddScoped<IMatchingService, MatchingService>();
@@ -211,7 +208,7 @@ namespace SRMP
             // Allow Angular frontend
             app.UseCors("AngularFrontend");
 
-            // JWT Authentication must come before Authorization
+            // Authentication must come before Authorization
             app.UseAuthentication();
 
             app.UseAuthorization();
