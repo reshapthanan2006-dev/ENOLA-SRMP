@@ -81,19 +81,16 @@ namespace SRMP
                                         jwtKey)),
 
                             ValidateIssuer = true,
-
                             ValidIssuer =
                                 builder.Configuration[
                                     "Jwt:Issuer"],
 
                             ValidateAudience = true,
-
                             ValidAudience =
                                 builder.Configuration[
                                     "Jwt:Audience"],
 
                             ValidateLifetime = true,
-
                             ClockSkew = TimeSpan.Zero
                         };
                 });

@@ -1,0 +1,15 @@
+<div class="score-badge">
+
+  <span class="score-label">Match score</span>
+  <div class="score-value">
+    {{ score | number:'1.0-2' }}%
+  </div>
+
+  <div class="score-bar">
+    <div
+      class="score-progress"
+      [ngStyle]="{ 'width.%': score }">
+    </div>
+  </div>
+
+</div>
