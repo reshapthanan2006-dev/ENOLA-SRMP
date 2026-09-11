@@ -1,24 +1,56 @@
 <section class="matching-job-page">
 
-  <h2>Matching Job</h2>
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Seeker workspace</p>
+      <h2>Matching Job</h2>
+      <p class="page-subtitle">Review how this opportunity matches your profile.</p>
+    </div>
+    <span class="header-accent" aria-hidden="true"></span>
+  </header>
 
   @if (isLoading) {
 
-    <p>Loading job...</p>
+    <div class="loading-state" role="status">
+      <div class="loading-overview">
+        <span class="skeleton skeleton-label"></span>
+        <span class="skeleton skeleton-title"></span>
+        <span class="skeleton skeleton-meta"></span>
+      </div>
+      <div class="loading-columns">
+        <div class="loading-block">
+          <span class="skeleton skeleton-heading"></span>
+          <span class="skeleton"></span>
+          <span class="skeleton skeleton-short"></span>
+        </div>
+        <div class="loading-block">
+          <span class="skeleton skeleton-heading"></span>
+          <span class="skeleton skeleton-short"></span>
+        </div>
+      </div>
+      <p>Loading job...</p>
+    </div>
 
   } @else if (errorMessage) {
 
-    <p>{{ errorMessage }}</p>
+    <div class="error-state" role="alert">
+      <span class="state-icon" aria-hidden="true">!</span>
+      <div>
+        <p class="state-title">Unable to load data</p>
+        <p>{{ errorMessage }}</p>
+      </div>
+    </div>
 
   } @else if (job) {
 
-    <div class="job-card">
+    <div class="job-workspace">
 
-      <div class="job-header">
+      <div class="job-overview">
 
         <div>
+          <p class="eyebrow">Job opportunity</p>
           <h3>{{ job.title }}</h3>
-          <p>{{ job.location }}</p>
+          <p class="location"><span aria-hidden="true">&#8226;</span> {{ job.location }}</p>
         </div>
 
         <app-score-badge
@@ -27,41 +59,93 @@
 
       </div>
 
-      <p>
-        {{ job.description | shortText: 150}}
-      </p>
+      <div class="job-content">
+        <div class="job-main">
+          <section class="content-section description-section">
+            <div class="section-heading">
+              <span class="section-marker" aria-hidden="true"></span>
+              <h4>Job description</h4>
+            </div>
+            <p>{{ job.description | shortText: 150}}</p>
+          </section>
 
-      <p>
-        <strong>Required experience:</strong>
-        {{ job.requiredExperience | experienceYears }}
-      </p>
+          <section class="content-section requirements-section">
+            <div class="section-heading">
+              <span class="section-marker" aria-hidden="true"></span>
+              <h4>Requirements</h4>
+            </div>
+            <div class="details-grid">
+              <div class="detail-tile">
+                <span class="detail-label">Required experience</span>
+                <span class="detail-value">{{ job.requiredExperience | experienceYears }}</span>
+              </div>
+              <div class="detail-tile">
+                <span class="detail-label">Location</span>
+                <span class="detail-value">{{ job.location }}</span>
+              </div>
+              <div class="detail-tile detail-tile-wide">
+                <span class="detail-label">Required skills</span>
+                <span class="detail-value">{{ job.requiredSkills }}</span>
+              </div>
+            </div>
+          </section>
+        </div>
 
-      <p>
-        <strong>Required skills:</strong>
-        {{ job.requiredSkills }}
-      </p>
+        <aside class="missing-skills" [appHighlight]="job.missingSkills.length > 0">
+          <div class="insight-heading">
+            <span class="insight-icon" aria-hidden="true">i</span>
+            <div>
+              <p class="insight-label">Profile review</p>
+              <h4>Match insights</h4>
+              <p class="section-helper">Skills to review for this opportunity.</p>
+            </div>
+          </div>
 
-      <div class="missing-skills" [appHighlight]="job.missingSkills.length > 0">
+          @if (job.missingSkills.length > 0) {
 
-        <h4>Missing Skills</h4>
+            <div class="skills-result">
+              <span class="result-label">Missing skills</span>
+              <p>{{ job.missingSkills | skillList }}</p>
+            </div>
 
-        @if (job.missingSkills.length > 0) {
+          } @else {
 
-          <p>{{ job.missingSkills | skillList }}</p>
+            <div class="skills-result complete-result">
+              <span class="result-check" aria-hidden="true">&#10003;</span>
+              <p>Your profile covers every required skill.</p>
+            </div>
 
-        } @else {
+          }
 
-          <p>Your profile covers every required skill.</p>
-
-        }
-
+        </aside>
       </div>
 
     </div>
 
   } @else {
 
-    <p>Select a job to view your match details.</p>
+    <div class="empty-state">
+      <div class="empty-copy">
+        <div class="empty-icon-box" aria-hidden="true">
+          <svg viewBox="0 0 64 64" role="presentation">
+            <rect x="11" y="19" width="42" height="31" rx="5"></rect>
+            <path d="M23 19v-5h18v5M11 29h42M32 29v21"></path>
+            <circle cx="32" cy="39" r="6"></circle>
+            <path d="m29 39 2 2 4-5"></path>
+          </svg>
+        </div>
+        <p class="eyebrow">Match workspace</p>
+        <h3>Select a job to view your match details.</h3>
+        <p>Choose a matching opportunity to see its requirements and score.</p>
+      </div>
+      <div class="empty-visual" aria-hidden="true">
+        <div class="visual-card visual-card-top"><span></span><i></i><i></i></div>
+        <div class="visual-connector"></div>
+        <div class="visual-card visual-card-main"><span></span><b></b><b></b><b></b></div>
+        <span class="visual-chip">skills</span>
+        <span class="visual-chip visual-chip-blue">match</span>
+      </div>
+    </div>
 
   }
 
