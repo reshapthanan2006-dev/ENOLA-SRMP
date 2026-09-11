@@ -57,7 +57,7 @@
 
     <div class="applicant-list">
 
-      @for (applicant of applicants; track applicant.candidateId) {
+      @for (applicant of applicants; track applicant.jobSeekerId) {
 
         <article class="applicant-card">
 
@@ -65,7 +65,7 @@
 
             <p class="candidate-label">Candidate</p>
             <h3>
-              Candidate #{{ applicant.candidateId }}
+              Candidate #{{ applicant.jobSeekerId }}
             </h3>
 
             @if (applicant.missingSkills.length > 0) {

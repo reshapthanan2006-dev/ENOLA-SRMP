@@ -16,12 +16,11 @@ export class MatchingService {
   constructor(private http: HttpClient) { }
 
   getRankedApplicants(
-    jobVacancyId: number,
-    employerId: number
+    jobVacancyId: number
   ): Observable<MatchResult[]> {
 
     return this.http.get<MatchResult[]>(
-      `${this.apiUrl}/Application/vacancy/${jobVacancyId}/ranked?employerId=${employerId}`
+      `${this.apiUrl}/Application/vacancy/${jobVacancyId}/ranked`
     );
   }
 

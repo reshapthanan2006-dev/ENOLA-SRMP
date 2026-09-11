@@ -1,6 +1,9 @@
 export interface MatchResult {
-  candidateId: number;
-  vacancyId: number;
+  applicationId: number;
+  jobSeekerId: number;
+  jobVacancyId: number;
+  status: string;
+  appliedAt: string;
   matchScore: number;
   skillsScore: number;
   experienceScore: number;

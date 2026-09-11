@@ -23,13 +23,13 @@ export class ApplicantsComponent {
 
   constructor(private matchingService: MatchingService) { }
 
-  loadApplicants(jobVacancyId: number, employerId: number): void {
+  loadApplicants(jobVacancyId: number): void {
 
     this.isLoading = true;
     this.errorMessage = '';
 
     this.matchingService
-      .getRankedApplicants(jobVacancyId, employerId)
+      .getRankedApplicants(jobVacancyId)
       .subscribe({
         next: (data) => {
           this.applicants = data;
