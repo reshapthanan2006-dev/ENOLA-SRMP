@@ -1,0 +1,112 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Job Seeker</p>
+      <h1>My Profile</h1>
+      <p class="subtitle">
+        Keep your skills, experience, education, and location up to date.
+      </p>
+    </div>
+
+    <span class="status-pill" [class.saved]="profileExists">
+      {{ profileExists ? 'Profile created' : 'Profile not created' }}
+    </span>
+  </header>
+
+  @if (isLoading) {
+    <div class="state-card">Loading profile...</div>
+  } @else {
+    @if (errorMessage) {
+      <div class="message error-message" role="alert">
+        {{ errorMessage }}
+      </div>
+    }
+
+    @if (successMessage) {
+      <div class="message success-message" role="status">
+        {{ successMessage }}
+      </div>
+    }
+
+    <form class="profile-card" [formGroup]="profileForm" (ngSubmit)="submitProfile()">
+      <section class="form-section">
+        <div class="section-heading">
+          <div>
+            <h2>Skills</h2>
+            <p>Add at least one skill used for job matching.</p>
+          </div>
+
+          <button class="secondary-button" type="button" (click)="addSkill()">
+            + Add skill
+          </button>
+        </div>
+
+        <div class="skills-list" formArrayName="skills">
+          @for (control of skillControls; track $index) {
+            <app-skill-row
+              [control]="control"
+              [index]="$index"
+              [canRemove]="skillControls.length > 1"
+              (remove)="removeSkill($index)"
+            />
+          }
+        </div>
+      </section>
+
+      <section class="form-section form-grid">
+        <div class="field-group">
+          <label for="experienceYears">Experience (years)</label>
+          <input
+            id="experienceYears"
+            type="number"
+            min="0"
+            max="50"
+            formControlName="experienceYears"
+          />
+          @if (
+            profileForm.get('experienceYears')?.touched &&
+            profileForm.get('experienceYears')?.invalid
+          ) {
+            <small class="field-error">Enter a value from 0 to 50.</small>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="location">Location</label>
+          <input
+            id="location"
+            type="text"
+            maxlength="100"
+            formControlName="location"
+            placeholder="Example: Jaffna"
+          />
+        </div>
+
+        <div class="field-group full-width">
+          <label for="education">Education</label>
+          <textarea
+            id="education"
+            rows="4"
+            maxlength="200"
+            formControlName="education"
+            placeholder="Example: BSc in Information Technology"
+          ></textarea>
+          @if (
+            profileForm.get('education')?.touched &&
+            profileForm.get('education')?.invalid
+          ) {
+            <small class="field-error">
+              Education is required and must be 200 characters or fewer.
+            </small>
+          }
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button class="primary-button" type="submit" [disabled]="isSaving">
+          {{ isSaving ? 'Saving...' : (profileExists ? 'Update Profile' : 'Create Profile') }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

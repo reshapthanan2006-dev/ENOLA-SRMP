@@ -1,0 +1,21 @@
+<div class="upload-box">
+  <label for="cv-file">Choose CV file</label>
+
+  <input
+    id="cv-file"
+    type="file"
+    accept=".pdf,.doc,.docx"
+    [disabled]="disabled"
+    (change)="onFileChange($event)"
+  />
+
+  <p class="help-text">Allowed: PDF, DOC, DOCX. Maximum size: 5 MB.</p>
+
+  @if (selectedFileName) {
+    <p class="selected-file">Selected: {{ selectedFileName }}</p>
+  }
+
+  @if (errorMessage) {
+    <p class="error-text">{{ errorMessage }}</p>
+  }
+</div>

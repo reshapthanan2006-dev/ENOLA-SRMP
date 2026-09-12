@@ -27,58 +27,7 @@ export const routes: Routes = [
   // =========================
 
   {
-    path: 'seeker/applications',
-    canActivate: [
-      authGuard,
-      roleGuard
-    ],
-    data: {
-      roles: ['JobSeeker']
-    },
-    loadComponent: () =>
-      import(
-        './features/seeker/pages/applications/applications.component'
-      ).then(
-        (m) => m.ApplicationsComponent
-      )
-  },
-
-  {
-    path: 'seeker/matching-jobs/:jobVacancyId',
-    canActivate: [
-      authGuard,
-      roleGuard
-    ],
-    data: {
-      roles: ['JobSeeker']
-    },
-    loadComponent: () =>
-      import(
-        './features/seeker/pages/matching-jobs/matching-jobs.component'
-      ).then(
-        (m) => m.MatchingJobsComponent
-      )
-  },
-
-  {
-    path: 'seeker/contact-requests',
-    canActivate: [
-      authGuard,
-      roleGuard
-    ],
-    data: {
-      roles: ['JobSeeker']
-    },
-    loadComponent: () =>
-      import(
-        './features/seeker/pages/contact-requests/contact-requests.component'
-      ).then(
-        (m) => m.ContactRequestsComponent
-      )
-  },
-
-  {
-    path: 'seeker/notifications',
+    path: 'seeker',
     canActivate: [
       authGuard,
       roleGuard
@@ -88,9 +37,9 @@ export const routes: Routes = [
     },
     loadChildren: () =>
       import(
-        './features/notifications/notification.routes'
+        './features/seeker/seeker.routes'
       ).then(
-        (m) => m.notificationRoutes
+        (m) => m.seekerRoutes
       )
   },
 
