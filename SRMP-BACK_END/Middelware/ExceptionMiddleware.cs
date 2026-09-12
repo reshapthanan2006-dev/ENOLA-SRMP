@@ -21,17 +21,11 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError(
-                    ex,
-                    "An unexpected error occurred.");
-
-                await HandleExceptionAsync(
-                    context,
-                    ex);
+                await HandleExceptionAsync(context, ex);
             }
         }
 
-        private static async Task HandleExceptionAsync(
+        private async Task HandleExceptionAsync(
             HttpContext context,
             Exception exception)
         {
@@ -40,54 +34,39 @@
 
             switch (exception)
             {
-                case ArgumentException:
-                    statusCode =
-                        StatusCodes.Status400BadRequest;
-                    message = exception.Message;
-                    break;
-
-                case KeyNotFoundException:
-                    statusCode =
-                        StatusCodes.Status404NotFound;
-                    message = exception.Message;
-                    break;
-
-                case FileNotFoundException:
-                    statusCode =
-                        StatusCodes.Status404NotFound;
-                    message = exception.Message;
-                    break;
-
                 case UnauthorizedAccessException:
-                    statusCode =
-                        StatusCodes.Status403Forbidden;
+                    statusCode = StatusCodes.Status401Unauthorized;
                     message = exception.Message;
                     break;
 
                 case InvalidOperationException:
-                    statusCode =
-                        StatusCodes.Status409Conflict;
+                    statusCode = StatusCodes.Status400BadRequest;
+                    message = exception.Message;
+                    break;
+
+                case KeyNotFoundException:
+                    statusCode = StatusCodes.Status404NotFound;
                     message = exception.Message;
                     break;
 
                 default:
-                    statusCode =
-                        StatusCodes.Status500InternalServerError;
-
-                    message =
-                        "An unexpected server error occurred.";
+                    statusCode = StatusCodes.Status500InternalServerError;
+                    message = "An unexpected server error occurred.";
                     break;
             }
 
-            context.Response.StatusCode = statusCode;
-            context.Response.ContentType =
-                "application/json";
+            _logger.LogError(
+                exception,
+                "Request failed with status code {StatusCode}",
+                statusCode);
 
-            await context.Response.WriteAsJsonAsync(
-                new
-                {
-                    message = message
-                });
+            context.Response.StatusCode = statusCode;
+            context.Response.ContentType = "application/json";
+
+            await context.Response.WriteAsJsonAsync(new
+            {
+                message
+            });
         }
     }
 }
