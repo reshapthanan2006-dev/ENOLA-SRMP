@@ -1,0 +1,132 @@
+.admin-page {
+  min-height: 100vh;
+  background: #f5f7fb;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 40px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.admin-header p {
+  margin: 6px 0 0;
+  color: #666;
+}
+
+.logout-button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 8px;
+  padding: 14px 40px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-nav a {
+  padding: 10px 16px;
+  border-radius: 7px;
+  color: #333;
+  text-decoration: none;
+}
+
+.admin-nav a.active {
+  font-weight: 600;
+  background: #eeeeee;
+}
+
+.dashboard-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px 24px;
+}
+
+.welcome-section {
+  margin-bottom: 28px;
+}
+
+.welcome-section h2,
+.quick-actions h2 {
+  margin: 0 0 8px;
+}
+
+.welcome-section p {
+  margin: 0;
+  color: #666;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.stat-label {
+  display: block;
+  margin-bottom: 14px;
+  color: #666;
+}
+
+.stat-value {
+  font-size: 32px;
+}
+
+.quick-actions {
+  margin-top: 36px;
+}
+
+.action-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+  margin-top: 16px;
+  padding: 22px;
+  background: #ffffff;
+  border-radius: 12px;
+  color: #222;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.action-card span {
+  color: #666;
+}
+
+.state-message,
+.error-message {
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+}
+
+.error-message {
+  color: #b42318;
+}
+
+.error-message button {
+  margin-top: 10px;
+  padding: 8px 14px;
+}

@@ -1,0 +1,224 @@
+.applicant-profile-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 36px 56px;
+  color: #0f172a;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.eyebrow,
+.profile-label,
+.info-label {
+  color: #2563eb;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.page-header h1 {
+  margin: 8px 0 4px;
+  font-size: 2rem;
+  line-height: 1.15;
+}
+
+.page-header p,
+.profile-top p,
+.message-card p,
+.empty-text {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.header-accent {
+  width: 76px;
+  height: 6px;
+  margin-bottom: 7px;
+  border-radius: 999px;
+  background: #2563eb;
+}
+
+.profile-card {
+  margin-top: 28px;
+  padding: 32px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+.profile-top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.profile-icon {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  place-items: center;
+  border-radius: 12px;
+  background: #eff6ff;
+}
+
+.profile-icon svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: #2563eb;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.profile-top h2 {
+  margin: 5px 0;
+  font-size: 1.45rem;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.info-card {
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.info-card .info-label {
+  display: block;
+  margin-bottom: 9px;
+}
+
+.info-card strong {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 1rem;
+}
+
+.skills-section {
+  margin-top: 28px;
+  padding-top: 26px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.section-heading h3 {
+  margin: 6px 0 18px;
+  font-size: 1.15rem;
+}
+
+.skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-chip {
+  padding: 7px 12px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.message-card {
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.error-card {
+  border-color: #fecaca;
+  background: #fff7f7;
+}
+
+.error-card strong {
+  color: #b91c1c;
+}
+
+.loading-card {
+  display: grid;
+  gap: 14px;
+}
+
+.skeleton {
+  width: 100%;
+  height: 18px;
+  border-radius: 6px;
+  background: #e2e8f0;
+}
+
+.skeleton-title {
+  width: 45%;
+  height: 28px;
+}
+
+.skeleton-short {
+  width: 65%;
+}
+
+@media (max-width: 760px) {
+  .applicant-profile-page {
+    padding: 28px 20px 40px;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-card {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .applicant-profile-page {
+    padding: 24px 16px 36px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+  }
+
+  .header-accent {
+    display: none;
+  }
+
+  .page-header h1 {
+    font-size: 1.7rem;
+  }
+
+  .profile-top {
+    align-items: flex-start;
+  }
+
+  .profile-icon {
+    width: 52px;
+    height: 52px;
+    flex-basis: 52px;
+  }
+}
