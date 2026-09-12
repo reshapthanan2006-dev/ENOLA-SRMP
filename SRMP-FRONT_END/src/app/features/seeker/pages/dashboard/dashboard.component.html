@@ -1,0 +1,75 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Job Seeker</p>
+      <h1>Dashboard</h1>
+      <p class="subtitle">
+        Review your profile and CV before exploring matching jobs.
+      </p>
+    </div>
+  </header>
+
+  @if (errorMessage) {
+    <div class="message error-message" role="alert">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (isLoading) {
+    <div class="state-card">Loading dashboard...</div>
+  } @else {
+    <div class="summary-grid">
+      <article class="summary-card">
+        <span class="card-label">Profile</span>
+        <strong>{{ profile ? 'Ready' : 'Not created' }}</strong>
+        <p>
+          {{ profile
+            ? 'Your seeker profile is available.'
+            : 'Create your profile so the backend can match your skills to jobs.'
+          }}
+        </p>
+        <a routerLink="/seeker/profile">{{ profile ? 'Edit profile' : 'Create profile' }}</a>
+      </article>
+
+      <article class="summary-card">
+        <span class="card-label">Skills</span>
+        <strong>{{ skillsCount }}</strong>
+        <p>Skills currently stored in your profile.</p>
+        <a routerLink="/seeker/profile">Manage skills</a>
+      </article>
+
+      <article class="summary-card">
+        <span class="card-label">Experience</span>
+        <strong>{{ profile?.experienceYears ?? 0 }} years</strong>
+        <p>Experience value used by the current backend profile.</p>
+        <a routerLink="/seeker/profile">Update experience</a>
+      </article>
+
+      <article class="summary-card">
+        <span class="card-label">CV</span>
+        <strong>{{ cv ? 'Uploaded' : 'Not uploaded' }}</strong>
+        @if (cv) {
+          <p>{{ cv.originalFileName }} · {{ formatFileSize(cv.fileSize) }}</p>
+        } @else {
+          <p>Add a PDF, DOC, or DOCX file up to 5 MB.</p>
+        }
+        <a routerLink="/seeker/cv">Manage CV</a>
+      </article>
+    </div>
+
+    <section class="next-step-card">
+      <div>
+        <span class="card-label">Next step</span>
+        <h2>Complete your seeker information</h2>
+        <p>
+          A profile and CV keep your account ready for the matching and application modules.
+        </p>
+      </div>
+
+      <div class="button-row">
+        <a class="primary-link" routerLink="/seeker/profile">Profile</a>
+        <a class="secondary-link" routerLink="/seeker/cv">CV</a>
+      </div>
+    </section>
+  }
+</section>

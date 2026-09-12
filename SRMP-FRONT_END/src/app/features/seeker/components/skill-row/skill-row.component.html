@@ -1,0 +1,25 @@
+<div class="skill-row">
+  <div class="skill-field">
+    <label [for]="'skill-' + index">Skill {{ index + 1 }}</label>
+    <input
+      [id]="'skill-' + index"
+      type="text"
+      [formControl]="control"
+      placeholder="Example: Angular"
+      maxlength="80"
+    />
+
+    @if (control.touched && control.invalid) {
+      <small class="field-error">Skill cannot be empty.</small>
+    }
+  </div>
+
+  <button
+    class="remove-button"
+    type="button"
+    [disabled]="!canRemove"
+    (click)="removeSkill()"
+  >
+    Remove
+  </button>
+</div>
