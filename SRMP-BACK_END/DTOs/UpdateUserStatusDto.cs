@@ -5,6 +5,6 @@ namespace SRMP.DTOs
     public class UpdateUserStatusDto
     {
         [Required]
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
     }
 }
