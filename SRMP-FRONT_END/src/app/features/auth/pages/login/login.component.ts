@@ -56,10 +56,14 @@ export class LoginComponent {
     };
 
     this.authService.login(request).subscribe({
-      next: () => {
-        this.isSubmitting = false;
-        this.router.navigate(['/']);
-      },
+     next: () => {
+  this.isSubmitting = false;
+
+  const homeRoute =
+    this.authService.getHomeRoute();
+
+  this.router.navigateByUrl(homeRoute);
+},
 
       error: error => {
         this.isSubmitting = false;

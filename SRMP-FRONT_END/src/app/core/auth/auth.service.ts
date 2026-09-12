@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 import { LoginRequest } from '../models/login-request';
 import { RegisterRequest } from '../models/register-request';
@@ -17,7 +18,7 @@ export class AuthService {
     inject(StorageService);
 
   private readonly apiUrl =
-    'https://localhost:7184/api/Auth';
+  `${environment.apiUrl}/Auth`;
 
   login(
     request: LoginRequest
@@ -64,4 +65,27 @@ export class AuthService {
   getToken(): string | null {
     return this.storageService.getToken();
   }
+
+  getHomeRoute(): string {
+  const user = this.getCurrentUser();
+
+  if (!user) {
+    return '/login';
+  }
+
+  switch (user.role) {
+    case 'Administrator':
+      return '/admin/dashboard';
+
+    case 'Employer':
+      return '/employer/applicants';
+
+    case 'JobSeeker':
+      return '/seeker/matching-jobs';
+
+    default:
+      return '/login';
+  }
+}
+
 }

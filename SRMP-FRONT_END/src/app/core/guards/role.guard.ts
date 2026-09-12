@@ -5,13 +5,8 @@ import {
   Router
 } from '@angular/router';
 
-import {
-  AuthService
-} from '../auth/auth.service';
-
-import {
-  UserRole
-} from '../models/auth-response';
+import { AuthService } from '../auth/auth.service';
+import { UserRole } from '../models/auth-response';
 
 export const roleGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot
@@ -40,5 +35,7 @@ export const roleGuard: CanActivateFn = (
     return true;
   }
 
-  return router.createUrlTree(['/']);
+  return router.createUrlTree([
+    authService.getHomeRoute()
+  ]);
 };

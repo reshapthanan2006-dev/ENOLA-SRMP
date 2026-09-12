@@ -84,11 +84,14 @@ export class RegisterComponent {
     };
 
     this.authService.register(request).subscribe({
-      next: () => {
-        this.isSubmitting = false;
+    next: () => {
+  this.isSubmitting = false;
 
-        this.router.navigate(['/']);
-      },
+  const homeRoute =
+    this.authService.getHomeRoute();
+
+  this.router.navigateByUrl(homeRoute);
+},
 
       error: error => {
         this.isSubmitting = false;
