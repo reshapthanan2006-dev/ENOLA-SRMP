@@ -1,0 +1,104 @@
+<div class="applications-page">
+
+  <div class="page-header">
+    <div>
+      <h1>My Applications</h1>
+      <p>Track the jobs you have applied for and their current status.</p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="loadApplications()"
+      [disabled]="isLoading">
+      Refresh
+    </button>
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="state-card">
+    <div class="spinner"></div>
+    <p>Loading your applications...</p>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="!isLoading && errorMessage" class="state-card error-state">
+    <h3>Unable to load applications</h3>
+    <p>{{ errorMessage }}</p>
+
+    <button
+      type="button"
+      class="retry-button"
+      (click)="loadApplications()">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Empty state -->
+  <div
+    *ngIf="
+      !isLoading &&
+      !errorMessage &&
+      applications.length === 0
+    "
+    class="state-card empty-state">
+
+    <h3>No applications yet</h3>
+
+    <p>
+      When you apply for a job, your application will appear here.
+    </p>
+  </div>
+
+  <!-- Applications -->
+  <div
+    *ngIf="
+      !isLoading &&
+      !errorMessage &&
+      applications.length > 0
+    "
+    class="applications-grid">
+
+    <article
+      *ngFor="let application of applications"
+      class="application-card">
+
+      <div class="card-top">
+        <div>
+          <span class="application-label">
+            Application #{{ application.applicationId }}
+          </span>
+
+          <h2>
+            Vacancy #{{ application.jobVacancyId }}
+          </h2>
+        </div>
+
+        <span
+          class="status-badge"
+          [ngClass]="application.status.toLowerCase()">
+          {{ application.status }}
+        </span>
+      </div>
+
+      <div class="application-details">
+
+        <div class="detail-item">
+          <span class="detail-label">Job Vacancy ID</span>
+          <strong>{{ application.jobVacancyId }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-label">Applied On</span>
+          <strong>
+            {{ application.appliedAt | date:'mediumDate' }}
+          </strong>
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+</div>

@@ -1,0 +1,241 @@
+<section class="contact-requests-page">
+
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Seeker workspace</p>
+      <h1>Contact Requests</h1>
+      <p class="page-subtitle">
+        Review contact requests sent by employers.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="loadContactRequests()"
+      [disabled]="isLoading">
+
+      Refresh
+
+    </button>
+  </header>
+
+  @if (responseMessage) {
+
+    <div
+      class="feedback-message success-message"
+      role="status">
+
+      <span aria-hidden="true">&#10003;</span>
+      <p>{{ responseMessage }}</p>
+
+    </div>
+
+  }
+
+  @if (responseErrorMessage) {
+
+    <div
+      class="feedback-message error-message"
+      role="alert">
+
+      <span aria-hidden="true">!</span>
+      <p>{{ responseErrorMessage }}</p>
+
+    </div>
+
+  }
+
+  @if (isLoading) {
+
+    <div class="state-card loading-state" role="status">
+
+      <div class="spinner"></div>
+
+      <h3>Loading contact requests</h3>
+
+      <p>
+        Please wait while we load your requests.
+      </p>
+
+    </div>
+
+  } @else if (errorMessage) {
+
+    <div class="state-card error-state" role="alert">
+
+      <div class="state-icon">!</div>
+
+      <h3>Unable to load contact requests</h3>
+
+      <p>{{ errorMessage }}</p>
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="loadContactRequests()">
+
+        Try Again
+
+      </button>
+
+    </div>
+
+  } @else if (contactRequests.length === 0) {
+
+    <div class="state-card empty-state">
+
+      <div class="empty-icon">
+        &#9993;
+      </div>
+
+      <h3>No contact requests yet</h3>
+
+      <p>
+        Employer contact requests will appear here.
+      </p>
+
+    </div>
+
+  } @else {
+
+    <div class="requests-grid">
+
+      @for (
+        request of contactRequests;
+        track request.contactRequestId
+      ) {
+
+        <article class="request-card">
+
+          <div class="card-header">
+
+            <div>
+              <p class="request-label">
+                Contact Request
+              </p>
+
+              <h2>
+                Request #{{ request.contactRequestId }}
+              </h2>
+            </div>
+
+            <span
+              class="status-badge"
+              [class.pending]="request.status === 'Pending'"
+              [class.accepted]="request.status === 'Accepted'"
+              [class.declined]="request.status === 'Declined'">
+
+              {{ request.status }}
+
+            </span>
+
+          </div>
+
+          <div class="request-details">
+
+            <div class="detail-item">
+              <span class="detail-label">
+                Employer ID
+              </span>
+
+              <strong>
+                {{ request.employerId }}
+              </strong>
+            </div>
+
+            <div class="detail-item">
+              <span class="detail-label">
+                Application ID
+              </span>
+
+              <strong>
+                {{ request.applicationId }}
+              </strong>
+            </div>
+
+            <div class="detail-item detail-wide">
+              <span class="detail-label">
+                Received
+              </span>
+
+              <strong>
+                {{ request.createdAt | date:'medium' }}
+              </strong>
+            </div>
+
+          </div>
+
+          @if (isPending(request)) {
+
+            <div class="request-actions">
+
+              <button
+                type="button"
+                class="decline-button"
+                (click)="declineRequest(
+                  request.contactRequestId
+                )"
+                [disabled]="
+                  respondingRequestId !== null
+                ">
+
+                @if (
+                  isResponding(
+                    request.contactRequestId
+                  )
+                ) {
+                  Processing...
+                } @else {
+                  Decline
+                }
+
+              </button>
+
+              <button
+                type="button"
+                class="accept-button"
+                (click)="acceptRequest(
+                  request.contactRequestId
+                )"
+                [disabled]="
+                  respondingRequestId !== null
+                ">
+
+                @if (
+                  isResponding(
+                    request.contactRequestId
+                  )
+                ) {
+                  Processing...
+                } @else {
+                  Accept
+                }
+
+              </button>
+
+            </div>
+
+          } @else {
+
+            <div class="completed-message">
+
+              @if (request.status === 'Accepted') {
+                You accepted this contact request.
+              } @else {
+                You declined this contact request.
+              }
+
+            </div>
+
+          }
+
+        </article>
+
+      }
+
+    </div>
+
+  }
+
+</section>

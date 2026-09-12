@@ -1,0 +1,177 @@
+<section class="notifications-page">
+
+  <header class="page-header">
+
+    <div>
+      <p class="eyebrow">
+        Seeker workspace
+      </p>
+
+      <h1>
+        Notifications
+      </h1>
+
+      <p class="page-subtitle">
+        Stay updated on changes to your job applications.
+      </p>
+    </div>
+
+    <div class="header-actions">
+
+      @if (!isLoading && notifications.length > 0) {
+
+        <span class="unread-summary">
+          {{ unreadCount }}
+          unread
+        </span>
+
+      }
+
+      <button
+        type="button"
+        class="refresh-button"
+        (click)="loadNotifications()"
+        [disabled]="isLoading">
+
+        Refresh
+
+      </button>
+
+    </div>
+
+  </header>
+
+
+  @if (actionMessage) {
+
+    <div
+      class="feedback-message success-message"
+      role="status">
+
+      <span aria-hidden="true">
+        &#10003;
+      </span>
+
+      <p>
+        {{ actionMessage }}
+      </p>
+
+    </div>
+
+  }
+
+
+  @if (actionErrorMessage) {
+
+    <div
+      class="feedback-message error-message"
+      role="alert">
+
+      <span aria-hidden="true">
+        !
+      </span>
+
+      <p>
+        {{ actionErrorMessage }}
+      </p>
+
+    </div>
+
+  }
+
+
+  @if (isLoading) {
+
+    <div
+      class="state-card loading-state"
+      role="status">
+
+      <div class="spinner"></div>
+
+      <h3>
+        Loading notifications
+      </h3>
+
+      <p>
+        Please wait while we load your updates.
+      </p>
+
+    </div>
+
+  } @else if (errorMessage) {
+
+    <div
+      class="state-card error-state"
+      role="alert">
+
+      <div class="state-icon">
+        !
+      </div>
+
+      <h3>
+        Unable to load notifications
+      </h3>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="loadNotifications()">
+
+        Try Again
+
+      </button>
+
+    </div>
+
+  } @else if (notifications.length === 0) {
+
+    <div class="state-card empty-state">
+
+      <div
+        class="empty-icon"
+        aria-hidden="true">
+
+        &#128276;
+
+      </div>
+
+      <h3>
+        No notifications yet
+      </h3>
+
+      <p>
+        Updates about your applications will appear here.
+      </p>
+
+    </div>
+
+  } @else {
+
+    <div class="notification-list">
+
+      @for (
+        notification of notifications;
+        track notification.notificationId
+      ) {
+
+        <app-notification-item
+          [notification]="notification"
+          [isMarkingRead]="
+            isMarkingRead(
+              notification.notificationId
+            )
+          "
+          (markRead)="markAsRead($event)">
+        </app-notification-item>
+
+      }
+
+    </div>
+
+  }
+
+</section>

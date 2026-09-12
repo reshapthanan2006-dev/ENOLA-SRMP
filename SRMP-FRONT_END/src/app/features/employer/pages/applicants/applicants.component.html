@@ -3,89 +3,455 @@
   <header class="page-header">
     <div>
       <p class="eyebrow">Employer workspace</p>
+
       <h2>Ranked Applicants</h2>
-      <p class="page-subtitle">Review applicants ranked by their match with this vacancy.</p>
+
+      <p class="page-subtitle">
+        Review applicants ranked by their match with this vacancy.
+      </p>
     </div>
-    <span class="header-accent" aria-hidden="true"></span>
+
+    <span
+      class="header-accent"
+      aria-hidden="true">
+    </span>
   </header>
+
+
+  @if (actionMessage) {
+
+    <div
+      class="action-feedback success-feedback"
+      role="status">
+
+      <span aria-hidden="true">
+        &#10003;
+      </span>
+
+      <p>
+        {{ actionMessage }}
+      </p>
+
+    </div>
+
+  }
+
+
+  @if (actionErrorMessage) {
+
+    <div
+      class="action-feedback error-feedback"
+      role="alert">
+
+      <span aria-hidden="true">
+        !
+      </span>
+
+      <p>
+        {{ actionErrorMessage }}
+      </p>
+
+    </div>
+
+  }
+
 
   @if (isLoading) {
 
-    <div class="loading-state" role="status">
-      <div class="applicant-skeleton-list" aria-hidden="true">
-        <div class="applicant-skeleton"><div><span class="skeleton skeleton-label"></span><span class="skeleton skeleton-name"></span><span class="skeleton skeleton-detail"></span></div><span class="skeleton skeleton-score"></span></div>
-        <div class="applicant-skeleton"><div><span class="skeleton skeleton-label"></span><span class="skeleton skeleton-name"></span><span class="skeleton skeleton-detail"></span></div><span class="skeleton skeleton-score"></span></div>
-        <div class="applicant-skeleton"><div><span class="skeleton skeleton-label"></span><span class="skeleton skeleton-name"></span><span class="skeleton skeleton-detail"></span></div><span class="skeleton skeleton-score"></span></div>
+    <div
+      class="loading-state"
+      role="status">
+
+      <div
+        class="applicant-skeleton-list"
+        aria-hidden="true">
+
+        <div class="applicant-skeleton">
+
+          <div>
+            <span
+              class="skeleton skeleton-label">
+            </span>
+
+            <span
+              class="skeleton skeleton-name">
+            </span>
+
+            <span
+              class="skeleton skeleton-detail">
+            </span>
+          </div>
+
+          <span
+            class="skeleton skeleton-score">
+          </span>
+
+        </div>
+
+
+        <div class="applicant-skeleton">
+
+          <div>
+            <span
+              class="skeleton skeleton-label">
+            </span>
+
+            <span
+              class="skeleton skeleton-name">
+            </span>
+
+            <span
+              class="skeleton skeleton-detail">
+            </span>
+          </div>
+
+          <span
+            class="skeleton skeleton-score">
+          </span>
+
+        </div>
+
+
+        <div class="applicant-skeleton">
+
+          <div>
+            <span
+              class="skeleton skeleton-label">
+            </span>
+
+            <span
+              class="skeleton skeleton-name">
+            </span>
+
+            <span
+              class="skeleton skeleton-detail">
+            </span>
+          </div>
+
+          <span
+            class="skeleton skeleton-score">
+          </span>
+
+        </div>
+
       </div>
-      <p>Loading applicants...</p>
+
+      <p>
+        Loading applicants...
+      </p>
+
     </div>
 
   } @else if (errorMessage) {
 
-    <div class="error-state" role="alert">
-      <span class="state-icon" aria-hidden="true">!</span>
+    <div
+      class="error-state"
+      role="alert">
+
+      <span
+        class="state-icon"
+        aria-hidden="true">
+
+        !
+
+      </span>
+
       <div>
-        <p class="state-title">Unable to load data</p>
-        <p>{{ errorMessage }}</p>
+
+        <p class="state-title">
+          Unable to load data
+        </p>
+
+        <p>
+          {{ errorMessage }}
+        </p>
+
       </div>
+
     </div>
 
   } @else if (applicants.length === 0) {
 
     <div class="empty-state">
+
       <div class="empty-copy">
-        <div class="empty-icon-box" aria-hidden="true">
-          <svg viewBox="0 0 64 64" role="presentation">
-            <rect x="10" y="12" width="44" height="40" rx="5"></rect>
-            <circle cx="25" cy="29" r="6"></circle>
-            <circle cx="39" cy="29" r="6"></circle>
-            <path d="M16 46c1-6 5-9 10-9s9 3 10 9M30 46c1-6 5-9 10-9s9 3 10 9"></path>
+
+        <div
+          class="empty-icon-box"
+          aria-hidden="true">
+
+          <svg
+            viewBox="0 0 64 64"
+            role="presentation">
+
+            <rect
+              x="10"
+              y="12"
+              width="44"
+              height="40"
+              rx="5">
+            </rect>
+
+            <circle
+              cx="25"
+              cy="29"
+              r="6">
+            </circle>
+
+            <circle
+              cx="39"
+              cy="29"
+              r="6">
+            </circle>
+
+            <path
+              d="M16 46c1-6 5-9 10-9s9 3 10 9M30 46c1-6 5-9 10-9s9 3 10 9">
+            </path>
+
           </svg>
+
         </div>
-        <p class="eyebrow">Candidate pipeline</p>
-        <h3>No applicants found.</h3>
-        <p>Matching candidates will appear here when applications are available.</p>
+
+        <p class="eyebrow">
+          Candidate pipeline
+        </p>
+
+        <h3>
+          No applicants found.
+        </h3>
+
+        <p>
+          Matching candidates will appear here when
+          applications are available.
+        </p>
+
       </div>
-      <div class="empty-list-visual" aria-hidden="true">
-        <div><span></span><b></b><i></i></div>
-        <div><span></span><b></b><i></i></div>
-        <div><span></span><b></b><i></i></div>
+
+
+      <div
+        class="empty-list-visual"
+        aria-hidden="true">
+
+        <div>
+          <span></span>
+          <b></b>
+          <i></i>
+        </div>
+
+        <div>
+          <span></span>
+          <b></b>
+          <i></i>
+        </div>
+
+        <div>
+          <span></span>
+          <b></b>
+          <i></i>
+        </div>
+
       </div>
+
     </div>
 
   } @else {
 
     <div class="applicant-list">
 
-      @for (applicant of applicants; track applicant.jobSeekerId) {
+      @for (
+        applicant of applicants;
+        track applicant.applicationId
+      ) {
 
         <article class="applicant-card">
 
           <div class="applicant-info">
 
-            <p class="candidate-label">Candidate</p>
-            <h3>
-              Candidate #{{ applicant.jobSeekerId }}
-            </h3>
+            <div class="candidate-heading">
 
-            @if (applicant.missingSkills.length > 0) {
+              <div>
+
+                <p class="candidate-label">
+                  Candidate
+                </p>
+
+                <h3>
+                  Candidate #{{ applicant.jobSeekerId }}
+                </h3>
+
+              </div>
+
+
+              <span
+                class="application-status"
+                [class.pending-status]="
+                  applicant.status === 'Pending'
+                "
+                [class.shortlisted-status]="
+                  applicant.status === 'Shortlisted'
+                "
+                [class.accepted-status]="
+                  applicant.status === 'Accepted'
+                "
+                [class.rejected-status]="
+                  applicant.status === 'Rejected'
+                ">
+
+                {{ applicant.status }}
+
+              </span>
+
+            </div>
+
+
+            @if (
+              applicant.missingSkills.length > 0
+            ) {
 
               <p class="skill-gap">
-                <span>Missing skills</span>
-                {{ applicant.missingSkills | skillList }}
+
+                <span>
+                  Missing skills
+                </span>
+
+                {{
+                  applicant.missingSkills
+                    | skillList
+                }}
+
               </p>
 
             } @else {
 
-              <p class="no-skill-gap">No missing skills</p>
+              <p class="no-skill-gap">
+                No missing skills
+              </p>
 
             }
 
+
+            <div class="status-control">
+
+              <label
+                [for]="
+                  'status-' +
+                  applicant.applicationId
+                ">
+
+                Application Status
+
+              </label>
+
+              <select
+                [id]="
+                  'status-' +
+                  applicant.applicationId
+                "
+                [value]="applicant.status"
+                [disabled]="
+                  updatingApplicationId !== null
+                "
+                (change)="
+                  updateStatus(
+                    applicant.applicationId,
+                    $any($event.target).value
+                  )
+                ">
+
+                @for (
+                  status of applicationStatuses;
+                  track status
+                ) {
+
+                  <option
+                    [value]="status">
+
+                    {{ status }}
+
+                  </option>
+
+                }
+
+              </select>
+
+              @if (
+                isUpdating(
+                  applicant.applicationId
+                )
+              ) {
+
+                <span class="updating-text">
+                  Updating...
+                </span>
+
+              }
+
+            </div>
+
           </div>
 
-          <app-score-badge
-            [score]="applicant.matchScore">
-          </app-score-badge>
+
+          <div class="applicant-actions">
+
+            <app-score-badge
+              [score]="applicant.matchScore">
+            </app-score-badge>
+
+
+            <button
+              type="button"
+              class="view-profile-button"
+              (click)="
+                viewProfile(
+                  applicant.jobSeekerId
+                )
+              ">
+
+              View Profile
+
+            </button>
+
+
+            <button
+              type="button"
+              class="contact-button"
+              [disabled]="
+                sendingContactApplicationId !== null ||
+                hasContactRequest(
+                  applicant.applicationId
+                )
+              "
+              (click)="
+                sendContactRequest(
+                  applicant
+                )
+              ">
+
+              @if (
+                isSendingContact(
+                  applicant.applicationId
+                )
+              ) {
+
+                Sending...
+
+              } @else if (
+                hasContactRequest(
+                  applicant.applicationId
+                )
+              ) {
+
+                Request Sent
+
+              } @else {
+
+                Contact Candidate
+
+              }
+
+            </button>
+
+          </div>
 
         </article>
 

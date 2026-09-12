@@ -1,0 +1,105 @@
+<article
+  class="notification-item"
+  [class.unread]="!notification.isRead"
+  [class.read]="notification.isRead">
+
+  <div class="notification-indicator">
+
+    @if (!notification.isRead) {
+
+      <span
+        class="unread-dot"
+        aria-label="Unread notification">
+      </span>
+
+    } @else {
+
+      <span
+        class="read-check"
+        aria-label="Read notification">
+        &#10003;
+      </span>
+
+    }
+
+  </div>
+
+
+  <div class="notification-content">
+
+    <div class="notification-header">
+
+      <div>
+
+        <p class="notification-label">
+          Application Update
+        </p>
+
+        <p class="notification-message">
+          {{ notification.message }}
+        </p>
+
+      </div>
+
+
+      @if (!notification.isRead) {
+
+        <span class="unread-badge">
+          New
+        </span>
+
+      }
+
+    </div>
+
+
+    <div class="notification-meta">
+
+      <span>
+        Application #{{ notification.applicationId }}
+      </span>
+
+      <span
+        class="meta-divider"
+        aria-hidden="true">
+        &#8226;
+      </span>
+
+      <span>
+        {{ notification.createdAt | date:'medium' }}
+      </span>
+
+    </div>
+
+
+    @if (!notification.isRead) {
+
+      <div class="notification-actions">
+
+        <button
+          type="button"
+          class="mark-read-button"
+          (click)="onMarkAsRead()"
+          [disabled]="isMarkingRead">
+
+          @if (isMarkingRead) {
+            Marking...
+          } @else {
+            Mark as Read
+          }
+
+        </button>
+
+      </div>
+
+    } @else {
+
+      <div class="read-state">
+        Read
+      </div>
+
+    }
+
+  </div>
+
+</article>
