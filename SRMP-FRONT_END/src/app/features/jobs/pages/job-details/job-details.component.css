@@ -1,0 +1,166 @@
+.job-details-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 36px 56px;
+  color: #0f172a;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.eyebrow {
+  color: #2563eb;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.page-header h1 {
+  margin: 8px 0 4px;
+  font-size: 2rem;
+}
+
+.page-header p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.closed-status {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.details-card,
+.message-card {
+  margin-top: 28px;
+  padding: 28px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+.error-card {
+  background: #fef2f2;
+}
+
+.description-section h2,
+.skills-section h2 {
+  margin: 0 0 10px;
+  font-size: 1.15rem;
+}
+
+.description-section p,
+.skills-section p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.7;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin: 24px 0;
+}
+
+.detail-item {
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.detail-item span {
+  display: block;
+  margin-bottom: 7px;
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.detail-item strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.skills-section {
+  padding-top: 22px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 28px;
+}
+
+.secondary-button {
+  padding: 10px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #334155;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  background: #f8fafc;
+}
+
+@media (max-width: 900px) {
+  .details-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .job-details-page {
+    padding: 28px 20px 40px;
+  }
+
+  .page-header {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .job-details-page {
+    padding: 24px 16px 36px;
+  }
+
+  .page-header h1 {
+    font-size: 1.7rem;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .secondary-button {
+    width: 100%;
+  }
+}

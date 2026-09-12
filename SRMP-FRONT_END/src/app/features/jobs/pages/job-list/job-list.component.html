@@ -1,0 +1,46 @@
+<section class="job-list-page">
+
+  <header class="page-header">
+
+    <span class="eyebrow">
+      JOB OPPORTUNITIES
+    </span>
+
+    <h1>Available Jobs</h1>
+
+    <p>
+      Browse the currently available job vacancies.
+    </p>
+
+  </header>
+
+
+  @if (jobs.length === 0) {
+
+    <div class="empty-card">
+
+      <h2>No open jobs found</h2>
+
+      <p>
+        There are no open job vacancies available at the moment.
+      </p>
+
+    </div>
+
+  } @else {
+
+    <div class="jobs-grid">
+
+      @for (job of jobs; track job.jobVacancyId) {
+
+        <app-job-card
+          [job]="job"
+        />
+
+      }
+
+    </div>
+
+  }
+
+</section>

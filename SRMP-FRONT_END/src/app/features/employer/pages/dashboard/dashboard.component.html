@@ -1,0 +1,64 @@
+<section class="dashboard-page">
+
+  <header class="page-header">
+    <span class="eyebrow">EMPLOYER WORKSPACE</span>
+
+    <h1>Employer Dashboard</h1>
+
+    <p>
+      View a quick summary of your company and vacancies.
+    </p>
+  </header>
+
+
+  @if (company) {
+
+    <div class="company-summary">
+
+      <span class="section-label">
+        COMPANY
+      </span>
+
+      <h2>
+        {{ company.companyName }}
+      </h2>
+
+      <p>
+        {{ company.description || 'No description provided.' }}
+      </p>
+
+    </div>
+
+  } @else {
+
+    <div class="message-card">
+      <strong>No company profile found.</strong>
+
+      <p>
+        Create your company profile to complete your employer workspace.
+      </p>
+    </div>
+
+  }
+
+
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <span>Total Vacancies</span>
+      <strong>{{ totalVacancies }}</strong>
+    </div>
+
+    <div class="stat-card">
+      <span>Open Vacancies</span>
+      <strong>{{ openVacancies }}</strong>
+    </div>
+
+    <div class="stat-card">
+      <span>Closed Vacancies</span>
+      <strong>{{ closedVacancies }}</strong>
+    </div>
+
+  </div>
+
+</section>

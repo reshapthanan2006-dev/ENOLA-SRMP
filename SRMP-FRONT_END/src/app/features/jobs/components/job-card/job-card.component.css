@@ -1,0 +1,105 @@
+.job-card {
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+.job-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.job-label {
+  color: #2563eb;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.job-header h2 {
+  margin: 7px 0 0;
+  color: #0f172a;
+  font-size: 1.35rem;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.closed-status {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.description {
+  margin: 20px 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.job-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.info-item {
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.info-item span,
+.skills-section span {
+  display: block;
+  margin-bottom: 6px;
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.info-item strong,
+.skills-section strong {
+  display: block;
+  color: #0f172a;
+  overflow-wrap: anywhere;
+}
+
+.skills-section {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+@media (max-width: 760px) {
+  .job-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .job-card {
+    padding: 20px;
+  }
+
+  .job-header {
+    flex-direction: column;
+  }
+}
