@@ -1,0 +1,117 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Job Seeker</p>
+      <h1>My CV</h1>
+      <p class="subtitle">
+        Upload and manage the CV used with your job seeker account.
+      </p>
+    </div>
+  </header>
+
+  @if (errorMessage) {
+    <div class="message error-message" role="alert">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (successMessage) {
+    <div class="message success-message" role="status">
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (isLoading) {
+    <div class="state-card">Loading CV information...</div>
+  } @else {
+    <div class="content-grid">
+      <section class="card">
+        <div class="card-heading">
+          <h2>{{ cv ? 'Replace CV' : 'Upload CV' }}</h2>
+          <p>
+            {{ cv
+              ? 'Uploading a new file replaces the current CV.'
+              : 'Choose a supported file and upload it.'
+            }}
+          </p>
+        </div>
+
+        <app-cv-upload
+          [disabled]="isUploading"
+          (fileSelected)="onFileSelected($event)"
+        />
+
+        <button
+          class="primary-button upload-button"
+          type="button"
+          [disabled]="!selectedFile || isUploading"
+          (click)="uploadCv()"
+        >
+          {{ isUploading ? 'Uploading...' : 'Upload CV' }}
+        </button>
+      </section>
+
+      <section class="card">
+        <div class="card-heading">
+          <h2>Current CV</h2>
+          <p>Your stored CV metadata comes from the backend.</p>
+        </div>
+
+        @if (cv) {
+          <dl class="metadata-list">
+            <div>
+              <dt>File name</dt>
+              <dd>{{ cv.originalFileName }}</dd>
+            </div>
+            <div>
+              <dt>File type</dt>
+              <dd>{{ cv.contentType || 'Not provided' }}</dd>
+            </div>
+            <div>
+              <dt>File size</dt>
+              <dd>{{ formatFileSize(cv.fileSize) }}</dd>
+            </div>
+            <div>
+              <dt>Uploaded</dt>
+              <dd>{{ formatDate(cv.uploadedAt) }}</dd>
+            </div>
+          </dl>
+
+          <div class="button-row">
+            <button
+              class="secondary-button"
+              type="button"
+              [disabled]="isDownloading"
+              (click)="viewCv()"
+            >
+              View
+            </button>
+
+            <button
+              class="secondary-button"
+              type="button"
+              [disabled]="isDownloading"
+              (click)="downloadCv()"
+            >
+              {{ isDownloading ? 'Please wait...' : 'Download' }}
+            </button>
+
+            <button
+              class="danger-button"
+              type="button"
+              [disabled]="isDeleting"
+              (click)="deleteCv()"
+            >
+              {{ isDeleting ? 'Deleting...' : 'Delete' }}
+            </button>
+          </div>
+        } @else {
+          <div class="empty-state">
+            <strong>No CV uploaded yet.</strong>
+            <p>Use the upload form to add your first CV.</p>
+          </div>
+        }
+      </section>
+    </div>
+  }
+</section>

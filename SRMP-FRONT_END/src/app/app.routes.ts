@@ -6,7 +6,6 @@ import { RegisterComponent } from './features/auth/pages/register/register.compo
 import { DashboardComponent } from './features/admin/pages/dashboard/dashboard.component';
 import { UsersComponent } from './features/admin/pages/users/users.component';
 
-import { MatchingJobsComponent } from './features/seeker/pages/matching-jobs/matching-jobs.component';
 import { ApplicantsComponent } from './features/employer/pages/applicants/applicants.component';
 
 import { authGuard } from './core/guards/auth.guard';
@@ -46,15 +45,17 @@ export const routes: Routes = [
   },
 
   {
-    path: 'seeker/matching-jobs',
-    component: MatchingJobsComponent,
+    path: 'seeker',
     canActivate: [
       authGuard,
       roleGuard
     ],
     data: {
       roles: ['JobSeeker']
-    }
+    },
+    loadChildren: () =>
+      import('./features/seeker/seeker.routes')
+        .then(routes => routes.seekerRoutes)
   },
 
   {

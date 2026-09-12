@@ -1,0 +1,37 @@
+.upload-box {
+  border: 1px dashed #9eb2d2;
+  border-radius: 14px;
+  padding: 20px;
+  background: #f8fbff;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: #24324a;
+}
+
+input[type='file'] {
+  width: 100%;
+}
+
+.help-text,
+.selected-file,
+.error-text {
+  margin: 10px 0 0;
+  font-size: 0.9rem;
+}
+
+.help-text {
+  color: #667085;
+}
+
+.selected-file {
+  color: #175cd3;
+  font-weight: 600;
+}
+
+.error-text {
+  color: #b42318;
+}

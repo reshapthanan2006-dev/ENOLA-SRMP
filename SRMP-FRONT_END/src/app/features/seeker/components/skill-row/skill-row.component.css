@@ -1,0 +1,60 @@
+.skill-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.skill-field {
+  display: grid;
+  gap: 7px;
+}
+
+label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #24324a;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccd5e3;
+  border-radius: 10px;
+  padding: 11px 12px;
+  font: inherit;
+  background: #ffffff;
+}
+
+input:focus {
+  outline: 2px solid #b9cdfd;
+  border-color: #4f78e8;
+}
+
+.remove-button {
+  border: 1px solid #d8dee9;
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: #ffffff;
+  color: #b42318;
+  cursor: pointer;
+}
+
+.remove-button:disabled {
+  color: #98a2b3;
+  cursor: not-allowed;
+}
+
+.field-error {
+  color: #b42318;
+}
+
+@media (max-width: 620px) {
+  .skill-row {
+    grid-template-columns: 1fr;
+  }
+
+  .remove-button {
+    justify-self: start;
+  }
+}
