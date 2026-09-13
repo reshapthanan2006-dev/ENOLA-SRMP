@@ -1,0 +1,86 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <a [routerLink]="user ? authService.getHomeRoute() : '/login'">
+      ENOLA SRMP
+    </a>
+  </div>
+
+  @if (user) {
+    <div class="navbar-links">
+
+      @if (user.role === 'JobSeeker') {
+        <a
+          routerLink="/seeker/dashboard"
+          routerLinkActive="active"
+        >
+          Dashboard
+        </a>
+
+        <a
+          routerLink="/seeker/profile"
+          routerLinkActive="active"
+        >
+          Profile
+        </a>
+
+        <a
+          routerLink="/seeker/cv"
+          routerLinkActive="active"
+        >
+          CV
+        </a>
+
+        <a
+          routerLink="/seeker/matching-jobs"
+          routerLinkActive="active"
+        >
+          Matching Jobs
+        </a>
+      }
+
+      @if (user.role === 'Employer') {
+        <a
+          routerLink="/employer/company-profile"
+          routerLinkActive="active"
+        >
+          Company Profile
+        </a>
+
+        <a
+          routerLink="/employer/applicants"
+          routerLinkActive="active"
+        >
+          Applicants
+        </a>
+      }
+
+      @if (user.role === 'Administrator') {
+        <a
+          routerLink="/admin/dashboard"
+          routerLinkActive="active"
+        >
+          Dashboard
+        </a>
+
+        <a
+          routerLink="/admin/users"
+          routerLinkActive="active"
+        >
+          Users
+        </a>
+      }
+
+    </div>
+
+    <div class="navbar-user">
+      <span>{{ user.fullName }}</span>
+
+      <button
+        type="button"
+        (click)="logout()"
+      >
+        Logout
+      </button>
+    </div>
+  }
+</nav>
