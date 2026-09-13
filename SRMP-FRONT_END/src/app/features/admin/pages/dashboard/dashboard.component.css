@@ -221,12 +221,35 @@
 }
 
 @media (max-width: 850px) {
+  .dashboard-content {
+    width: min(100% - 32px, 1180px);
+    padding: 30px 0 48px;
+  }
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
 
+  .welcome-section h2 {
+    font-size: 26px;
+  }
+
+  .action-card {
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
   .dashboard-content {
-    width: min(100% - 32px, 1180px);
-    padding-top: 30px;
+    width: min(100% - 24px, 1180px);
+  }
+
+  .stat-card {
+    min-height: 125px;
+    padding: 22px;
+  }
+
+  .stat-value {
+    font-size: 34px;
   }
 }

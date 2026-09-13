@@ -61,3 +61,21 @@ button,
 a {
   -webkit-tap-highlight-color: transparent;
 }
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(133, 118, 171, 0.28);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+::selection {
+  background: var(--color-primary-light);
+  color: var(--color-darkest);
+}

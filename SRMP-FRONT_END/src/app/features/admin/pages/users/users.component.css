@@ -202,7 +202,19 @@ tbody tr:hover {
 @media (max-width: 700px) {
   .users-content {
     width: min(100% - 24px, 1220px);
+    padding: 24px 0 44px;
+  }
 
-    padding-top: 24px;
+  .table-wrapper {
+    border-radius: var(--radius-md);
+  }
+
+  table {
+    min-width: 820px;
+  }
+
+  th,
+  td {
+    padding: 14px;
   }
 }
