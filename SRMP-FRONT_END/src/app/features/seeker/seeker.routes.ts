@@ -2,6 +2,11 @@ import { Routes } from '@angular/router';
 
 export const seekerRoutes: Routes = [
   {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'dashboard'
+  },
+  {
     path: 'dashboard',
     loadComponent: () =>
       import('./pages/dashboard/dashboard.component')
@@ -24,10 +29,5 @@ export const seekerRoutes: Routes = [
     loadComponent: () =>
       import('./pages/matching-jobs/matching-jobs.component')
         .then(component => component.MatchingJobsComponent)
-  },
-  {
-    path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full'
   }
 ];
