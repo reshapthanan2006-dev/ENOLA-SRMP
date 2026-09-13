@@ -4,6 +4,7 @@ export const employerRoutes: Routes = [
 
   {
     path: '',
+
     loadComponent: () =>
       import(
         '../../layout/employer-layout/employer-layout.component'
@@ -38,6 +39,44 @@ export const employerRoutes: Routes = [
             (m) => m.CompanyProfileComponent
           )
       },
+
+      // =========================
+      // MEMBER 3 - VACANCIES
+      // =========================
+
+      {
+        path: 'vacancies',
+        loadComponent: () =>
+          import(
+            './pages/vacancies/vacancies.component'
+          ).then(
+            (m) => m.VacanciesComponent
+          )
+      },
+
+      {
+        path: 'vacancies/new',
+        loadComponent: () =>
+          import(
+            './pages/vacancy-form/vacancy-form.component'
+          ).then(
+            (m) => m.VacancyFormComponent
+          )
+      },
+
+      {
+        path: 'vacancies/edit/:id',
+        loadComponent: () =>
+          import(
+            './pages/vacancy-form/vacancy-form.component'
+          ).then(
+            (m) => m.VacancyFormComponent
+          )
+      },
+
+      // =========================
+      // EXISTING TEAM ROUTES
+      // =========================
 
       {
         path: 'contact-requests',

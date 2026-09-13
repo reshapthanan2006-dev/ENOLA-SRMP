@@ -1,0 +1,130 @@
+<section class="job-details-page">
+
+  @if (isLoading) {
+
+    <div class="message-card">
+      Loading job details...
+    </div>
+
+  } @else if (errorMessage) {
+
+    <div class="message-card error-card">
+
+      <h2>Unable to load job</h2>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="backToJobs()"
+      >
+        Back to Jobs
+      </button>
+
+    </div>
+
+  } @else if (job) {
+
+    <header class="page-header">
+
+      <div>
+        <span class="eyebrow">
+          JOB OPPORTUNITY
+        </span>
+
+        <h1>
+          {{ job.title }}
+        </h1>
+
+        <p>
+          Complete information about this job vacancy.
+        </p>
+      </div>
+
+      <span
+        class="status-badge"
+        [class.closed-status]="!job.isOpen"
+      >
+        {{ job.isOpen ? 'Open' : 'Closed' }}
+      </span>
+
+    </header>
+
+
+    <div class="details-card">
+
+      <div class="description-section">
+
+        <h2>Job Description</h2>
+
+        <p>
+          {{ job.description || 'No description provided.' }}
+        </p>
+
+      </div>
+
+
+      <div class="details-grid">
+
+        <div class="detail-item">
+          <span>Location</span>
+          <strong>
+            {{ job.location || 'Not specified' }}
+          </strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Required Experience</span>
+          <strong>
+            {{ job.requiredExperience }} year(s)
+          </strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Required Education</span>
+          <strong>
+            {{ job.requiredEducation || 'Not specified' }}
+          </strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Vacancy ID</span>
+          <strong>
+            #{{ job.jobVacancyId }}
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="skills-section">
+
+        <h2>Required Skills</h2>
+
+        <p>
+          {{ job.requiredSkills || 'Not specified' }}
+        </p>
+
+      </div>
+
+
+      <div class="actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="backToJobs()"
+        >
+          Back to Jobs
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+</section>

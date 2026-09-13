@@ -1,0 +1,143 @@
+<section class="vacancies-page">
+
+  <header class="page-header">
+
+    <div>
+      <span class="eyebrow">EMPLOYER WORKSPACE</span>
+      <h1>Vacancies</h1>
+      <p>Manage the job vacancies posted by your company.</p>
+    </div>
+
+    <button
+      type="button"
+      class="primary-button header-button"
+      (click)="openCreateVacancy()"
+    >
+      Create Vacancy
+    </button>
+
+  </header>
+
+
+  @if (vacancies.length === 0) {
+
+    <div class="message-card empty-card">
+
+      <h2>No vacancies found</h2>
+
+      <p>
+        Create your first vacancy to start receiving applications.
+      </p>
+
+      <button
+        type="button"
+        class="primary-button"
+        (click)="openCreateVacancy()"
+      >
+        Create Vacancy
+      </button>
+
+    </div>
+
+  } @else {
+
+    <div class="vacancy-list">
+
+      @for (vacancy of vacancies; track vacancy.jobVacancyId) {
+
+        <article class="vacancy-card">
+
+          <div class="vacancy-card-header">
+
+            <div>
+              <span class="vacancy-id">
+                VACANCY #{{ vacancy.jobVacancyId }}
+              </span>
+
+              <h2>{{ vacancy.title }}</h2>
+            </div>
+
+            <span
+              class="status-badge"
+              [class.closed-status]="!vacancy.isOpen"
+            >
+              {{ vacancy.isOpen ? 'Open' : 'Closed' }}
+            </span>
+
+          </div>
+
+
+          <p class="description">
+            {{ vacancy.description || 'No description provided.' }}
+          </p>
+
+
+          <div class="vacancy-details">
+
+            <div class="detail-item">
+              <span>Required Skills</span>
+              <strong>{{ vacancy.requiredSkills }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Experience</span>
+              <strong>
+                {{ vacancy.requiredExperience }} year(s)
+              </strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Education</span>
+              <strong>
+                {{ vacancy.requiredEducation || 'Not specified' }}
+              </strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Location</span>
+              <strong>
+                {{ vacancy.location || 'Not specified' }}
+              </strong>
+            </div>
+
+          </div>
+
+
+          <div class="vacancy-actions">
+
+  <button
+    type="button"
+    class="edit-button"
+    (click)="openEditVacancy(vacancy.jobVacancyId)"
+  >
+    Edit Vacancy
+  </button>
+
+  @if (vacancy.isOpen) {
+
+    <button
+      type="button"
+      class="close-button"
+      (click)="closeVacancy(vacancy.jobVacancyId)"
+    >
+      Close Vacancy
+    </button>
+
+  } @else {
+
+    <span class="closed-text">
+      This vacancy is closed.
+    </span>
+
+  }
+
+</div>
+        </article>
+
+      }
+
+    </div>
+
+  }
+
+</section>

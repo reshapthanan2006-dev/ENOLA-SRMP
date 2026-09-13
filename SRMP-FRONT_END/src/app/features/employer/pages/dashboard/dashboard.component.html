@@ -1,31 +1,113 @@
 <div class="dashboard-page">
 
-<section class="hero">
+  <section class="hero">
 
-  <div class="hero-top">
+    <div class="hero-top">
 
-    <div>
-      <p class="eyebrow">Employer Portal</p>
+      <div>
+        <p class="eyebrow">
+          Employer Portal
+        </p>
 
-      <h1>Employer Dashboard</h1>
+        <h1>
+          Employer Dashboard
+        </h1>
 
-      <p class="subtitle">
-        Manage your company profile, vacancies,
-        applicants and contact requests.
-      </p>
+        <p class="subtitle">
+          Manage your company profile, vacancies,
+          applicants and contact requests.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="logout-button"
+        (click)="logout()"
+      >
+        Logout
+      </button>
+
     </div>
 
-    <button
-      type="button"
-      class="logout-button"
-      (click)="logout()"
-    >
-      Logout
-    </button>
+  </section>
 
-  </div>
 
-</section>
+  @if (company) {
+
+    <section class="company-summary">
+
+      <div class="company-summary-top">
+
+        <div>
+          <span class="section-label">
+            COMPANY
+          </span>
+
+          <h2>
+            {{ company.companyName }}
+          </h2>
+
+          <p>
+            {{ company.description || 'No description provided.' }}
+          </p>
+        </div>
+
+        <a
+          routerLink="/employer/company-profile"
+          class="primary-button"
+        >
+          Edit Company
+        </a>
+
+      </div>
+
+    </section>
+
+  } @else {
+
+    <section class="message-card">
+
+      <div>
+        <strong>
+          No company profile found.
+        </strong>
+
+        <p>
+          Create your company profile to complete your employer workspace.
+        </p>
+      </div>
+
+      <a
+        routerLink="/employer/company-profile"
+        class="primary-button"
+      >
+        Company Profile
+      </a>
+
+    </section>
+
+  }
+
+
+  <section class="stats-grid">
+
+    <div class="stat-card">
+      <span>Total Vacancies</span>
+      <strong>{{ totalVacancies }}</strong>
+    </div>
+
+    <div class="stat-card">
+      <span>Open Vacancies</span>
+      <strong>{{ openVacancies }}</strong>
+    </div>
+
+    <div class="stat-card">
+      <span>Closed Vacancies</span>
+      <strong>{{ closedVacancies }}</strong>
+    </div>
+
+  </section>
+
 
   <section class="dashboard-grid">
 
@@ -37,6 +119,7 @@
 
       <div>
         <h2>Company Profile</h2>
+
         <p>
           View and manage your company information.
         </p>
@@ -47,35 +130,46 @@
       </span>
     </a>
 
-    <div class="dashboard-card">
+
+    <a
+      class="dashboard-card"
+      routerLink="/employer/vacancies"
+    >
       <div class="card-icon">💼</div>
 
       <div>
         <h2>Vacancies</h2>
+
         <p>
           Create, update and manage job vacancies.
         </p>
       </div>
 
-      <span class="card-muted">
-        Vacancy module
+      <span class="card-link">
+        Manage vacancies →
       </span>
-    </div>
+    </a>
+
 
     <div class="dashboard-card">
+
       <div class="card-icon">👥</div>
 
       <div>
         <h2>Applicants</h2>
+
         <p>
-          Review applications and ranked candidates for your vacancies.
+          Review applications and ranked candidates
+          for your vacancies.
         </p>
       </div>
 
       <span class="card-muted">
         Open from a vacancy
       </span>
+
     </div>
+
 
     <a
       class="dashboard-card"
@@ -85,6 +179,7 @@
 
       <div>
         <h2>Contact Requests</h2>
+
         <p>
           Track contact requests sent to candidates.
         </p>
@@ -95,23 +190,6 @@
       </span>
     </a>
 
-  </section>
-
-  <section class="next-step">
-    <div>
-      <p class="eyebrow">Recommended next step</p>
-      <h2>Complete your company profile</h2>
-      <p>
-        Keep your company information ready before managing job vacancies.
-      </p>
-    </div>
-
-    <a
-      routerLink="/employer/company-profile"
-      class="primary-button"
-    >
-      Company Profile
-    </a>
   </section>
 
 </div>

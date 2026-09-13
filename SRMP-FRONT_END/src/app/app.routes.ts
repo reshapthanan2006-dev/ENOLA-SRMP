@@ -71,6 +71,20 @@ export const routes: Routes = [
   },
 
   // =========================
+  // PUBLIC JOBS
+  // =========================
+
+  {
+    path: 'jobs',
+    loadChildren: () =>
+      import(
+        './features/jobs/jobs.routes'
+      ).then(
+        (m) => m.jobsRoutes
+      )
+  },
+
+  // =========================
   // ADMIN DASHBOARD
   // =========================
 
