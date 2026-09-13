@@ -199,6 +199,23 @@ tbody tr:hover {
   cursor: pointer;
 }
 
+.current-user-label {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 7px 11px;
+
+  border-radius: 999px;
+
+  background: var(--color-primary-light);
+  color: var(--color-dark);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
 @media (max-width: 700px) {
   .users-content {
     width: min(100% - 24px, 1220px);

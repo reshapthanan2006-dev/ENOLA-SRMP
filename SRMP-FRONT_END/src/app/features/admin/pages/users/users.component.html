@@ -73,22 +73,32 @@
                   </td>
 
                   <td class="created-date">
-                       {{ user.createdAt | date:'MMM d, y, h:mm a' }}
-                   </td>
+                    {{ user.createdAt | date:'MMM d, y, h:mm a' }}
+                  </td>
 
                   <td>
-                    <button
-                      type="button"
-                      class="status-button"
-                      [disabled]="actionUserId === user.userId"
-                      (click)="toggleUserStatus(user)"
-                    >
-                      @if (actionUserId === user.userId) {
-                        Updating...
-                      } @else {
-                        {{ user.isActive ? 'Deactivate' : 'Activate' }}
-                      }
-                    </button>
+                    @if (isCurrentUser(user)) {
+
+                      <span class="current-user-label">
+                        Current Account
+                      </span>
+
+                    } @else {
+
+                      <button
+                        type="button"
+                        class="status-button"
+                        [disabled]="actionUserId === user.userId"
+                        (click)="toggleUserStatus(user)"
+                      >
+                        @if (actionUserId === user.userId) {
+                          Updating...
+                        } @else {
+                          {{ user.isActive ? 'Deactivate' : 'Activate' }}
+                        }
+                      </button>
+
+                    }
                   </td>
 
                 </tr>

@@ -32,9 +32,16 @@ export class UsersComponent implements OnInit {
 
   actionUserId: number | null = null;
 
+  currentUserId: number | null =
+  this.authService.getCurrentUser()?.userId ?? null;
+
   ngOnInit(): void {
     this.loadUsers();
   }
+
+  isCurrentUser(user: AdminUser): boolean {
+  return user.userId === this.currentUserId;
+}
 
   loadUsers(): void {
     this.isLoading = true;
