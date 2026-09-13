@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
+import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
 import { SeekerCv } from '../../models/cv.model';
 import { SeekerProfile } from '../../models/seeker-profile.model';
 import { CvService } from '../../services/cv.service';
@@ -10,7 +10,7 @@ import { SeekerProfileService } from '../../services/seeker-profile.service';
 @Component({
   selector: 'app-seeker-dashboard',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink,NavbarComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
