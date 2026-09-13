@@ -10,10 +10,8 @@ import {
   Router
 } from '@angular/router';
 
-import {
-  Vacancy,
-  VacancyRequest
-} from '../../models/vacancy.model';
+import { VacancyRequest } from '../../models/vacancy.model';
+import { VacancyService } from '../../services/vacancy.service';
 
 @Component({
   selector: 'app-vacancy-form',
@@ -76,7 +74,8 @@ export class VacancyFormComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private vacancyService: VacancyService
   ) { }
 
   ngOnInit(): void {
@@ -86,141 +85,97 @@ export class VacancyFormComponent implements OnInit {
 
     if (idText) {
 
-      const vacancyId = Number(idText);
+      const vacancyId =
+        Number(idText);
 
       if (!Number.isNaN(vacancyId)) {
+
         this.isEditMode = true;
-        this.editingVacancyId = vacancyId;
-        this.loadVacancyForEdit(vacancyId);
+
+        this.editingVacancyId =
+          vacancyId;
+
+        this.loadVacancyForEdit(
+          vacancyId
+        );
       }
     }
   }
 
-  loadVacancyForEdit(vacancyId: number): void {
-
-    const savedVacanciesText =
-      localStorage.getItem('member3Vacancies');
-
-    if (!savedVacanciesText) {
-      this.router.navigate([
-        '/employer/vacancies'
-      ]);
-      return;
-    }
-
-    const vacancies: Vacancy[] =
-      JSON.parse(savedVacanciesText);
+  loadVacancyForEdit(
+    vacancyId: number
+  ): void {
 
     const vacancy =
-      vacancies.find(
-        item => item.jobVacancyId === vacancyId
+      this.vacancyService.getVacancyById(
+        vacancyId
       );
 
     if (!vacancy) {
+
       this.router.navigate([
         '/employer/vacancies'
       ]);
+
       return;
     }
 
     this.vacancyForm.setValue({
-      title: vacancy.title,
-      description: vacancy.description,
-      requiredSkills: vacancy.requiredSkills,
-      requiredExperience: vacancy.requiredExperience,
-      requiredEducation: vacancy.requiredEducation,
-      location: vacancy.location
+
+      title:
+        vacancy.title,
+
+      description:
+        vacancy.description,
+
+      requiredSkills:
+        vacancy.requiredSkills,
+
+      requiredExperience:
+        vacancy.requiredExperience,
+
+      requiredEducation:
+        vacancy.requiredEducation,
+
+      location:
+        vacancy.location
+
     });
   }
 
   saveVacancy(): void {
 
     if (this.vacancyForm.invalid) {
+
       this.vacancyForm.markAllAsTouched();
+
       return;
     }
 
     const vacancyRequest: VacancyRequest =
       this.vacancyForm.getRawValue();
 
-    const savedVacanciesText =
-      localStorage.getItem('member3Vacancies');
-
-    let vacancies: Vacancy[] = [];
-
-    if (savedVacanciesText) {
-      vacancies = JSON.parse(savedVacanciesText);
-    }
-
     if (
       this.isEditMode &&
       this.editingVacancyId !== null
     ) {
 
-      const vacancyIndex =
-        vacancies.findIndex(
-          vacancy =>
-            vacancy.jobVacancyId ===
-            this.editingVacancyId
+      const updatedVacancy =
+        this.vacancyService.updateVacancy(
+          this.editingVacancyId,
+          vacancyRequest
         );
 
-      if (vacancyIndex === -1) {
+      if (!updatedVacancy) {
         return;
       }
 
-      const existingVacancy =
-        vacancies[vacancyIndex];
-
-      const updatedVacancy: Vacancy = {
-        ...existingVacancy,
-        title: vacancyRequest.title,
-        description: vacancyRequest.description,
-        requiredSkills: vacancyRequest.requiredSkills,
-        requiredExperience:
-          vacancyRequest.requiredExperience,
-        requiredEducation:
-          vacancyRequest.requiredEducation,
-        location: vacancyRequest.location
-      };
-
-      vacancies[vacancyIndex] =
-        updatedVacancy;
-
     } else {
 
-      const nextId =
-        vacancies.length > 0
-          ? Math.max(
-              ...vacancies.map(
-                vacancy =>
-                  vacancy.jobVacancyId
-              )
-            ) + 1
-          : 1;
-
-      const newVacancy: Vacancy = {
-        jobVacancyId: nextId,
-        title: vacancyRequest.title,
-        description: vacancyRequest.description,
-        requiredSkills:
-          vacancyRequest.requiredSkills,
-        requiredExperience:
-          vacancyRequest.requiredExperience,
-        requiredEducation:
-          vacancyRequest.requiredEducation,
-        location: vacancyRequest.location,
-        employerId: 1,
-        isOpen: true,
-        createdAt: new Date().toISOString()
-      };
-
-      vacancies.push(newVacancy);
+      this.vacancyService.createVacancy(
+        vacancyRequest
+      );
     }
-
-    localStorage.setItem(
-      'member3Vacancies',
-      JSON.stringify(vacancies)
-    );
 
     this.router.navigate([
       '/employer/vacancies'
@@ -228,8 +183,10 @@ export class VacancyFormComponent implements OnInit {
   }
 
   cancelForm(): void {
+
     this.router.navigate([
       '/employer/vacancies'
     ]);
   }
+
 }

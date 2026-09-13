@@ -3,8 +3,13 @@
   <div class="job-header">
 
     <div>
-      <span class="job-label">JOB VACANCY</span>
-      <h2>{{ job.title }}</h2>
+      <span class="job-label">
+        JOB VACANCY
+      </span>
+
+      <h2>
+        {{ job.title }}
+      </h2>
     </div>
 
     <span
@@ -24,6 +29,7 @@
 
     <div class="info-item">
       <span>Location</span>
+
       <strong>
         {{ job.location || 'Not specified' }}
       </strong>
@@ -31,6 +37,7 @@
 
     <div class="info-item">
       <span>Experience</span>
+
       <strong>
         {{ job.requiredExperience }} year(s)
       </strong>
@@ -38,6 +45,7 @@
 
     <div class="info-item">
       <span>Education</span>
+
       <strong>
         {{ job.requiredEducation || 'Not specified' }}
       </strong>
@@ -46,11 +54,24 @@
   </div>
 
   <div class="skills-section">
+
     <span>Required Skills</span>
 
     <strong>
       {{ job.requiredSkills || 'Not specified' }}
     </strong>
+
+  </div>
+
+  <div class="card-actions">
+
+    <a
+      class="details-button"
+      [routerLink]="['/jobs', job.jobVacancyId]"
+    >
+      View Details
+    </a>
+
   </div>
 
 </article>

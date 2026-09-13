@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Company } from '../../models/company.model';
-import { Vacancy } from '../../models/vacancy.model';
+import { CompanyService } from '../../services/company.service';
+import { VacancyService } from '../../services/vacancy.service';
 
 @Component({
   selector: 'app-employer-dashboard',
@@ -18,30 +19,25 @@ export class DashboardComponent implements OnInit {
   openVacancies = 0;
   closedVacancies = 0;
 
+  constructor(
+    private companyService: CompanyService,
+    private vacancyService: VacancyService
+  ) { }
+
   ngOnInit(): void {
     this.loadDashboardData();
   }
 
   loadDashboardData(): void {
 
-    const savedCompany =
-      localStorage.getItem('member3CompanyProfile');
+    this.company =
+      this.companyService.getCompany();
 
-    if (savedCompany) {
-      this.company = JSON.parse(savedCompany);
-    }
+    const vacancies =
+      this.vacancyService.getVacancies();
 
-
-    const savedVacancies =
-      localStorage.getItem('member3Vacancies');
-
-    let vacancies: Vacancy[] = [];
-
-    if (savedVacancies) {
-      vacancies = JSON.parse(savedVacancies);
-    }
-
-    this.totalVacancies = vacancies.length;
+    this.totalVacancies =
+      vacancies.length;
 
     this.openVacancies =
       vacancies.filter(
@@ -53,4 +49,5 @@ export class DashboardComponent implements OnInit {
         vacancy => !vacancy.isOpen
       ).length;
   }
+
 }

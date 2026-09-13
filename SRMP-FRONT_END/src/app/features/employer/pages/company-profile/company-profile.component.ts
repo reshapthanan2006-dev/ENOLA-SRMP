@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   FormControl,
@@ -11,7 +12,7 @@ import {
   CompanyRequest
 } from '../../models/company.model';
 
-import { DatePipe } from '@angular/common';
+import { CompanyService } from '../../services/company.service';
 
 @Component({
   selector: 'app-company-profile',
@@ -36,6 +37,7 @@ export class CompanyProfileComponent implements OnInit {
   successMessage = '';
 
   companyForm = new FormGroup({
+
     companyName: new FormControl('', {
       nonNullable: true,
       validators: [
@@ -50,29 +52,30 @@ export class CompanyProfileComponent implements OnInit {
         Validators.maxLength(1000)
       ]
     })
+
   });
+
+  constructor(
+    private companyService: CompanyService
+  ) { }
 
   ngOnInit(): void {
     this.loadCompany();
   }
 
   loadCompany(): void {
+
     this.isLoading = true;
     this.errorMessage = '';
 
-    const savedCompany =
-      localStorage.getItem('member3CompanyProfile');
-
-    if (savedCompany) {
-      this.company = JSON.parse(savedCompany);
-    } else {
-      this.company = null;
-    }
+    this.company =
+      this.companyService.getCompany();
 
     this.isLoading = false;
   }
 
   openCreateForm(): void {
+
     this.companyForm.reset({
       companyName: '',
       description: ''
@@ -84,13 +87,16 @@ export class CompanyProfileComponent implements OnInit {
   }
 
   openEditForm(): void {
+
     if (!this.company) {
       return;
     }
 
     this.companyForm.setValue({
-      companyName: this.company.companyName,
-      description: this.company.description
+      companyName:
+        this.company.companyName,
+      description:
+        this.company.description
     });
 
     this.saveErrorMessage = '';
@@ -99,6 +105,7 @@ export class CompanyProfileComponent implements OnInit {
   }
 
   cancelForm(): void {
+
     this.isFormVisible = false;
     this.saveErrorMessage = '';
   }
@@ -106,7 +113,9 @@ export class CompanyProfileComponent implements OnInit {
   saveCompany(): void {
 
     if (this.companyForm.invalid) {
+
       this.companyForm.markAllAsTouched();
+
       return;
     }
 
@@ -119,40 +128,32 @@ export class CompanyProfileComponent implements OnInit {
 
     if (this.company) {
 
-      const updatedCompany: Company = {
-        ...this.company,
-        companyName: companyRequest.companyName,
-        description: companyRequest.description,
-        updatedAt: new Date().toISOString()
-      };
+      const updatedCompany =
+        this.companyService.updateCompany(
+          companyRequest
+        );
+
+      if (!updatedCompany) {
+
+        this.saveErrorMessage =
+          'Unable to update company profile.';
+
+        this.isSaving = false;
+
+        return;
+      }
 
       this.company = updatedCompany;
-
-      localStorage.setItem(
-        'member3CompanyProfile',
-        JSON.stringify(updatedCompany)
-      );
 
       this.successMessage =
         'Company profile updated successfully.';
 
     } else {
 
-      const createdCompany: Company = {
-        employerCompanyId: 1,
-        companyName: companyRequest.companyName,
-        description: companyRequest.description,
-        employerId: 1,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-
-      this.company = createdCompany;
-
-      localStorage.setItem(
-        'member3CompanyProfile',
-        JSON.stringify(createdCompany)
-      );
+      this.company =
+        this.companyService.createCompany(
+          companyRequest
+        );
 
       this.successMessage =
         'Company profile created successfully.';
@@ -161,4 +162,5 @@ export class CompanyProfileComponent implements OnInit {
     this.isSaving = false;
     this.isFormVisible = false;
   }
+
 }

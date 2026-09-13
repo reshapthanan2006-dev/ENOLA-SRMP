@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Vacancy } from '../../models/vacancy.model';
+import { VacancyService } from '../../services/vacancy.service';
 
 @Component({
   selector: 'app-vacancies',
@@ -15,7 +16,8 @@ export class VacanciesComponent implements OnInit {
   vacancies: Vacancy[] = [];
 
   constructor(
-    private router: Router
+    private router: Router,
+    private vacancyService: VacancyService
   ) { }
 
   ngOnInit(): void {
@@ -23,44 +25,49 @@ export class VacanciesComponent implements OnInit {
   }
 
   loadVacancies(): void {
-    const savedVacancies =
-      localStorage.getItem('member3Vacancies');
 
-    if (savedVacancies) {
-      this.vacancies = JSON.parse(savedVacancies);
-    } else {
-      this.vacancies = [];
-    }
+    this.vacancies =
+      this.vacancyService.getVacancies();
   }
 
   openCreateVacancy(): void {
+
     this.router.navigate([
       '/employer/vacancies/new'
     ]);
   }
 
-  closeVacancy(vacancyId: number): void {
+  closeVacancy(
+    vacancyId: number
+  ): void {
 
-    const vacancy =
-      this.vacancies.find(
-        item => item.jobVacancyId === vacancyId
+    const confirmed =
+      window.confirm(
+        'Are you sure you want to close this vacancy?'
       );
 
-    if (!vacancy) {
+    if (!confirmed) {
       return;
     }
 
-    vacancy.isOpen = false;
+    const closed =
+      this.vacancyService.closeVacancy(
+        vacancyId
+      );
 
-    localStorage.setItem(
-      'member3Vacancies',
-      JSON.stringify(this.vacancies)
-    );
+    if (closed) {
+      this.loadVacancies();
+    }
   }
-  openEditVacancy(vacancyId: number): void {
-  this.router.navigate([
-    '/employer/vacancies/edit',
-    vacancyId
-  ]);
-}
+
+  openEditVacancy(
+    vacancyId: number
+  ): void {
+
+    this.router.navigate([
+      '/employer/vacancies/edit',
+      vacancyId
+    ]);
+  }
+
 }

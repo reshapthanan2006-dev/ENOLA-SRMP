@@ -15,7 +15,84 @@
   </header>
 
 
-  @if (jobs.length === 0) {
+  <div class="search-card">
+
+    <form
+      class="search-form"
+      (ngSubmit)="searchJobs()"
+    >
+
+      <div class="search-field">
+        <label for="keyword">
+          Keyword
+        </label>
+
+        <input
+          id="keyword"
+          name="keyword"
+          type="text"
+          [(ngModel)]="keyword"
+          placeholder="Job title, skill or keyword"
+        >
+      </div>
+
+
+      <div class="search-field">
+        <label for="location">
+          Location
+        </label>
+
+        <input
+          id="location"
+          name="location"
+          type="text"
+          [(ngModel)]="location"
+          placeholder="Example: Jaffna"
+        >
+      </div>
+
+
+      <div class="search-field">
+        <label for="minExperience">
+          Minimum Experience
+        </label>
+
+        <input
+          id="minExperience"
+          name="minExperience"
+          type="number"
+          min="0"
+          [(ngModel)]="minExperience"
+          placeholder="0"
+        >
+      </div>
+
+
+      <div class="search-actions">
+
+        <button
+          type="submit"
+          class="search-button"
+        >
+          Search Jobs
+        </button>
+
+        <button
+          type="button"
+          class="clear-button"
+          (click)="clearFilters()"
+        >
+          Clear
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+
+  @if (allJobs.length === 0) {
 
     <div class="empty-card">
 
@@ -27,7 +104,25 @@
 
     </div>
 
+  } @else if (jobs.length === 0) {
+
+    <div class="empty-card">
+
+      <h2>No matching jobs found</h2>
+
+      <p>
+        Try changing your search filters.
+      </p>
+
+    </div>
+
   } @else {
+
+    <div class="results-header">
+      <strong>
+        {{ jobs.length }} job(s) found
+      </strong>
+    </div>
 
     <div class="jobs-grid">
 

@@ -88,6 +88,33 @@
   background: #f8fafc;
 }
 
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.details-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.details-button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
 @media (max-width: 760px) {
   .job-info {
     grid-template-columns: 1fr;
@@ -101,5 +128,13 @@
 
   .job-header {
     flex-direction: column;
+  }
+
+  .card-actions {
+    justify-content: stretch;
+  }
+
+  .details-button {
+    width: 100%;
   }
 }
