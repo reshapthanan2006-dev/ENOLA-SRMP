@@ -4,6 +4,7 @@ export const seekerRoutes: Routes = [
 
   {
     path: '',
+
     loadComponent: () =>
       import(
         '../../layout/seeker-layout/seeker-layout.component'
@@ -13,14 +14,23 @@ export const seekerRoutes: Routes = [
 
     children: [
 
+      // =========================
+      // DEFAULT
+      // =========================
+
       {
         path: '',
         pathMatch: 'full',
         redirectTo: 'dashboard'
       },
 
+      // =========================
+      // DASHBOARD
+      // =========================
+
       {
         path: 'dashboard',
+
         loadComponent: () =>
           import(
             './pages/dashboard/dashboard.component'
@@ -29,8 +39,13 @@ export const seekerRoutes: Routes = [
           )
       },
 
+      // =========================
+      // PROFILE
+      // =========================
+
       {
         path: 'profile',
+
         loadComponent: () =>
           import(
             './pages/profile/profile.component'
@@ -39,8 +54,13 @@ export const seekerRoutes: Routes = [
           )
       },
 
+      // =========================
+      // CV
+      // =========================
+
       {
         path: 'cv',
+
         loadComponent: () =>
           import(
             './pages/cv/cv.component'
@@ -49,18 +69,28 @@ export const seekerRoutes: Routes = [
           )
       },
 
+      // =========================
+      // SEARCH JOBS
+      // =========================
+
       {
-        path: 'applications',
+        path: 'jobs',
+
         loadComponent: () =>
           import(
-            './pages/applications/applications.component'
+            '../jobs/pages/job-list/job-list.component'
           ).then(
-            (m) => m.ApplicationsComponent
+            (m) => m.JobListComponent
           )
       },
 
+      // =========================
+      // MATCHING JOB DETAILS
+      // =========================
+
       {
         path: 'matching-jobs/:jobVacancyId',
+
         loadComponent: () =>
           import(
             './pages/matching-jobs/matching-jobs.component'
@@ -69,8 +99,28 @@ export const seekerRoutes: Routes = [
           )
       },
 
+      // =========================
+      // APPLICATIONS
+      // =========================
+
+      {
+        path: 'applications',
+
+        loadComponent: () =>
+          import(
+            './pages/applications/applications.component'
+          ).then(
+            (m) => m.ApplicationsComponent
+          )
+      },
+
+      // =========================
+      // CONTACT REQUESTS
+      // =========================
+
       {
         path: 'contact-requests',
+
         loadComponent: () =>
           import(
             './pages/contact-requests/contact-requests.component'
@@ -79,8 +129,13 @@ export const seekerRoutes: Routes = [
           )
       },
 
+      // =========================
+      // NOTIFICATIONS
+      // =========================
+
       {
         path: 'notifications',
+
         loadChildren: () =>
           import(
             '../notifications/notification.routes'

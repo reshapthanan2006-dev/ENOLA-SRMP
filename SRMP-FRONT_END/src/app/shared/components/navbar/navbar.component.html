@@ -15,7 +15,9 @@
     class="topbar-brand"
     [routerLink]="user ? authService.getHomeRoute() : '/login'"
   >
-    <span class="brand-logo">E</span>
+    <span class="brand-logo">
+      E
+    </span>
 
     <span class="brand-name">
       ENOLA SRMP
@@ -23,12 +25,17 @@
   </a>
 
   @if (user) {
+
     <div class="topbar-user">
-      <span>{{ user.fullName }}</span>
+      <span>
+        {{ user.fullName }}
+      </span>
     </div>
+
   }
 
 </header>
+
 
 @if (isMenuOpen) {
 
@@ -41,14 +48,20 @@
 
 }
 
+
 <aside
   class="sidebar"
   [class.sidebar-open]="isMenuOpen"
 >
 
+  <!-- ========================= -->
+  <!-- SIDEBAR HEADER -->
+  <!-- ========================= -->
+
   <div class="sidebar-header">
 
     <div>
+
       <span class="sidebar-title">
         ENOLA
       </span>
@@ -56,6 +69,7 @@
       <span class="sidebar-subtitle">
         Smart Recruitment
       </span>
+
     </div>
 
     <button
@@ -69,7 +83,12 @@
 
   </div>
 
+
   @if (user) {
+
+    <!-- ========================= -->
+    <!-- USER -->
+    <!-- ========================= -->
 
     <div class="sidebar-user">
 
@@ -77,14 +96,31 @@
         {{ user.fullName.charAt(0).toUpperCase() }}
       </div>
 
-      <div>
-        <strong>{{ user.fullName }}</strong>
-        <span>{{ user.role }}</span>
+      <div class="user-details">
+
+        <strong>
+          {{ user.fullName }}
+        </strong>
+
+        <span>
+          {{ user.role }}
+        </span>
+
       </div>
 
     </div>
 
+
+    <!-- ========================= -->
+    <!-- NAVIGATION -->
+    <!-- ========================= -->
+
     <nav class="sidebar-links">
+
+
+      <!-- ========================= -->
+      <!-- ADMIN -->
+      <!-- ========================= -->
 
       @if (user.role === 'Administrator') {
 
@@ -105,6 +141,11 @@
         </a>
 
       }
+
+
+      <!-- ========================= -->
+      <!-- JOB SEEKER -->
+      <!-- ========================= -->
 
       @if (user.role === 'JobSeeker') {
 
@@ -133,6 +174,14 @@
         </a>
 
         <a
+          routerLink="/seeker/jobs"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          Search Jobs
+        </a>
+
+        <a
           routerLink="/seeker/applications"
           routerLinkActive="active"
           (click)="closeMenu()"
@@ -154,18 +203,31 @@
           routerLinkActive="active"
           (click)="closeMenu()"
         >
-          <span>Notifications</span>
+
+          <span>
+            Notifications
+          </span>
 
           @if (unreadCount$ | async; as unreadCount) {
+
             @if (unreadCount > 0) {
+
               <span class="notification-badge">
                 {{ unreadCount }}
               </span>
+
             }
+
           }
+
         </a>
 
       }
+
+
+      <!-- ========================= -->
+      <!-- EMPLOYER -->
+      <!-- ========================= -->
 
       @if (user.role === 'Employer') {
 
@@ -196,6 +258,11 @@
       }
 
     </nav>
+
+
+    <!-- ========================= -->
+    <!-- LOGOUT -->
+    <!-- ========================= -->
 
     <div class="sidebar-footer">
 
