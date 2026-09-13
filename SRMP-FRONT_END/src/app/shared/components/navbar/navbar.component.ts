@@ -25,11 +25,20 @@ export class NavbarComponent {
   user: AuthUser | null =
     this.authService.getCurrentUser();
 
+  isMenuOpen = false;
+
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu(): void {
+    this.isMenuOpen = false;
+  }
+
   logout(): void {
     this.authService.logout();
+    this.isMenuOpen = false;
 
-    this.router.navigate([
-      '/login'
-    ]);
+    this.router.navigate(['/login']);
   }
 }

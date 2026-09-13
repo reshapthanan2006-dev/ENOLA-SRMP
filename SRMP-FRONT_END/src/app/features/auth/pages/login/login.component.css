@@ -1,34 +1,78 @@
+:host {
+  display: block;
+}
+
 .auth-page {
   min-height: 100vh;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
-  background: #f5f7fb;
+
+  padding: 32px 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-page-bg) 0%,
+      #f4eef7 55%,
+      var(--color-accent) 100%
+    );
 }
 
 .auth-card {
   width: 100%;
   max-width: 430px;
-  padding: 32px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+  padding: 38px 36px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  background: var(--color-white);
+
+  box-shadow: var(--shadow-md);
 }
 
 .auth-header {
-  margin-bottom: 28px;
+  margin-bottom: 30px;
+
   text-align: center;
 }
 
+.auth-header::before {
+  content: "ENOLA SRMP";
+
+  display: inline-block;
+
+  margin-bottom: 12px;
+
+  color: var(--color-primary);
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 0.14em;
+}
+
 .auth-header h1 {
-  margin: 0 0 8px;
-  font-size: 28px;
+  margin: 0;
+
+  color: var(--color-darkest);
+
+  font-size: 30px;
+  font-weight: 800;
+
+  line-height: 1.2;
 }
 
 .auth-header p {
-  margin: 0;
-  color: #666;
+  margin: 9px 0 0;
+
+  color: var(--color-muted);
+
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .form-group {
@@ -37,59 +81,132 @@
 
 .form-group label {
   display: block;
+
   margin-bottom: 8px;
-  font-weight: 600;
+
+  color: var(--color-dark);
+
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .form-group input {
   width: 100%;
+
   padding: 12px 14px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+
+  outline: none;
+
+  background: var(--color-white);
+  color: var(--color-darkest);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-group input::placeholder {
+  color: #9a94a2;
 }
 
 .form-group input:focus {
-  outline: none;
-  border-color: #333;
+  border-color: var(--color-primary);
+
+  box-shadow:
+    0 0 0 3px rgba(133, 118, 171, 0.14);
 }
 
 .error {
   display: block;
+
   margin-top: 6px;
-  color: #c62828;
+
+  color: var(--color-danger);
+
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .api-error {
   margin-bottom: 18px;
-  padding: 12px;
-  border-radius: 8px;
-  background: #fdecec;
-  color: #b42318;
-}
+  padding: 11px 13px;
 
-button {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border: 1px solid var(--color-danger-border);
+  border-radius: var(--radius-sm);
+
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+
+  font-size: 13px;
   font-weight: 600;
-  cursor: pointer;
+  line-height: 1.5;
 }
 
-button:disabled {
+button[type="submit"] {
+  width: 100%;
+
+  padding: 12px 18px;
+
+  border: 0;
+  border-radius: var(--radius-sm);
+
+  background: var(--color-primary);
+  color: var(--color-white);
+
+  font-size: 15px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  background: var(--color-dark);
+  transform: translateY(-1px);
+}
+
+button[type="submit"]:disabled {
   cursor: not-allowed;
   opacity: 0.6;
 }
 
 .register-link {
-  margin-top: 22px;
+  margin: 24px 0 0;
+
   text-align: center;
+
+  color: var(--color-muted);
+
+  font-size: 14px;
 }
 
 .register-link a {
-  font-weight: 600;
+  color: var(--color-primary);
+
+  font-weight: 800;
   text-decoration: none;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 520px) {
+  .auth-page {
+    padding: 20px 14px;
+  }
+
+  .auth-card {
+    padding: 30px 22px;
+  }
+
+  .auth-header h1 {
+    font-size: 26px;
+  }
 }
