@@ -1,6 +1,8 @@
+@import "bootstrap-icons/font/bootstrap-icons.css";
 :root {
   --color-primary-soft: #b193c1;
   --color-primary: #8576ab;
+  --color-primary-dark: #6d5a98;
   --color-primary-light: #d7b9d9;
   --color-accent: #ffe7e4;
   --color-dark: #3c364f;

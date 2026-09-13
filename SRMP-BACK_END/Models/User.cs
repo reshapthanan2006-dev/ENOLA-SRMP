@@ -24,5 +24,13 @@ namespace SRMP.Models
         public bool IsActive { get; set; } = true;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+
+        // Password reset
+
+        [MaxLength(200)]
+        public string? ResetPasswordTokenHash { get; set; }
+
+        public DateTime? ResetPasswordTokenExpiresAt { get; set; }
     }
 }

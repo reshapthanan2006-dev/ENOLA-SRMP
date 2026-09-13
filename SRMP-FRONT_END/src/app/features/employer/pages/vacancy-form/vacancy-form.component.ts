@@ -1,17 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject
+} from '@angular/core';
+
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
+
 import {
   ActivatedRoute,
   Router
 } from '@angular/router';
 
-import { VacancyRequest } from '../../models/vacancy.model';
-import { VacancyService } from '../../services/vacancy.service';
+import {
+  HttpErrorResponse
+} from '@angular/common/http';
+
+import {
+  takeUntilDestroyed
+} from '@angular/core/rxjs-interop';
+
+import {
+  VacancyRequest
+} from '../../models/vacancy.model';
+
+import {
+  VacancyService
+} from '../../services/vacancy.service';
 
 @Component({
   selector: 'app-vacancy-form',
@@ -24,9 +44,28 @@ import { VacancyService } from '../../services/vacancy.service';
 })
 export class VacancyFormComponent implements OnInit {
 
+  private readonly router =
+    inject(Router);
+
+  private readonly route =
+    inject(ActivatedRoute);
+
+  private readonly vacancyService =
+    inject(VacancyService);
+
+  private readonly destroyRef =
+    inject(DestroyRef);
+
   isEditMode = false;
 
-  editingVacancyId: number | null = null;
+  editingVacancyId: number | null =
+    null;
+
+  isLoading = false;
+
+  isSaving = false;
+
+  errorMessage = '';
 
   vacancyForm = new FormGroup({
 
@@ -52,134 +91,218 @@ export class VacancyFormComponent implements OnInit {
       ]
     }),
 
-    requiredExperience: new FormControl(0, {
-      nonNullable: true,
-      validators: [
-        Validators.min(0)
-      ]
-    }),
+    requiredExperience:
+      new FormControl(0, {
+        nonNullable: true,
+        validators: [
+          Validators.min(0)
+        ]
+      }),
 
-    requiredEducation: new FormControl('', {
-      nonNullable: true
-    }),
+    requiredEducation:
+      new FormControl('', {
+        nonNullable: true
+      }),
 
-    location: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.maxLength(100)
-      ]
-    })
+    location:
+      new FormControl('', {
+        nonNullable: true,
+        validators: [
+          Validators.maxLength(100)
+        ]
+      })
 
   });
-
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private vacancyService: VacancyService
-  ) { }
 
   ngOnInit(): void {
 
     const idText =
-      this.route.snapshot.paramMap.get('id');
+      this.route.snapshot
+        .paramMap
+        .get('id');
 
-    if (idText) {
-
-      const vacancyId =
-        Number(idText);
-
-      if (!Number.isNaN(vacancyId)) {
-
-        this.isEditMode = true;
-
-        this.editingVacancyId =
-          vacancyId;
-
-        this.loadVacancyForEdit(
-          vacancyId
-        );
-      }
+    if (!idText) {
+      return;
     }
+
+    const vacancyId =
+      Number(idText);
+
+    if (
+      Number.isNaN(vacancyId)
+    ) {
+      return;
+    }
+
+    this.isEditMode = true;
+
+    this.editingVacancyId =
+      vacancyId;
+
+    this.loadVacancyForEdit(
+      vacancyId
+    );
   }
 
   loadVacancyForEdit(
     vacancyId: number
   ): void {
 
-    const vacancy =
-      this.vacancyService.getVacancyById(
-        vacancyId
-      );
+    this.isLoading = true;
 
-    if (!vacancy) {
+    this.errorMessage = '';
 
-      this.router.navigate([
-        '/employer/vacancies'
-      ]);
+    this.vacancyService
+      .getVacancyById(vacancyId)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
 
-      return;
-    }
+        next: vacancy => {
 
-    this.vacancyForm.setValue({
+          this.isLoading = false;
 
-      title:
-        vacancy.title,
+          this.vacancyForm.setValue({
 
-      description:
-        vacancy.description,
+            title:
+              vacancy.title,
 
-      requiredSkills:
-        vacancy.requiredSkills,
+            description:
+              vacancy.description,
 
-      requiredExperience:
-        vacancy.requiredExperience,
+            requiredSkills:
+              vacancy.requiredSkills,
 
-      requiredEducation:
-        vacancy.requiredEducation,
+            requiredExperience:
+              vacancy.requiredExperience,
 
-      location:
-        vacancy.location
+            requiredEducation:
+              vacancy.requiredEducation,
 
-    });
+            location:
+              vacancy.location
+
+          });
+        },
+
+        error: (
+          error: HttpErrorResponse
+        ) => {
+
+          this.isLoading = false;
+
+          this.errorMessage =
+            this.getErrorMessage(error);
+
+          window.alert(
+            this.errorMessage
+          );
+
+          this.router.navigate([
+            '/employer/vacancies'
+          ]);
+        }
+
+      });
   }
 
   saveVacancy(): void {
 
-    if (this.vacancyForm.invalid) {
+    if (
+      this.vacancyForm.invalid ||
+      this.isSaving
+    ) {
 
-      this.vacancyForm.markAllAsTouched();
+      this.vacancyForm
+        .markAllAsTouched();
 
       return;
     }
 
-    const vacancyRequest: VacancyRequest =
-      this.vacancyForm.getRawValue();
+    this.isSaving = true;
+
+    this.errorMessage = '';
+
+    const vacancyRequest:
+      VacancyRequest =
+        this.vacancyForm
+          .getRawValue();
 
     if (
       this.isEditMode &&
       this.editingVacancyId !== null
     ) {
 
-      const updatedVacancy =
-        this.vacancyService.updateVacancy(
+      this.vacancyService
+        .updateVacancy(
           this.editingVacancyId,
           vacancyRequest
-        );
+        )
+        .pipe(
+          takeUntilDestroyed(
+            this.destroyRef
+          )
+        )
+        .subscribe({
 
-      if (!updatedVacancy) {
-        return;
-      }
+          next: () => {
 
-    } else {
+            this.isSaving = false;
 
-      this.vacancyService.createVacancy(
-        vacancyRequest
-      );
+            this.router.navigate([
+              '/employer/vacancies'
+            ]);
+          },
+
+          error: (
+            error: HttpErrorResponse
+          ) => {
+
+            this.isSaving = false;
+
+            this.handleSaveError(
+              error
+            );
+          }
+
+        });
+
+      return;
     }
 
-    this.router.navigate([
-      '/employer/vacancies'
-    ]);
+    this.vacancyService
+      .createVacancy(
+        vacancyRequest
+      )
+      .pipe(
+        takeUntilDestroyed(
+          this.destroyRef
+        )
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.isSaving = false;
+
+          this.router.navigate([
+            '/employer/vacancies'
+          ]);
+        },
+
+        error: (
+          error: HttpErrorResponse
+        ) => {
+
+          this.isSaving = false;
+
+          this.handleSaveError(
+            error
+          );
+        }
+
+      });
   }
 
   cancelForm(): void {
@@ -189,4 +312,49 @@ export class VacancyFormComponent implements OnInit {
     ]);
   }
 
+  private handleSaveError(
+    error: HttpErrorResponse
+  ): void {
+
+    this.errorMessage =
+      this.getErrorMessage(error);
+
+    window.alert(
+      this.errorMessage
+    );
+  }
+
+  private getErrorMessage(
+    error: HttpErrorResponse
+  ): string {
+
+    if (error.status === 401) {
+      return 'Please sign in as an employer.';
+    }
+
+    if (error.status === 403) {
+      return 'You are not allowed to manage this vacancy.';
+    }
+
+    if (error.status === 404) {
+      return 'Vacancy not found.';
+    }
+
+    if (
+      typeof error.error === 'string' &&
+      error.error.trim()
+    ) {
+      return error.error;
+    }
+
+    if (
+      error.error?.message
+    ) {
+      return error.error.message;
+    }
+
+    return this.isEditMode
+      ? 'Unable to update vacancy. Please try again.'
+      : 'Unable to create vacancy. Please try again.';
+  }
 }

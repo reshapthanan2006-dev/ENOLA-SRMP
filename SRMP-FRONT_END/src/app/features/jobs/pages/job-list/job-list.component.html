@@ -6,10 +6,13 @@
       JOB OPPORTUNITIES
     </span>
 
-    <h1>Available Jobs</h1>
+    <h1>
+      Available Jobs
+    </h1>
 
     <p>
-      Browse the currently available job vacancies.
+      Browse vacancies currently available
+      from employers.
     </p>
 
   </header>
@@ -23,6 +26,7 @@
     >
 
       <div class="search-field">
+
         <label for="keyword">
           Keyword
         </label>
@@ -33,11 +37,13 @@
           type="text"
           [(ngModel)]="keyword"
           placeholder="Job title, skill or keyword"
-        >
+        />
+
       </div>
 
 
       <div class="search-field">
+
         <label for="location">
           Location
         </label>
@@ -48,11 +54,13 @@
           type="text"
           [(ngModel)]="location"
           placeholder="Example: Jaffna"
-        >
+        />
+
       </div>
 
 
       <div class="search-field">
+
         <label for="minExperience">
           Minimum Experience
         </label>
@@ -64,7 +72,8 @@
           min="0"
           [(ngModel)]="minExperience"
           placeholder="0"
-        >
+        />
+
       </div>
 
 
@@ -92,41 +101,84 @@
   </div>
 
 
-  @if (allJobs.length === 0) {
+  @if (isLoading) {
 
-    <div class="empty-card">
+    <div class="state-card">
+      Loading available jobs...
+    </div>
 
-      <h2>No open jobs found</h2>
+  }
+
+  @else if (errorMessage) {
+
+    <div
+      class="error-card"
+      role="alert"
+    >
 
       <p>
-        There are no open job vacancies available at the moment.
+        {{ errorMessage }}
       </p>
+
+      <button
+        type="button"
+        (click)="loadJobs()"
+      >
+        Try Again
+      </button>
 
     </div>
 
-  } @else if (jobs.length === 0) {
+  }
+
+  @else if (jobs.length === 0) {
 
     <div class="empty-card">
 
-      <h2>No matching jobs found</h2>
+      @if (hasActiveFilters) {
 
-      <p>
-        Try changing your search filters.
-      </p>
+        <h2>
+          No matching jobs found
+        </h2>
+
+        <p>
+          Try changing your search filters.
+        </p>
+
+      } @else {
+
+        <h2>
+          No open jobs found
+        </h2>
+
+        <p>
+          There are no open job vacancies
+          available at the moment.
+        </p>
+
+      }
 
     </div>
 
-  } @else {
+  }
+
+  @else {
 
     <div class="results-header">
+
       <strong>
         {{ jobs.length }} job(s) found
       </strong>
+
     </div>
+
 
     <div class="jobs-grid">
 
-      @for (job of jobs; track job.jobVacancyId) {
+      @for (
+        job of jobs;
+        track job.jobVacancyId
+      ) {
 
         <app-job-card
           [job]="job"

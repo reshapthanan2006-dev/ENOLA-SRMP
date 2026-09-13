@@ -11,14 +11,14 @@ import { ContactRequestService } from '../../../seeker/services/contact-request.
 import { ScoreBadgeComponent } from '../../../../shared/components/score-badge/score-badge.component';
 import { SkillListPipe } from '../../../../shared/pipes/skill-list.pipe';
 
+
 @Component({
   selector: 'app-applicants',
   standalone: true,
-  imports: [
-    ScoreBadgeComponent,
-    SkillListPipe,
-    NavbarComponent
-  ],
+imports: [
+  ScoreBadgeComponent,
+  SkillListPipe
+],
   templateUrl: './applicants.component.html',
   styleUrl: './applicants.component.css'
 })

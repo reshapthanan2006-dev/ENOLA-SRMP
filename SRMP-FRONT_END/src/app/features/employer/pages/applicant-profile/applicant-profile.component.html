@@ -1,93 +1,363 @@
 <section class="applicant-profile-page">
 
   <header class="page-header">
+
     <div>
-      <span class="eyebrow">EMPLOYER WORKSPACE</span>
-      <h1>Applicant Profile</h1>
-      <p>Review the applicant's profile and qualifications.</p>
+
+      <span class="eyebrow">
+        Employer Workspace
+      </span>
+
+      <h1>
+        Applicant Profile
+      </h1>
+
+      <p>
+        Review the applicant's profile,
+        qualifications and CV.
+      </p>
+
     </div>
 
-    <div class="header-accent"></div>
   </header>
 
+
   @if (isLoading) {
+
     <div class="profile-card loading-card">
-      <div class="skeleton skeleton-title"></div>
+
+      <div
+        class="skeleton skeleton-title"
+      ></div>
+
       <div class="skeleton"></div>
+
       <div class="skeleton"></div>
-      <div class="skeleton skeleton-short"></div>
+
+      <div
+        class="skeleton skeleton-short"
+      ></div>
+
     </div>
+
   }
 
   @else if (errorMessage) {
+
     <div class="message-card error-card">
-      <strong>Unable to load profile</strong>
-      <p>{{ errorMessage }}</p>
+
+      <strong>
+        Unable to load profile
+      </strong>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
     </div>
+
   }
 
   @else if (profile) {
+
     <div class="profile-card">
 
       <div class="profile-top">
+
         <div class="profile-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="8" r="4"></circle>
-            <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"></path>
+
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle
+              cx="12"
+              cy="8"
+              r="4"
+            ></circle>
+
+            <path
+              d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"
+            ></path>
           </svg>
+
         </div>
 
         <div>
-          <span class="profile-label">CANDIDATE PROFILE</span>
-          <h2>Applicant #{{ profile.userId }}</h2>
-          <p>Profile information provided by the job seeker.</p>
+
+          <span class="profile-label">
+            Candidate Profile
+          </span>
+
+          <h2>
+            Applicant #{{ profile.userId }}
+          </h2>
+
+          <p>
+            Profile information provided
+            by the job seeker.
+          </p>
+
         </div>
+
       </div>
+
 
       <div class="profile-grid">
 
         <article class="info-card">
-          <span class="info-label">Experience</span>
-          <strong>{{ profile.experienceYears }} years</strong>
+
+          <span class="info-label">
+            Experience
+          </span>
+
+          <strong>
+            {{ profile.experienceYears }}
+            years
+          </strong>
+
         </article>
 
-        <article class="info-card">
-          <span class="info-label">Education</span>
-          <strong>{{ profile.education }}</strong>
-        </article>
 
         <article class="info-card">
-          <span class="info-label">Location</span>
-          <strong>{{ profile.location }}</strong>
+
+          <span class="info-label">
+            Education
+          </span>
+
+          <strong>
+            {{
+              profile.education ||
+              'Not provided'
+            }}
+          </strong>
+
+        </article>
+
+
+        <article class="info-card">
+
+          <span class="info-label">
+            Location
+          </span>
+
+          <strong>
+            {{
+              profile.location ||
+              'Not provided'
+            }}
+          </strong>
+
         </article>
 
       </div>
 
+
       <section class="skills-section">
+
         <div class="section-heading">
-          <span class="info-label">Skills</span>
-          <h3>Candidate Skills</h3>
+
+          <span class="info-label">
+            Skills
+          </span>
+
+          <h3>
+            Candidate Skills
+          </h3>
+
         </div>
 
+
         @if (profile.skills.length > 0) {
+
           <div class="skill-list">
-            @for (skill of profile.skills; track skill) {
-              <span class="skill-chip">{{ skill }}</span>
+
+            @for (
+              skill of profile.skills;
+              track skill
+            ) {
+
+              <span class="skill-chip">
+                {{ skill }}
+              </span>
+
             }
+
           </div>
+
         } @else {
-          <p class="empty-text">No skills have been added to this profile.</p>
+
+          <p class="empty-text">
+            No skills have been added
+            to this profile.
+          </p>
+
         }
+
+      </section>
+
+
+      <!-- =====================
+           CV SECTION
+           ===================== -->
+
+      <section class="cv-section">
+
+        <div class="cv-heading">
+
+          <div class="cv-icon">
+
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+
+              <path
+                d="M7 3h7l4 4v14H7V3Z"
+              ></path>
+
+              <path
+                d="M14 3v5h5"
+              ></path>
+
+              <path
+                d="M10 13h5M10 17h5"
+              ></path>
+
+            </svg>
+
+          </div>
+
+          <div>
+
+            <span class="info-label">
+              Candidate CV
+            </span>
+
+            <h3>
+              Curriculum Vitae
+            </h3>
+
+            <p>
+              Review the CV submitted
+              by this applicant.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        @if (isCvLoading) {
+
+          <div class="cv-state">
+            Loading CV...
+          </div>
+
+        }
+
+        @else if (cv) {
+
+          <div class="cv-file-card">
+
+            <div class="cv-file-info">
+
+              <strong>
+                {{ cv.originalFileName }}
+              </strong>
+
+              <span>
+                {{ formatFileSize(cv.fileSize) }}
+                ·
+                {{ formatDate(cv.uploadedAt) }}
+              </span>
+
+            </div>
+
+
+            <div class="cv-actions">
+
+              @if (canViewCv) {
+
+                <button
+                  type="button"
+                  class="view-cv-button"
+                  [disabled]="isDownloadingCv"
+                  (click)="viewCv()"
+                >
+                  View CV
+                </button>
+
+              }
+
+              <button
+                type="button"
+                class="download-cv-button"
+                [disabled]="isDownloadingCv"
+                (click)="downloadCv()"
+              >
+                {{
+                  isDownloadingCv
+                    ? 'Please wait...'
+                    : 'Download CV'
+                }}
+              </button>
+
+            </div>
+
+          </div>
+
+          @if (!canViewCv) {
+
+            <p class="cv-note">
+              DOC and DOCX files can be
+              downloaded for viewing.
+            </p>
+
+          }
+
+        }
+
+        @else {
+
+          <div class="cv-empty-state">
+
+            <strong>
+              No CV available
+            </strong>
+
+            <p>
+              {{
+                cvMessage ||
+                'This applicant has not uploaded a CV yet.'
+              }}
+            </p>
+
+          </div>
+
+        }
+
       </section>
 
     </div>
+
   }
 
   @else {
+
     <div class="message-card">
-      <strong>No applicant profile available.</strong>
-      <p>Select an applicant to view profile details.</p>
+
+      <strong>
+        No applicant profile available.
+      </strong>
+
+      <p>
+        Select an applicant to view
+        profile details.
+      </p>
+
     </div>
+
   }
 
 </section>

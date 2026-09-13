@@ -1,24 +1,33 @@
-.vacancies-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 36px 56px;
-  color: #0f172a;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", sans-serif;
+:host {
+  display: block;
 }
+
+.vacancies-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 38px 24px 56px;
+
+  color: var(--color-darkest);
+}
+
+/* HEADER */
 
 .page-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+
   gap: 24px;
+
+  margin-bottom: 28px;
   padding-bottom: 22px;
-  border-bottom: 1px solid #e2e8f0;
+
+  border-bottom: 1px solid var(--color-border);
 }
 
-.eyebrow,
-.vacancy-id {
-  color: #2563eb;
+.eyebrow {
+  color: var(--color-primary);
+
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -26,192 +35,362 @@
 }
 
 .page-header h1 {
-  margin: 8px 0 4px;
-  font-size: 2rem;
+  margin: 7px 0;
+
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  letter-spacing: -0.03em;
 }
 
 .page-header p {
   margin: 0;
-  color: #64748b;
-  line-height: 1.6;
+
+  color: var(--color-muted);
 }
 
+/* MAIN BUTTON */
+
 .primary-button {
+  min-height: 44px;
   padding: 11px 18px;
-  border: 1px solid #2563eb;
-  border-radius: 8px;
-  background: #2563eb;
+
+  border: 1px solid var(--color-primary);
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-primary),
+      var(--color-primary-dark)
+    );
+
   color: #ffffff;
+
   font: inherit;
-  font-weight: 700;
+  font-weight: 800;
+
   cursor: pointer;
+
+  box-shadow:
+    0 7px 17px rgba(133, 118, 171, 0.2);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .primary-button:hover {
-  background: #1d4ed8;
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 22px rgba(133, 118, 171, 0.28);
 }
 
-.header-button {
-  margin-bottom: 4px;
+.header-button::before {
+  content: "+";
+  margin-right: 7px;
 }
 
-.message-card {
-  margin-top: 28px;
-  padding: 32px;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
-}
-
-.empty-card {
-  text-align: center;
-  background: #f8fafc;
-}
-
-.empty-card h2 {
-  margin: 0 0 8px;
-  font-size: 1.4rem;
-}
-
-.empty-card p {
-  margin: 0 0 20px;
-  color: #64748b;
-}
+/* LIST */
 
 .vacancy-list {
   display: grid;
+
   gap: 20px;
-  margin-top: 28px;
 }
 
 .vacancy-card {
+  position: relative;
+  overflow: hidden;
+
   padding: 28px;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+
+  background: var(--color-white);
+
+  box-shadow: var(--shadow-sm);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.vacancy-card::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 4px;
+  height: 100%;
+
+  background:
+    linear-gradient(
+      180deg,
+      var(--color-primary),
+      var(--color-primary-light)
+    );
+}
+
+.vacancy-card:hover {
+  transform: translateY(-3px);
+
+  border-color: var(--color-primary-light);
+
+  box-shadow: var(--shadow-md);
 }
 
 .vacancy-card-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+
   gap: 20px;
+
   padding-bottom: 20px;
-  border-bottom: 1px solid #e2e8f0;
+
+  border-bottom: 1px solid var(--color-border);
 }
 
-.vacancy-card-header h2 {
-  margin: 7px 0 0;
+.vacancy-id {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: var(--color-primary);
+
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.vacancy-card h2 {
+  margin: 0;
+
   font-size: 1.4rem;
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 11px;
-  border-radius: 999px;
-  background: #dcfce7;
-  color: #15803d;
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.closed-status {
-  background: #f1f5f9;
-  color: #64748b;
 }
 
 .description {
   margin: 22px 0;
-  color: #64748b;
-  line-height: 1.6;
+
+  color: var(--color-muted);
+
+  line-height: 1.65;
 }
+
+/* STATUS */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 7px 12px;
+
+  border-radius: 999px;
+
+  background: var(--color-success-bg);
+  color: var(--color-success);
+
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.status-badge::before {
+  content: "";
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+.closed-status {
+  background: #f0edf2;
+  color: var(--color-muted);
+}
+
+/* DETAILS */
 
 .vacancy-details {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
   gap: 14px;
 }
 
 .detail-item {
-  padding: 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  background: #f8fafc;
+  position: relative;
+
+  min-height: 64px;
+  padding: 15px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fcfbfd,
+      #f6f1f8
+    );
 }
 
 .detail-item span {
   display: block;
-  margin-bottom: 7px;
-  color: #64748b;
-  font-size: 0.8rem;
-  font-weight: 600;
+
+  margin-bottom: 8px;
+
+  color: var(--color-muted);
+
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 .detail-item strong {
   display: block;
-  color: #0f172a;
+
   overflow-wrap: anywhere;
+
+  font-size: 0.9rem;
 }
+
+/* ACTIONS */
 
 .vacancy-actions {
   display: flex;
-  align-items: center;
   justify-content: flex-end;
-  gap: 12px;
+
+  gap: 10px;
+
   margin-top: 22px;
+  padding-top: 18px;
+
+  border-top: 1px solid var(--color-border);
 }
-.edit-button {
+
+.edit-button,
+.close-button {
   padding: 10px 16px;
-  border: 1px solid #2563eb;
-  border-radius: 8px;
+
+  border-radius: 9px;
+
   background: #ffffff;
-  color: #2563eb;
+
   font: inherit;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 800;
+
   cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.edit-button {
+  border: 1px solid var(--color-primary);
+
+  color: var(--color-primary);
 }
 
 .edit-button:hover {
-  background: #eff6ff;
+  transform: translateY(-2px);
+
+  background: var(--color-primary-soft);
 }
 
 .close-button {
-  padding: 10px 16px;
-  border: 1px solid #dc2626;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #dc2626;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
+  border: 1px solid var(--color-danger-border);
+
+  color: var(--color-danger);
 }
 
 .close-button:hover {
-  background: #fef2f2;
+  transform: translateY(-2px);
+
+  background: var(--color-danger-bg);
 }
 
 .closed-text {
-  color: #64748b;
-  font-size: 0.9rem;
-  font-weight: 600;
+  padding: 9px 12px;
+
+  border-radius: 9px;
+
+  background: #f4f1f5;
+  color: var(--color-muted);
+
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* EMPTY */
+
+.message-card {
+  padding: 42px;
+
+  border: 1px dashed var(--color-primary-light);
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #f8f3fa
+    );
+
+  text-align: center;
+}
+
+.message-card::before {
+  content: "💼";
+
+  display: grid;
+
+  width: 58px;
+  height: 58px;
+
+  margin: 0 auto 15px;
+
+  place-items: center;
+
+  border-radius: 16px;
+
+  background: var(--color-primary-soft);
+
+  font-size: 1.5rem;
+}
+
+.message-card h2 {
+  margin: 0 0 8px;
+}
+
+.message-card p {
+  margin: 0 0 20px;
+
+  color: var(--color-muted);
 }
 
 @media (max-width: 900px) {
   .vacancy-details {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 650px) {
   .vacancies-page {
-    padding: 28px 20px 40px;
+    padding: 28px 16px 42px;
   }
 
   .page-header {
-    align-items: flex-start;
+    align-items: stretch;
     flex-direction: column;
   }
 
@@ -220,17 +399,7 @@
   }
 
   .vacancy-card {
-    padding: 24px;
-  }
-}
-
-@media (max-width: 480px) {
-  .vacancies-page {
-    padding: 24px 16px 36px;
-  }
-
-  .page-header h1 {
-    font-size: 1.7rem;
+    padding: 22px;
   }
 
   .vacancy-card-header {
@@ -241,15 +410,11 @@
     grid-template-columns: 1fr;
   }
 
-  .primary-button,
-.edit-button,
-.close-button {
-  width: 100%;
-}
-
   .vacancy-actions {
-  flex-direction: column;
-  align-items: stretch;
-  width: 100%;
-}
+    flex-direction: column;
+  }
+
+  .vacancy-actions button {
+    width: 100%;
+  }
 }

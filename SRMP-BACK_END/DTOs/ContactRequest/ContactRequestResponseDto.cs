@@ -10,7 +10,22 @@
 
         public int ApplicationId { get; set; }
 
-        public string Status { get; set; } = string.Empty;
+        public int JobVacancyId { get; set; }
+
+        public string CompanyName { get; set; }
+            = string.Empty;
+
+        public string JobTitle { get; set; }
+            = string.Empty;
+
+        public string JobLocation { get; set; }
+            = string.Empty;
+
+        public string ApplicationStatus { get; set; }
+            = string.Empty;
+
+        public string Status { get; set; }
+            = string.Empty;
 
         public DateTime CreatedAt { get; set; }
     }

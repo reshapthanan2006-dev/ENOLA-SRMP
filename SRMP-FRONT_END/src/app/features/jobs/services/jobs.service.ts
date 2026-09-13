@@ -1,4 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+
+import {
+  HttpClient,
+  HttpParams
+} from '@angular/common/http';
+
+import { Observable } from 'rxjs';
+
+import { environment } from '../../../../environments/environment';
 
 import { Job } from '../models/job.model';
 
@@ -7,37 +16,18 @@ import { Job } from '../models/job.model';
 })
 export class JobsService {
 
-  private readonly storageKey =
-    'member3Vacancies';
+  private readonly http =
+    inject(HttpClient);
 
-  getAllJobs(): Job[] {
+  private readonly apiUrl =
+    `${environment.apiUrl}/JobVacancy`;
 
-    const savedJobs =
-      localStorage.getItem(this.storageKey);
+  getOpenJobs(): Observable<Job[]> {
 
-    if (!savedJobs) {
-      return [];
-    }
-
-    return JSON.parse(savedJobs);
-  }
-
-  getOpenJobs(): Job[] {
-
-    return this.getAllJobs().filter(
-      job => job.isOpen
-    );
-  }
-
-  getJobById(
-    jobVacancyId: number
-  ): Job | null {
-
-    return (
-      this.getAllJobs().find(
-        job =>
-          job.jobVacancyId === jobVacancyId
-      ) ?? null
+    return this.searchJobs(
+      '',
+      '',
+      null
     );
   }
 
@@ -45,46 +35,58 @@ export class JobsService {
     keyword: string,
     location: string,
     minExperience: number | null
-  ): Job[] {
+  ): Observable<Job[]> {
 
-    const normalizedKeyword =
-      keyword.trim().toLowerCase();
+    let params =
+      new HttpParams();
 
-    const normalizedLocation =
-      location.trim().toLowerCase();
+    const trimmedKeyword =
+      keyword.trim();
 
-    return this.getOpenJobs().filter(
-      job => {
+    const trimmedLocation =
+      location.trim();
 
-        const matchesKeyword =
-          !normalizedKeyword ||
-          job.title
-            .toLowerCase()
-            .includes(normalizedKeyword) ||
-          job.description
-            .toLowerCase()
-            .includes(normalizedKeyword) ||
-          job.requiredSkills
-            .toLowerCase()
-            .includes(normalizedKeyword);
+    if (trimmedKeyword) {
 
-        const matchesLocation =
-          !normalizedLocation ||
-          job.location
-            .toLowerCase()
-            .includes(normalizedLocation);
-
-        const matchesExperience =
-          minExperience === null ||
-          job.requiredExperience >=
-            minExperience;
-
-        return (
-          matchesKeyword &&
-          matchesLocation &&
-          matchesExperience
+      params =
+        params.set(
+          'keyword',
+          trimmedKeyword
         );
+    }
+
+    if (trimmedLocation) {
+
+      params =
+        params.set(
+          'location',
+          trimmedLocation
+        );
+    }
+
+    if (minExperience !== null) {
+
+      params =
+        params.set(
+          'minExperience',
+          minExperience.toString()
+        );
+    }
+
+    return this.http.get<Job[]>(
+      `${this.apiUrl}/search`,
+      {
+        params
       }
+    );
+  }
+
+  getJobById(
+    jobVacancyId: number
+  ): Observable<Job> {
+
+    return this.http.get<Job>(
+      `${this.apiUrl}/${jobVacancyId}`
     );
   }
 }

@@ -1,103 +1,131 @@
 <section class="contact-requests-page">
 
   <header class="page-header">
+
     <div>
-      <p class="eyebrow">Seeker workspace</p>
-      <h1>Contact Requests</h1>
-      <p class="page-subtitle">
-        Review contact requests sent by employers.
+
+      <p class="eyebrow">
+        Seeker Workspace
       </p>
+
+      <h1>
+        Contact Requests
+      </h1>
+
+      <p class="page-subtitle">
+        Review employers who would like
+        to contact you about your applications.
+      </p>
+
     </div>
 
     <button
       type="button"
       class="refresh-button"
       (click)="loadContactRequests()"
-      [disabled]="isLoading">
-
+      [disabled]="isLoading"
+    >
       Refresh
-
     </button>
+
   </header>
+
 
   @if (responseMessage) {
 
     <div
       class="feedback-message success-message"
-      role="status">
-
-      <span aria-hidden="true">&#10003;</span>
+      role="status"
+    >
+      <span>✓</span>
       <p>{{ responseMessage }}</p>
-
     </div>
 
   }
+
 
   @if (responseErrorMessage) {
 
     <div
       class="feedback-message error-message"
-      role="alert">
-
-      <span aria-hidden="true">!</span>
+      role="alert"
+    >
+      <span>!</span>
       <p>{{ responseErrorMessage }}</p>
+    </div>
+
+  }
+
+
+  @if (isLoading) {
+
+    <div class="state-card">
+
+      <div class="spinner"></div>
+
+      <h3>
+        Loading contact requests
+      </h3>
+
+      <p>
+        Please wait while we load
+        your employer requests.
+      </p>
 
     </div>
 
   }
 
-  @if (isLoading) {
+  @else if (errorMessage) {
 
-    <div class="state-card loading-state" role="status">
+    <div class="state-card error-state">
 
-      <div class="spinner"></div>
+      <div class="state-icon">
+        !
+      </div>
 
-      <h3>Loading contact requests</h3>
+      <h3>
+        Unable to load requests
+      </h3>
 
       <p>
-        Please wait while we load your requests.
+        {{ errorMessage }}
       </p>
-
-    </div>
-
-  } @else if (errorMessage) {
-
-    <div class="state-card error-state" role="alert">
-
-      <div class="state-icon">!</div>
-
-      <h3>Unable to load contact requests</h3>
-
-      <p>{{ errorMessage }}</p>
 
       <button
         type="button"
         class="retry-button"
-        (click)="loadContactRequests()">
-
+        (click)="loadContactRequests()"
+      >
         Try Again
-
       </button>
 
     </div>
 
-  } @else if (contactRequests.length === 0) {
+  }
+
+  @else if (contactRequests.length === 0) {
 
     <div class="state-card empty-state">
 
       <div class="empty-icon">
-        &#9993;
+        ✉
       </div>
 
-      <h3>No contact requests yet</h3>
+      <h3>
+        No contact requests yet
+      </h3>
 
       <p>
-        Employer contact requests will appear here.
+        When an employer wants to contact you
+        about an application, it will appear here.
       </p>
 
     </div>
 
-  } @else {
+  }
+
+  @else {
 
     <div class="requests-grid">
 
@@ -108,63 +136,124 @@
 
         <article class="request-card">
 
-          <div class="card-header">
+          <div class="company-row">
 
-            <div>
-              <p class="request-label">
-                Contact Request
-              </p>
+            <div class="company-avatar">
+              {{
+                request.companyName
+                  .charAt(0)
+                  .toUpperCase()
+              }}
+            </div>
+
+            <div class="company-info">
+
+              <span class="request-label">
+                Employer Contact Request
+              </span>
 
               <h2>
-                Request #{{ request.contactRequestId }}
+                {{ request.companyName }}
               </h2>
+
+              <p>
+                Request #{{ request.contactRequestId }}
+              </p>
+
             </div>
 
             <span
               class="status-badge"
               [class.pending]="request.status === 'Pending'"
               [class.accepted]="request.status === 'Accepted'"
-              [class.declined]="request.status === 'Declined'">
-
+              [class.declined]="request.status === 'Declined'"
+            >
               {{ request.status }}
-
             </span>
 
           </div>
 
+
+          <section class="job-summary">
+
+            <span class="job-label">
+              Opportunity
+            </span>
+
+            <h3>
+              {{ request.jobTitle }}
+            </h3>
+
+            @if (request.jobLocation) {
+              <p>
+                📍 {{ request.jobLocation }}
+              </p>
+            }
+
+          </section>
+
+
           <div class="request-details">
 
             <div class="detail-item">
-              <span class="detail-label">
-                Employer ID
+
+              <span>
+                Application Status
               </span>
 
               <strong>
-                {{ request.employerId }}
+                {{
+                  request.applicationStatus ||
+                  'Pending'
+                }}
               </strong>
+
             </div>
+
 
             <div class="detail-item">
-              <span class="detail-label">
-                Application ID
-              </span>
 
-              <strong>
-                {{ request.applicationId }}
-              </strong>
-            </div>
-
-            <div class="detail-item detail-wide">
-              <span class="detail-label">
+              <span>
                 Received
               </span>
 
               <strong>
-                {{ request.createdAt | date:'medium' }}
+                {{
+                  request.createdAt |
+                  date:'medium'
+                }}
               </strong>
+
             </div>
 
           </div>
+
+
+          <div class="secondary-actions">
+
+            @if (request.jobVacancyId) {
+
+              <a
+                class="outline-link"
+                [routerLink]="[
+                  '/seeker/matching-jobs',
+                  request.jobVacancyId
+                ]"
+              >
+                View Job
+              </a>
+
+            }
+
+            <a
+              class="outline-link"
+              routerLink="/seeker/applications"
+            >
+              My Applications
+            </a>
+
+          </div>
+
 
           @if (isPending(request)) {
 
@@ -173,13 +262,13 @@
               <button
                 type="button"
                 class="decline-button"
-                (click)="declineRequest(
-                  request.contactRequestId
-                )"
-                [disabled]="
-                  respondingRequestId !== null
-                ">
-
+                [disabled]="respondingRequestId !== null"
+                (click)="
+                  declineRequest(
+                    request.contactRequestId
+                  )
+                "
+              >
                 @if (
                   isResponding(
                     request.contactRequestId
@@ -189,19 +278,19 @@
                 } @else {
                   Decline
                 }
-
               </button>
+
 
               <button
                 type="button"
                 class="accept-button"
-                (click)="acceptRequest(
-                  request.contactRequestId
-                )"
-                [disabled]="
-                  respondingRequestId !== null
-                ">
-
+                [disabled]="respondingRequestId !== null"
+                (click)="
+                  acceptRequest(
+                    request.contactRequestId
+                  )
+                "
+              >
                 @if (
                   isResponding(
                     request.contactRequestId
@@ -209,19 +298,26 @@
                 ) {
                   Processing...
                 } @else {
-                  Accept
+                  Accept Request
                 }
-
               </button>
 
             </div>
 
           } @else {
 
-            <div class="completed-message">
+            <div
+              class="completed-message"
+              [class.accepted-message]="
+                request.status === 'Accepted'
+              "
+            >
 
-              @if (request.status === 'Accepted') {
-                You accepted this contact request.
+              @if (
+                request.status === 'Accepted'
+              ) {
+                ✓ You accepted this employer's
+                contact request.
               } @else {
                 You declined this contact request.
               }

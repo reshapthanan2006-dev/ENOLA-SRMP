@@ -1,86 +1,258 @@
 <div class="auth-page">
-  <div class="auth-card">
-    <div class="auth-header">
-      <h1>Welcome Back</h1>
-      <p>Sign in to your ENOLA SRMP account</p>
-    </div>
 
-    <form
-      [formGroup]="loginForm"
-      (ngSubmit)="onSubmit()"
-    >
-      <div class="form-group">
-        <label for="email">Email</label>
+  <div class="login-shell">
 
-        <input
-          id="email"
-          type="email"
-          formControlName="email"
-          placeholder="Enter your email"
-        />
+    <!-- LEFT SIDE -->
 
-        @if (
-          loginForm.controls.email.touched &&
-          loginForm.controls.email.hasError('required')
-        ) {
-          <small class="error">
-            Email is required.
-          </small>
-        }
+    <section class="illustration-panel">
 
-        @if (
-          loginForm.controls.email.touched &&
-          loginForm.controls.email.hasError('email')
-        ) {
-          <small class="error">
-            Enter a valid email address.
-          </small>
-        }
+      <div class="illustration-copy">
+
+        <span class="brand-label">
+          ENOLA SRMP
+        </span>
+
+        <h2>
+          Smart Recruitment Starts Here
+        </h2>
+
+        <p>
+          Discover opportunities, manage applications
+          and connect job seekers with employers.
+        </p>
+
       </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
 
-        <input
-          id="password"
-          type="password"
-          formControlName="password"
-          placeholder="Enter your password"
+      <div class="illustration-wrapper">
+
+        <img
+          src="/images/login-illustration.jpg"
+          alt="ENOLA recruitment illustration"
         />
 
-        @if (
-          loginForm.controls.password.touched &&
-          loginForm.controls.password.hasError('required')
-        ) {
-          <small class="error">
-            Password is required.
-          </small>
-        }
       </div>
 
-      @if (errorMessage) {
-        <div class="api-error">
-          {{ errorMessage }}
+    </section>
+
+
+    <!-- RIGHT SIDE -->
+
+    <section class="login-panel">
+
+      <div class="auth-card">
+
+        <div class="auth-header">
+
+          <span class="auth-brand">
+            ENOLA SRMP
+          </span>
+
+          <h1>
+            Welcome Back
+          </h1>
+
+          <p>
+            Sign in to your ENOLA SRMP account
+          </p>
+
         </div>
-      }
 
-      <button
-        type="submit"
-        [disabled]="isSubmitting"
-      >
-        @if (isSubmitting) {
-          Signing in...
-        } @else {
-          Sign In
-        }
-      </button>
-    </form>
 
-    <p class="register-link">
-      Don't have an account?
-      <a routerLink="/register">
-        Create an account
-      </a>
-    </p>
+        <form
+          [formGroup]="loginForm"
+          (ngSubmit)="onSubmit()"
+        >
+
+          <!-- EMAIL -->
+
+          <div class="form-group">
+
+            <label for="email">
+              Email
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="Enter your email"
+              autocomplete="email"
+            />
+
+            @if (
+              loginForm.controls.email.touched &&
+              loginForm.controls.email.hasError('required')
+            ) {
+
+              <small class="error">
+                Email is required.
+              </small>
+
+            }
+
+            @if (
+              loginForm.controls.email.touched &&
+              loginForm.controls.email.hasError('email')
+            ) {
+
+              <small class="error">
+                Enter a valid email address.
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- PASSWORD -->
+
+          <div class="password-heading">
+
+            <label for="password">
+              Password
+            </label>
+
+            <a
+              routerLink="/forgot-password"
+              class="forgot-link"
+            >
+              Forgot Password?
+            </a>
+
+          </div>
+
+          <div class="form-group">
+
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+            />
+
+            @if (
+              loginForm.controls.password.touched &&
+              loginForm.controls.password.hasError('required')
+            ) {
+
+              <small class="error">
+                Password is required.
+              </small>
+
+            }
+
+          </div>
+
+
+          @if (errorMessage) {
+
+            <div
+              class="api-error"
+              role="alert"
+            >
+              {{ errorMessage }}
+            </div>
+
+          }
+
+
+          <button
+            type="submit"
+            class="sign-in-button"
+            [disabled]="
+              isSubmitting ||
+              loginForm.invalid
+            "
+          >
+
+            @if (isSubmitting) {
+
+              Signing in...
+
+            } @else {
+
+              Sign In
+
+            }
+
+          </button>
+
+        </form>
+
+
+        <!-- OR DIVIDER -->
+
+        <div class="social-divider">
+
+          <span></span>
+
+          <p>
+            OR CONTINUE WITH
+          </p>
+
+          <span></span>
+
+        </div>
+
+
+        <!-- SOCIAL LOGIN -->
+
+        <div class="social-buttons">
+
+          <button
+            type="button"
+            class="social-button google-button"
+            title="Google sign in will be connected later"
+          >
+
+            <i
+              class="bi bi-google social-login-icon google-brand"
+              aria-hidden="true"
+            ></i>
+
+            <span>
+              Continue with Google
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            class="social-button apple-button"
+            title="Apple sign in will be connected later"
+          >
+
+            <i
+              class="bi bi-apple social-login-icon apple-brand"
+              aria-hidden="true"
+            ></i>
+
+            <span>
+              Continue with Apple
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <p class="register-link">
+
+          Don't have an account?
+
+          <a routerLink="/register">
+            Create an account
+          </a>
+
+        </p>
+
+      </div>
+
+    </section>
+
   </div>
+
 </div>

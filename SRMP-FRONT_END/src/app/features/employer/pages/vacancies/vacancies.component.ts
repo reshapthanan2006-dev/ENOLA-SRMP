@@ -1,8 +1,29 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject
+} from '@angular/core';
 
-import { Vacancy } from '../../models/vacancy.model';
-import { VacancyService } from '../../services/vacancy.service';
+import {
+  Router
+} from '@angular/router';
+
+import {
+  HttpErrorResponse
+} from '@angular/common/http';
+
+import {
+  takeUntilDestroyed
+} from '@angular/core/rxjs-interop';
+
+import {
+  Vacancy
+} from '../../models/vacancy.model';
+
+import {
+  VacancyService
+} from '../../services/vacancy.service';
 
 @Component({
   selector: 'app-vacancies',
@@ -13,12 +34,22 @@ import { VacancyService } from '../../services/vacancy.service';
 })
 export class VacanciesComponent implements OnInit {
 
+  private readonly router =
+    inject(Router);
+
+  private readonly vacancyService =
+    inject(VacancyService);
+
+  private readonly destroyRef =
+    inject(DestroyRef);
+
   vacancies: Vacancy[] = [];
 
-  constructor(
-    private router: Router,
-    private vacancyService: VacancyService
-  ) { }
+  isLoading = false;
+
+  closingVacancyId: number | null = null;
+
+  errorMessage = '';
 
   ngOnInit(): void {
     this.loadVacancies();
@@ -26,8 +57,40 @@ export class VacanciesComponent implements OnInit {
 
   loadVacancies(): void {
 
-    this.vacancies =
-      this.vacancyService.getVacancies();
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.vacancyService
+      .getVacancies()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
+
+        next: vacancies => {
+
+          this.vacancies = vacancies;
+
+          this.isLoading = false;
+        },
+
+        error: (
+          error: HttpErrorResponse
+        ) => {
+
+          this.vacancies = [];
+
+          this.isLoading = false;
+
+          this.errorMessage =
+            this.getErrorMessage(error);
+
+          window.alert(
+            this.errorMessage
+          );
+        }
+
+      });
   }
 
   openCreateVacancy(): void {
@@ -50,14 +113,35 @@ export class VacanciesComponent implements OnInit {
       return;
     }
 
-    const closed =
-      this.vacancyService.closeVacancy(
-        vacancyId
-      );
+    this.closingVacancyId =
+      vacancyId;
 
-    if (closed) {
-      this.loadVacancies();
-    }
+    this.vacancyService
+      .closeVacancy(vacancyId)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.closingVacancyId = null;
+
+          this.loadVacancies();
+        },
+
+        error: (
+          error: HttpErrorResponse
+        ) => {
+
+          this.closingVacancyId = null;
+
+          window.alert(
+            this.getErrorMessage(error)
+          );
+        }
+
+      });
   }
 
   openEditVacancy(
@@ -70,4 +154,35 @@ export class VacanciesComponent implements OnInit {
     ]);
   }
 
+  private getErrorMessage(
+    error: HttpErrorResponse
+  ): string {
+
+    if (error.status === 401) {
+      return 'Please sign in as an employer.';
+    }
+
+    if (error.status === 403) {
+      return 'You are not allowed to manage this vacancy.';
+    }
+
+    if (error.status === 404) {
+      return 'Vacancy not found.';
+    }
+
+    if (
+      typeof error.error === 'string' &&
+      error.error.trim()
+    ) {
+      return error.error;
+    }
+
+    if (
+      error.error?.message
+    ) {
+      return error.error.message;
+    }
+
+    return 'Unable to load vacancies. Please try again.';
+  }
 }

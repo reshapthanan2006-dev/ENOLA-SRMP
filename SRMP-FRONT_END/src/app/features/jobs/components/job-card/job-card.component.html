@@ -3,6 +3,7 @@
   <div class="job-header">
 
     <div>
+
       <span class="job-label">
         JOB VACANCY
       </span>
@@ -10,6 +11,7 @@
       <h2>
         {{ job.title }}
       </h2>
+
     </div>
 
     <span
@@ -21,56 +23,101 @@
 
   </div>
 
+
   <p class="description">
-    {{ job.description || 'No description provided.' }}
+    {{
+      job.description ||
+      'No description provided.'
+    }}
   </p>
+
 
   <div class="job-info">
 
     <div class="info-item">
-      <span>Location</span>
+
+      <span>
+        Location
+      </span>
 
       <strong>
-        {{ job.location || 'Not specified' }}
+        {{
+          job.location ||
+          'Not specified'
+        }}
       </strong>
+
     </div>
 
+
     <div class="info-item">
-      <span>Experience</span>
+
+      <span>
+        Experience
+      </span>
 
       <strong>
         {{ job.requiredExperience }} year(s)
       </strong>
+
     </div>
 
+
     <div class="info-item">
-      <span>Education</span>
+
+      <span>
+        Education
+      </span>
 
       <strong>
-        {{ job.requiredEducation || 'Not specified' }}
+        {{
+          job.requiredEducation ||
+          'Not specified'
+        }}
       </strong>
+
     </div>
 
   </div>
 
+
   <div class="skills-section">
 
-    <span>Required Skills</span>
+    <span>
+      Required Skills
+    </span>
 
     <strong>
-      {{ job.requiredSkills || 'Not specified' }}
+      {{
+        job.requiredSkills ||
+        'Not specified'
+      }}
     </strong>
 
   </div>
 
+
   <div class="card-actions">
 
-    <a
-      class="details-button"
-      [routerLink]="['/jobs', job.jobVacancyId]"
-    >
-      View Details
-    </a>
+    @if (job.isOpen) {
+
+      <a
+        class="details-button"
+        [routerLink]="[
+          '/seeker/matching-jobs',
+          job.jobVacancyId
+        ]"
+      >
+        View Match & Apply
+      </a>
+
+    } @else {
+
+      <span class="closed-job-message">
+        Applications Closed
+      </span>
+
+    }
 
   </div>
 

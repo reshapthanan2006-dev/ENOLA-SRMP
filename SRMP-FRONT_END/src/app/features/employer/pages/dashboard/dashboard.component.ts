@@ -1,5 +1,6 @@
 import {
   Component,
+  DestroyRef,
   OnInit,
   inject
 } from '@angular/core';
@@ -9,11 +10,25 @@ import {
   RouterLink
 } from '@angular/router';
 
-import { AuthService } from '../../../../core/auth/auth.service';
+import {
+  takeUntilDestroyed
+} from '@angular/core/rxjs-interop';
 
-import { Company } from '../../models/company.model';
-import { CompanyService } from '../../services/company.service';
-import { VacancyService } from '../../services/vacancy.service';
+import {
+  AuthService
+} from '../../../../core/auth/auth.service';
+
+import {
+  Company
+} from '../../models/company.model';
+
+import {
+  CompanyService
+} from '../../services/company.service';
+
+import {
+  VacancyService
+} from '../../services/vacancy.service';
 
 @Component({
   selector: 'app-employer-dashboard',
@@ -38,11 +53,19 @@ export class DashboardComponent implements OnInit {
   private readonly vacancyService =
     inject(VacancyService);
 
+  private readonly destroyRef =
+    inject(DestroyRef);
+
   company: Company | null = null;
 
   totalVacancies = 0;
+
   openVacancies = 0;
+
   closedVacancies = 0;
+
+  firstVacancyId:
+    number | null = null;
 
   ngOnInit(): void {
     this.loadDashboardData();
@@ -51,26 +74,67 @@ export class DashboardComponent implements OnInit {
   loadDashboardData(): void {
 
     this.company =
-      this.companyService.getCompany();
+      this.companyService
+        .getCompany();
 
-    const vacancies =
-      this.vacancyService.getVacancies();
+    this.vacancyService
+      .getVacancies()
+      .pipe(
+        takeUntilDestroyed(
+          this.destroyRef
+        )
+      )
+      .subscribe({
 
-    this.totalVacancies =
-      vacancies.length;
+        next: vacancies => {
 
-    this.openVacancies =
-      vacancies.filter(
-        vacancy => vacancy.isOpen
-      ).length;
+          this.totalVacancies =
+            vacancies.length;
 
-    this.closedVacancies =
-      vacancies.filter(
-        vacancy => !vacancy.isOpen
-      ).length;
+          this.openVacancies =
+            vacancies.filter(
+              vacancy =>
+                vacancy.isOpen
+            ).length;
+
+          this.closedVacancies =
+            vacancies.filter(
+              vacancy =>
+                !vacancy.isOpen
+            ).length;
+
+          const firstOpenVacancy =
+            vacancies.find(
+              vacancy =>
+                vacancy.isOpen
+            );
+
+          const firstVacancy =
+            firstOpenVacancy ??
+            vacancies[0];
+
+          this.firstVacancyId =
+            firstVacancy
+              ?.jobVacancyId ??
+            null;
+        },
+
+        error: () => {
+
+          this.totalVacancies = 0;
+
+          this.openVacancies = 0;
+
+          this.closedVacancies = 0;
+
+          this.firstVacancyId = null;
+        }
+
+      });
   }
 
   logout(): void {
+
     this.authService.logout();
 
     this.router.navigate([

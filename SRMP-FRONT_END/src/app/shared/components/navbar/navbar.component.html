@@ -15,6 +15,7 @@
     class="topbar-brand"
     [routerLink]="user ? authService.getHomeRoute() : '/login'"
   >
+
     <span class="brand-logo">
       E
     </span>
@@ -22,20 +23,28 @@
     <span class="brand-name">
       ENOLA SRMP
     </span>
+
   </a>
+
 
   @if (user) {
 
     <div class="topbar-user">
+
       <span>
         {{ user.fullName }}
       </span>
+
     </div>
 
   }
 
 </header>
 
+
+<!-- =========================
+     BACKDROP
+     ========================= -->
 
 @if (isMenuOpen) {
 
@@ -49,14 +58,16 @@
 }
 
 
+<!-- =========================
+     SIDEBAR
+     ========================= -->
+
 <aside
   class="sidebar"
   [class.sidebar-open]="isMenuOpen"
 >
 
-  <!-- ========================= -->
   <!-- SIDEBAR HEADER -->
-  <!-- ========================= -->
 
   <div class="sidebar-header">
 
@@ -72,6 +83,7 @@
 
     </div>
 
+
     <button
       type="button"
       class="close-button"
@@ -86,15 +98,18 @@
 
   @if (user) {
 
-    <!-- ========================= -->
-    <!-- USER -->
-    <!-- ========================= -->
+    <!-- =========================
+         USER INFO
+         ========================= -->
 
     <div class="sidebar-user">
 
       <div class="user-avatar">
+
         {{ user.fullName.charAt(0).toUpperCase() }}
+
       </div>
+
 
       <div class="user-details">
 
@@ -111,16 +126,16 @@
     </div>
 
 
-    <!-- ========================= -->
-    <!-- NAVIGATION -->
-    <!-- ========================= -->
+    <!-- =========================
+         NAVIGATION
+         ========================= -->
 
     <nav class="sidebar-links">
 
 
-      <!-- ========================= -->
-      <!-- ADMIN -->
-      <!-- ========================= -->
+      <!-- =========================
+           ADMIN
+           ========================= -->
 
       @if (user.role === 'Administrator') {
 
@@ -131,6 +146,7 @@
         >
           Dashboard
         </a>
+
 
         <a
           routerLink="/admin/users"
@@ -143,9 +159,9 @@
       }
 
 
-      <!-- ========================= -->
-      <!-- JOB SEEKER -->
-      <!-- ========================= -->
+      <!-- =========================
+           JOB SEEKER
+           ========================= -->
 
       @if (user.role === 'JobSeeker') {
 
@@ -157,6 +173,7 @@
           Dashboard
         </a>
 
+
         <a
           routerLink="/seeker/profile"
           routerLinkActive="active"
@@ -164,6 +181,7 @@
         >
           Profile
         </a>
+
 
         <a
           routerLink="/seeker/cv"
@@ -173,6 +191,7 @@
           CV
         </a>
 
+
         <a
           routerLink="/seeker/jobs"
           routerLinkActive="active"
@@ -180,6 +199,7 @@
         >
           Search Jobs
         </a>
+
 
         <a
           routerLink="/seeker/applications"
@@ -189,6 +209,7 @@
           Applications
         </a>
 
+
         <a
           routerLink="/seeker/contact-requests"
           routerLinkActive="active"
@@ -196,6 +217,7 @@
         >
           Contact Requests
         </a>
+
 
         <a
           class="notification-menu-link"
@@ -208,7 +230,11 @@
             Notifications
           </span>
 
-          @if (unreadCount$ | async; as unreadCount) {
+
+          @if (
+            unreadCount$ | async;
+            as unreadCount
+          ) {
 
             @if (unreadCount > 0) {
 
@@ -225,9 +251,9 @@
       }
 
 
-      <!-- ========================= -->
-      <!-- EMPLOYER -->
-      <!-- ========================= -->
+      <!-- =========================
+           EMPLOYER
+           ========================= -->
 
       @if (user.role === 'Employer') {
 
@@ -239,6 +265,7 @@
           Dashboard
         </a>
 
+
         <a
           routerLink="/employer/company-profile"
           routerLinkActive="active"
@@ -246,6 +273,16 @@
         >
           Company Profile
         </a>
+
+
+        <a
+          routerLink="/employer/vacancies"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          Vacancies
+        </a>
+
 
         <a
           routerLink="/employer/contact-requests"
@@ -260,9 +297,9 @@
     </nav>
 
 
-    <!-- ========================= -->
-    <!-- LOGOUT -->
-    <!-- ========================= -->
+    <!-- =========================
+         LOGOUT
+         ========================= -->
 
     <div class="sidebar-footer">
 

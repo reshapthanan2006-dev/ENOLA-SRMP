@@ -9,6 +9,7 @@ using SRMP.Middelware;
 using SRMP.Models;
 using SRMP.Repositories;
 using SRMP.Services;
+using SRMP.Settings;
 using System.Text;
 
 namespace SRMP
@@ -20,7 +21,11 @@ namespace SRMP
             var builder =
                 WebApplication.CreateBuilder(args);
 
+
+            // =========================================
             // Database
+            // =========================================
+
             builder.Services.AddDbContext<AppDbContext>(
                 options =>
                     options.UseSqlServer(
@@ -28,10 +33,18 @@ namespace SRMP
                             .GetConnectionString(
                                 "DefaultConnection")));
 
+
+            // =========================================
             // Controllers
+            // =========================================
+
             builder.Services.AddControllers();
 
-            // Authentication services
+
+            // =========================================
+            // Authentication
+            // =========================================
+
             builder.Services.AddScoped<
                 IAuthRepository,
                 AuthRepository>();
@@ -40,7 +53,24 @@ namespace SRMP
                 IAuthService,
                 AuthService>();
 
-            // Admin services
+
+            // =========================================
+            // Email / Password Reset
+            // =========================================
+
+            builder.Services.Configure<EmailSettings>(
+                builder.Configuration
+                    .GetSection("EmailSettings"));
+
+            builder.Services.AddScoped<
+                IEmailService,
+                EmailService>();
+
+
+            // =========================================
+            // Admin
+            // =========================================
+
             builder.Services.AddScoped<
                 IAdminRepository,
                 AdminRepository>();
@@ -49,10 +79,18 @@ namespace SRMP
                 IAdminService,
                 AdminService>();
 
+
+            // =========================================
             // JWT Helper
+            // =========================================
+
             builder.Services.AddScoped<JwtHelper>();
 
+
+            // =========================================
             // JWT Authentication
+            // =========================================
+
             builder.Services
                 .AddAuthentication(
                     JwtBearerDefaults
@@ -81,23 +119,31 @@ namespace SRMP
                                         jwtKey)),
 
                             ValidateIssuer = true,
+
                             ValidIssuer =
                                 builder.Configuration[
                                     "Jwt:Issuer"],
 
                             ValidateAudience = true,
+
                             ValidAudience =
                                 builder.Configuration[
                                     "Jwt:Audience"],
 
                             ValidateLifetime = true,
+
                             ClockSkew = TimeSpan.Zero
                         };
                 });
 
+
             builder.Services.AddAuthorization();
 
+
+            // =========================================
             // CORS for Angular frontend
+            // =========================================
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(
@@ -112,12 +158,20 @@ namespace SRMP
                     });
             });
 
+
+            // =========================================
             // Matching Engine
+            // =========================================
+
             builder.Services.AddScoped<
                 IMatchingService,
                 MatchingService>();
 
+
+            // =========================================
             // Application
+            // =========================================
+
             builder.Services.AddScoped<
                 IApplicationRepository,
                 ApplicationRepository>();
@@ -126,7 +180,11 @@ namespace SRMP
                 IApplicationService,
                 ApplicationService>();
 
+
+            // =========================================
             // Notification
+            // =========================================
+
             builder.Services.AddScoped<
                 INotificationRepository,
                 NotificationRepository>();
@@ -135,7 +193,11 @@ namespace SRMP
                 INotificationService,
                 NotificationService>();
 
+
+            // =========================================
             // Contact Request
+            // =========================================
+
             builder.Services.AddScoped<
                 IContactRequestRepository,
                 ContactRequestRepository>();
@@ -144,7 +206,11 @@ namespace SRMP
                 IContactRequestService,
                 ContactRequestService>();
 
+
+            // =========================================
             // Employer Company
+            // =========================================
+
             builder.Services.AddScoped<
                 IEmployerCompanyRepository,
                 EmployerCompanyRepository>();
@@ -153,7 +219,11 @@ namespace SRMP
                 IEmployerCompanyService,
                 EmployerCompanyService>();
 
+
+            // =========================================
             // Job Vacancy
+            // =========================================
+
             builder.Services.AddScoped<
                 IJobVacancyRepository,
                 JobVacancyRepository>();
@@ -162,7 +232,11 @@ namespace SRMP
                 IJobVacancyService,
                 JobVacancyService>();
 
+
+            // =========================================
             // Job Seeker Profile
+            // =========================================
+
             builder.Services.AddScoped<
                 IJobSeekerProfileRepository,
                 JobSeekerProfileRepository>();
@@ -171,7 +245,11 @@ namespace SRMP
                 IJobSeekerProfileService,
                 JobSeekerProfileService>();
 
+
+            // =========================================
             // Job Seeker CV
+            // =========================================
+
             builder.Services.AddScoped<
                 IJobSeekerCvRepository,
                 JobSeekerCvRepository>();
@@ -180,7 +258,11 @@ namespace SRMP
                 IJobSeekerCvService,
                 JobSeekerCvService>();
 
+
+            // =========================================
             // Swagger
+            // =========================================
+
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddSwaggerGen(
@@ -237,12 +319,14 @@ namespace SRMP
                         });
                 });
 
+
             var app = builder.Build();
 
 
             // =========================================
             // Development Admin Seed
             // =========================================
+
             if (app.Environment.IsDevelopment())
             {
                 using var scope =
@@ -265,6 +349,7 @@ namespace SRMP
                         "SeedAdmin:FullName"]
                     ?? "Test Administrator";
 
+
                 if (!string.IsNullOrWhiteSpace(
                         adminEmail) &&
                     !string.IsNullOrWhiteSpace(
@@ -275,11 +360,13 @@ namespace SRMP
                             .Trim()
                             .ToLowerInvariant();
 
+
                     var adminExists =
                         dbContext.Users.Any(
                             user =>
                                 user.Email ==
                                 adminEmail);
+
 
                     if (!adminExists)
                     {
@@ -301,10 +388,12 @@ namespace SRMP
                                     DateTime.UtcNow
                             };
 
+
                         admin.PasswordHash =
                             PasswordHelper.HashPassword(
                                 admin,
                                 adminPassword);
+
 
                         dbContext.Users.Add(admin);
 
@@ -314,28 +403,51 @@ namespace SRMP
             }
 
 
+            // =========================================
             // Swagger
+            // =========================================
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
+
                 app.UseSwaggerUI();
             }
 
+
+            // =========================================
             // Global Exception Middleware
+            // =========================================
+
             app.UseMiddleware<ExceptionMiddleware>();
+
 
             app.UseHttpsRedirection();
 
-            // Angular CORS
-            app.UseCors("AngularFrontend");
 
-            // Authentication
+            // =========================================
+            // Angular CORS
+            // =========================================
+
+            app.UseCors(
+                "AngularFrontend");
+
+
+            // =========================================
+            // Authentication / Authorization
+            // =========================================
+
             app.UseAuthentication();
 
-            // Authorization
             app.UseAuthorization();
 
+
+            // =========================================
+            // Controllers
+            // =========================================
+
             app.MapControllers();
+
 
             app.Run();
         }

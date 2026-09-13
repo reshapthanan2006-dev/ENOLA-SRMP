@@ -5,6 +5,7 @@
     <div class="hero-top">
 
       <div>
+
         <p class="eyebrow">
           Employer Portal
         </p>
@@ -17,6 +18,7 @@
           Manage your company profile, vacancies,
           applicants and contact requests.
         </p>
+
       </div>
 
       <button
@@ -39,8 +41,9 @@
       <div class="company-summary-top">
 
         <div>
+
           <span class="section-label">
-            COMPANY
+            Company
           </span>
 
           <h2>
@@ -48,8 +51,12 @@
           </h2>
 
           <p>
-            {{ company.description || 'No description provided.' }}
+            {{
+              company.description ||
+              'No description provided.'
+            }}
           </p>
+
         </div>
 
         <a
@@ -68,13 +75,16 @@
     <section class="message-card">
 
       <div>
+
         <strong>
           No company profile found.
         </strong>
 
         <p>
-          Create your company profile to complete your employer workspace.
+          Create your company profile to complete
+          your employer workspace.
         </p>
+
       </div>
 
       <a
@@ -115,19 +125,27 @@
       class="dashboard-card"
       routerLink="/employer/company-profile"
     >
-      <div class="card-icon">🏢</div>
+
+      <div class="card-icon">
+        🏢
+      </div>
 
       <div>
-        <h2>Company Profile</h2>
+
+        <h2>
+          Company Profile
+        </h2>
 
         <p>
           View and manage your company information.
         </p>
+
       </div>
 
       <span class="card-link">
         Manage profile →
       </span>
+
     </a>
 
 
@@ -135,59 +153,118 @@
       class="dashboard-card"
       routerLink="/employer/vacancies"
     >
-      <div class="card-icon">💼</div>
+
+      <div class="card-icon">
+        💼
+      </div>
 
       <div>
-        <h2>Vacancies</h2>
+
+        <h2>
+          Vacancies
+        </h2>
 
         <p>
           Create, update and manage job vacancies.
         </p>
+
       </div>
 
       <span class="card-link">
         Manage vacancies →
       </span>
+
     </a>
 
 
-    <div class="dashboard-card">
+    @if (firstVacancyId) {
 
-      <div class="card-icon">👥</div>
+      <a
+        class="dashboard-card"
+        [routerLink]="[
+          '/employer/vacancies',
+          firstVacancyId,
+          'applicants'
+        ]"
+      >
 
-      <div>
-        <h2>Applicants</h2>
+        <div class="card-icon">
+          👥
+        </div>
 
-        <p>
-          Review applications and ranked candidates
-          for your vacancies.
-        </p>
+        <div>
+
+          <h2>
+            Applicants
+          </h2>
+
+          <p>
+            Review applications and ranked candidates
+            for your vacancy.
+          </p>
+
+        </div>
+
+        <span class="card-link">
+          View applicants →
+        </span>
+
+      </a>
+
+    } @else {
+
+      <div class="dashboard-card disabled-card">
+
+        <div class="card-icon">
+          👥
+        </div>
+
+        <div>
+
+          <h2>
+            Applicants
+          </h2>
+
+          <p>
+            Create a vacancy before reviewing applicants.
+          </p>
+
+        </div>
+
+        <span class="card-muted">
+          No vacancy available
+        </span>
+
       </div>
 
-      <span class="card-muted">
-        Open from a vacancy
-      </span>
-
-    </div>
+    }
 
 
     <a
       class="dashboard-card"
       routerLink="/employer/contact-requests"
     >
-      <div class="card-icon">✉️</div>
+
+      <div class="card-icon">
+        ✉️
+      </div>
 
       <div>
-        <h2>Contact Requests</h2>
+
+        <h2>
+          Contact Requests
+        </h2>
 
         <p>
           Track contact requests sent to candidates.
         </p>
+
       </div>
 
       <span class="card-link">
         View requests →
       </span>
+
     </a>
 
   </section>

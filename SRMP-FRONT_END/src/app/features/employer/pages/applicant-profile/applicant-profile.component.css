@@ -1,25 +1,23 @@
+:host {
+  display: block;
+}
+
 .applicant-profile-page {
-  max-width: 1200px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 40px 36px 56px;
-  color: #0f172a;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  padding: 38px 28px 56px;
+  color: var(--color-darkest);
 }
 
 .page-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
   padding-bottom: 22px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .eyebrow,
 .profile-label,
 .info-label {
-  color: #2563eb;
+  color: var(--color-primary);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -27,60 +25,73 @@
 }
 
 .page-header h1 {
-  margin: 8px 0 4px;
+  margin: 8px 0 5px;
   font-size: 2rem;
-  line-height: 1.15;
 }
 
 .page-header p,
 .profile-top p,
+.cv-heading p,
 .message-card p,
-.empty-text {
+.empty-text,
+.cv-note {
   margin: 0;
-  color: #64748b;
+  color: var(--color-muted);
   line-height: 1.6;
-}
-
-.header-accent {
-  width: 76px;
-  height: 6px;
-  margin-bottom: 7px;
-  border-radius: 999px;
-  background: #2563eb;
 }
 
 .profile-card {
   margin-top: 28px;
-  padding: 32px;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  padding: 30px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+
+  background: var(--color-white);
+
+  box-shadow: var(--shadow-sm);
 }
 
 .profile-top {
   display: flex;
   align-items: center;
   gap: 18px;
-  padding-bottom: 28px;
-  border-bottom: 1px solid #e2e8f0;
+
+  padding-bottom: 26px;
+
+  border-bottom: 1px solid var(--color-border);
 }
 
-.profile-icon {
+.profile-icon,
+.cv-icon {
   display: grid;
-  width: 64px;
-  height: 64px;
-  flex: 0 0 64px;
   place-items: center;
-  border-radius: 12px;
-  background: #eff6ff;
+
+  flex: 0 0 58px;
+
+  width: 58px;
+  height: 58px;
+
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-primary-light),
+      #f5eef8
+    );
+
+  color: var(--color-primary-dark);
 }
 
-.profile-icon svg {
-  width: 34px;
-  height: 34px;
+.profile-icon svg,
+.cv-icon svg {
+  width: 30px;
+  height: 30px;
+
   fill: none;
-  stroke: #2563eb;
+  stroke: currentColor;
+
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -93,16 +104,26 @@
 
 .profile-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
   gap: 16px;
-  margin-top: 28px;
+
+  margin-top: 26px;
 }
 
 .info-card {
-  padding: 20px;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  background: #f8fafc;
+  padding: 19px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fcfbfd,
+      #f7f2f9
+    );
 }
 
 .info-card .info-label {
@@ -111,53 +132,177 @@
 }
 
 .info-card strong {
-  display: block;
   overflow-wrap: anywhere;
-  font-size: 1rem;
 }
 
-.skills-section {
+.skills-section,
+.cv-section {
   margin-top: 28px;
   padding-top: 26px;
-  border-top: 1px solid #e2e8f0;
+
+  border-top: 1px solid var(--color-border);
 }
 
-.section-heading h3 {
-  margin: 6px 0 18px;
+.section-heading h3,
+.cv-heading h3 {
+  margin: 6px 0 15px;
   font-size: 1.15rem;
 }
 
 .skill-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 9px;
 }
 
 .skill-chip {
   padding: 7px 12px;
-  border: 1px solid #bfdbfe;
+
+  border: 1px solid var(--color-primary-light);
   border-radius: 8px;
-  background: #eff6ff;
-  color: #1d4ed8;
-  font-size: 0.86rem;
-  font-weight: 600;
+
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+
+  font-size: 0.85rem;
+  font-weight: 700;
 }
+
+/* CV */
+
+.cv-heading {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  margin-bottom: 20px;
+}
+
+.cv-file-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 18px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #f7f1f9
+    );
+}
+
+.cv-file-info {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+
+.cv-file-info strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cv-file-info span {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+
+.cv-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 10px;
+}
+
+.view-cv-button,
+.download-cv-button {
+  padding: 10px 15px;
+
+  border-radius: 9px;
+
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.view-cv-button {
+  border: 1px solid var(--color-primary);
+
+  background: var(--color-white);
+  color: var(--color-primary);
+}
+
+.download-cv-button {
+  border: 1px solid var(--color-primary);
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-primary),
+      var(--color-primary-dark)
+    );
+
+  color: var(--color-white);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.cv-note {
+  margin-top: 10px;
+  font-size: 0.78rem;
+}
+
+.cv-empty-state,
+.cv-state {
+  padding: 22px;
+
+  border: 1px dashed var(--color-primary-light);
+  border-radius: 13px;
+
+  background: #fbf9fc;
+}
+
+.cv-empty-state strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.cv-empty-state p {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+/* STATES */
 
 .message-card {
   margin-top: 28px;
-  padding: 24px;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  background: #ffffff;
+  padding: 22px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 13px;
+
+  background: var(--color-white);
 }
 
 .error-card {
-  border-color: #fecaca;
-  background: #fff7f7;
+  border-color: var(--color-danger-border);
+
+  background: var(--color-danger-bg);
 }
 
 .error-card strong {
-  color: #b91c1c;
+  color: var(--color-danger);
 }
 
 .loading-card {
@@ -168,8 +313,10 @@
 .skeleton {
   width: 100%;
   height: 18px;
+
   border-radius: 6px;
-  background: #e2e8f0;
+
+  background: #ebe7ee;
 }
 
 .skeleton-title {
@@ -182,8 +329,9 @@
 }
 
 @media (max-width: 760px) {
+
   .applicant-profile-page {
-    padding: 28px 20px 40px;
+    padding: 28px 18px 42px;
   }
 
   .profile-grid {
@@ -191,34 +339,35 @@
   }
 
   .profile-card {
-    padding: 24px;
+    padding: 22px;
+  }
+
+  .cv-file-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cv-actions {
+    width: 100%;
+  }
+
+  .cv-actions button {
+    flex: 1;
   }
 }
 
-@media (max-width: 480px) {
-  .applicant-profile-page {
-    padding: 24px 16px 36px;
-  }
+@media (max-width: 500px) {
 
-  .page-header {
+  .profile-top,
+  .cv-heading {
     align-items: flex-start;
   }
 
-  .header-accent {
-    display: none;
+  .cv-actions {
+    flex-direction: column;
   }
 
-  .page-header h1 {
-    font-size: 1.7rem;
-  }
-
-  .profile-top {
-    align-items: flex-start;
-  }
-
-  .profile-icon {
-    width: 52px;
-    height: 52px;
-    flex-basis: 52px;
+  .cv-actions button {
+    width: 100%;
   }
 }

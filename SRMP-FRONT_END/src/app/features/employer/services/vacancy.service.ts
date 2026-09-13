@@ -1,4 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import {
+  Observable,
+  map,
+  switchMap
+} from 'rxjs';
+
+import { environment } from '../../../../environments/environment';
 
 import {
   Vacancy,
@@ -10,154 +19,84 @@ import {
 })
 export class VacancyService {
 
-  private readonly storageKey =
-    'member3Vacancies';
+  private readonly http =
+    inject(HttpClient);
 
-  getVacancies(): Vacancy[] {
+  private readonly apiUrl =
+    `${environment.apiUrl}/JobVacancy`;
 
-    const savedVacancies =
-      localStorage.getItem(this.storageKey);
+  getVacancies(): Observable<Vacancy[]> {
 
-    if (!savedVacancies) {
-      return [];
-    }
-
-    return JSON.parse(savedVacancies);
+    return this.http.get<Vacancy[]>(
+      `${this.apiUrl}/my`
+    );
   }
 
   getVacancyById(
     vacancyId: number
-  ): Vacancy | null {
+  ): Observable<Vacancy> {
 
-    const vacancies =
-      this.getVacancies();
-
-    return (
-      vacancies.find(
-        vacancy =>
-          vacancy.jobVacancyId === vacancyId
-      ) ?? null
+    return this.http.get<Vacancy>(
+      `${this.apiUrl}/${vacancyId}`
     );
   }
 
-  getOpenVacancies(): Vacancy[] {
+  getOpenVacancies(): Observable<Vacancy[]> {
 
-    return this.getVacancies().filter(
-      vacancy => vacancy.isOpen
+    return this.getVacancies().pipe(
+      map(
+        vacancies =>
+          vacancies.filter(
+            vacancy => vacancy.isOpen
+          )
+      )
     );
   }
 
   createVacancy(
     request: VacancyRequest
-  ): Vacancy {
+  ): Observable<Vacancy> {
 
-    const vacancies =
-      this.getVacancies();
-
-    const nextId =
-      vacancies.length > 0
-        ? Math.max(
-            ...vacancies.map(
-              vacancy =>
-                vacancy.jobVacancyId
-            )
-          ) + 1
-        : 1;
-
-    const newVacancy: Vacancy = {
-      jobVacancyId: nextId,
-      title: request.title,
-      description: request.description,
-      requiredSkills: request.requiredSkills,
-      requiredExperience:
-        request.requiredExperience,
-      requiredEducation:
-        request.requiredEducation,
-      location: request.location,
-      employerId: 1,
-      isOpen: true,
-      createdAt: new Date().toISOString()
-    };
-
-    vacancies.push(newVacancy);
-
-    this.saveVacancies(vacancies);
-
-    return newVacancy;
+    return this.http.post<Vacancy>(
+      this.apiUrl,
+      request
+    );
   }
 
   updateVacancy(
     vacancyId: number,
     request: VacancyRequest
-  ): Vacancy | null {
+  ): Observable<Vacancy> {
 
-    const vacancies =
-      this.getVacancies();
+    return this.getVacancyById(
+      vacancyId
+    ).pipe(
 
-    const vacancyIndex =
-      vacancies.findIndex(
-        vacancy =>
-          vacancy.jobVacancyId === vacancyId
-      );
+      switchMap(
+        existingVacancy => {
 
-    if (vacancyIndex === -1) {
-      return null;
-    }
+          const payload: Vacancy = {
+            ...existingVacancy,
+            ...request
+          };
 
-    const existingVacancy =
-      vacancies[vacancyIndex];
+          return this.http.put<Vacancy>(
+            `${this.apiUrl}/${vacancyId}`,
+            payload
+          );
+        }
+      )
 
-    const updatedVacancy: Vacancy = {
-      ...existingVacancy,
-      title: request.title,
-      description: request.description,
-      requiredSkills: request.requiredSkills,
-      requiredExperience:
-        request.requiredExperience,
-      requiredEducation:
-        request.requiredEducation,
-      location: request.location
-    };
-
-    vacancies[vacancyIndex] =
-      updatedVacancy;
-
-    this.saveVacancies(vacancies);
-
-    return updatedVacancy;
+    );
   }
 
   closeVacancy(
     vacancyId: number
-  ): boolean {
+  ): Observable<{ message: string }> {
 
-    const vacancies =
-      this.getVacancies();
-
-    const vacancy =
-      vacancies.find(
-        item =>
-          item.jobVacancyId === vacancyId
-      );
-
-    if (!vacancy) {
-      return false;
-    }
-
-    vacancy.isOpen = false;
-
-    this.saveVacancies(vacancies);
-
-    return true;
-  }
-
-  private saveVacancies(
-    vacancies: Vacancy[]
-  ): void {
-
-    localStorage.setItem(
-      this.storageKey,
-      JSON.stringify(vacancies)
+    return this.http.put<{ message: string }>(
+      `${this.apiUrl}/${vacancyId}/close`,
+      {}
     );
   }
 }
