@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-
+import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
 import { CvUploadComponent } from '../../components/cv-upload/cv-upload.component';
 import { SeekerCv } from '../../models/cv.model';
 import { CvService } from '../../services/cv.service';

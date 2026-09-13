@@ -22,6 +22,7 @@ export class AuthService {
   private readonly apiUrl =
     `${environment.apiUrl}/Auth`;
 
+
   login(
     request: LoginRequest
   ): Observable<AuthResponse> {
@@ -32,11 +33,12 @@ export class AuthService {
         request
       )
       .pipe(
-        tap(response => {
-          this.storageService.saveAuth(response);
-        })
+        tap(response =>
+          this.storageService.saveAuth(response)
+        )
       );
   }
+
 
   register(
     request: RegisterRequest
@@ -48,25 +50,56 @@ export class AuthService {
         request
       )
       .pipe(
-        tap(response => {
-          this.storageService.saveAuth(response);
-        })
+        tap(response =>
+          this.storageService.saveAuth(response)
+        )
       );
   }
+
 
   logout(): void {
     this.storageService.clearAuth();
   }
 
+
   isLoggedIn(): boolean {
     return this.storageService.isLoggedIn();
   }
+
 
   getCurrentUser(): AuthUser | null {
     return this.storageService.getUser();
   }
 
+
   getToken(): string | null {
     return this.storageService.getToken();
   }
+
+
+  getHomeRoute(): string {
+
+    const user = this.getCurrentUser();
+
+    if (!user) {
+      return '/login';
+    }
+
+
+    switch(user.role) {
+
+      case 'Administrator':
+        return '/admin/dashboard';
+
+      case 'Employer':
+        return '/employer';
+
+      case 'JobSeeker':
+        return '/seeker/dashboard';
+
+      default:
+        return '/login';
+    }
+  }
+
 }

@@ -1,21 +1,71 @@
 <div class="upload-box">
-  <label for="cv-file">Choose CV file</label>
 
   <input
+    #fileInput
     id="cv-file"
+    class="file-input"
     type="file"
     accept=".pdf,.doc,.docx"
     [disabled]="disabled"
     (change)="onFileChange($event)"
   />
 
-  <p class="help-text">Allowed: PDF, DOC, DOCX. Maximum size: 5 MB.</p>
+  <label
+    class="file-picker"
+    for="cv-file"
+    [class.disabled]="disabled"
+  >
 
-  @if (selectedFileName) {
-    <p class="selected-file">Selected: {{ selectedFileName }}</p>
-  }
+    <span class="picker-icon">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M12 16V4m0 0-4 4m4-4 4 4M5 15v4h14v-4"
+        />
+      </svg>
+    </span>
+
+    <span class="picker-content">
+
+      <strong>
+        {{
+          selectedFileName
+            ? selectedFileName
+            : 'Choose your CV'
+        }}
+      </strong>
+
+      <span>
+        {{
+          selectedFileName
+            ? 'File selected successfully'
+            : 'Browse from your computer'
+        }}
+      </span>
+
+    </span>
+
+    <span class="browse-button">
+      Browse
+    </span>
+
+  </label>
+
+  <div class="file-info">
+
+    <span class="format-pill">PDF</span>
+    <span class="format-pill">DOC</span>
+    <span class="format-pill">DOCX</span>
+
+    <span class="size-text">
+      Maximum 5 MB
+    </span>
+
+  </div>
 
   @if (errorMessage) {
-    <p class="error-text">{{ errorMessage }}</p>
+    <p class="error-text">
+      {{ errorMessage }}
+    </p>
   }
+
 </div>

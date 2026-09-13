@@ -1,33 +1,129 @@
 import { Routes } from '@angular/router';
 
+import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
+
+import { LoginComponent } from './features/auth/pages/login/login.component';
+import { RegisterComponent } from './features/auth/pages/register/register.component';
+
+
 export const routes: Routes = [
+
+  // AUTH
+
   {
     path: 'login',
-    loadComponent: () =>
-      import('./features/auth/pages/login/login.component')
-        .then(component => component.LoginComponent)
+    component: LoginComponent
   },
+
   {
     path: 'register',
-    loadComponent: () =>
-      import('./features/auth/pages/register/register.component')
-        .then(component => component.RegisterComponent)
+    component: RegisterComponent
   },
+
+
+  // JOB SEEKER
+
   {
     path: 'seeker',
+
+    canActivate: [
+      authGuard,
+      roleGuard
+    ],
+
+    data: {
+      roles: ['JobSeeker']
+    },
+
     loadChildren: () =>
       import('./features/seeker/seeker.routes')
-        .then(routes => routes.seekerRoutes)
+        .then(
+          routes => routes.seekerRoutes
+        )
   },
+
+
+  // EMPLOYER
+
   {
     path: 'employer',
+
+    canActivate: [
+      authGuard,
+      roleGuard
+    ],
+
+    data: {
+      roles: ['Employer']
+    },
+
     loadChildren: () =>
       import('./features/employer/employer.routes')
-        .then(routes => routes.employerRoutes)
+        .then(
+          routes => routes.employerRoutes
+        )
   },
+
+
+  // ADMIN DASHBOARD
+
+  {
+    path: 'admin/dashboard',
+
+    canActivate: [
+      authGuard,
+      roleGuard
+    ],
+
+    data: {
+      roles: ['Administrator']
+    },
+
+    loadComponent: () =>
+      import('./features/admin/pages/dashboard/dashboard.component')
+        .then(
+          component => component.DashboardComponent
+        )
+  },
+
+
+  // ADMIN USERS
+
+  {
+    path: 'admin/users',
+
+    canActivate: [
+      authGuard,
+      roleGuard
+    ],
+
+    data: {
+      roles: ['Administrator']
+    },
+
+    loadComponent: () =>
+      import('./features/admin/pages/users/users.component')
+        .then(
+          component => component.UsersComponent
+        )
+  },
+
+
+  // DEFAULT
+
   {
     path: '',
-    pathMatch: 'full',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
+
+
+  // FALLBACK
+
+  {
+    path: '**',
     redirectTo: 'login'
   }
+
 ];

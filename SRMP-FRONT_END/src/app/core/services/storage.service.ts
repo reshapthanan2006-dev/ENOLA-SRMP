@@ -10,6 +10,7 @@ export class StorageService {
   private readonly tokenKey = 'srmp_token';
   private readonly userKey = 'srmp_user';
 
+
   saveAuth(response: AuthResponse): void {
 
     const user: AuthUser = {
@@ -30,9 +31,11 @@ export class StorageService {
     );
   }
 
+
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
+
 
   getUser(): AuthUser | null {
 
@@ -51,12 +54,15 @@ export class StorageService {
     }
   }
 
+
   isLoggedIn(): boolean {
     return this.getToken() !== null;
   }
+
 
   clearAuth(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
   }
+
 }

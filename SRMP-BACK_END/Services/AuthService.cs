@@ -19,31 +19,19 @@ namespace SRMP.Services
         }
 
         public async Task<AuthResponseDto> RegisterAsync(
-     RegisterDto dto)
+            RegisterDto dto)
         {
-            if (!dto.Role.HasValue)
+            // Administrator accounts cannot be created
+            // through public registration.
+            if (dto.Role == UserRole.Administrator)
             {
-                throw new InvalidOperationException(
-                    "Registration role is required.");
-            }
-
-            var role = dto.Role.Value;
-
-            if (role == UserRole.Administrator)
-            {
-                throw new InvalidOperationException(
+                throw new UnauthorizedAccessException(
                     "Administrator accounts cannot be registered publicly.");
-            }
-
-            if (role != UserRole.JobSeeker &&
-                role != UserRole.Employer)
-            {
-                throw new InvalidOperationException(
-                    "Invalid registration role.");
             }
 
             var email = dto.Email.Trim().ToLowerInvariant();
 
+            // Check for duplicate email.
             if (await _authRepository.EmailExistsAsync(email))
             {
                 throw new InvalidOperationException(
@@ -54,18 +42,21 @@ namespace SRMP.Services
             {
                 FullName = dto.FullName.Trim(),
                 Email = email,
-                Role = role,
+                Role = dto.Role,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };
 
+            // Hash the password before saving.
             user.PasswordHash =
                 PasswordHelper.HashPassword(
                     user,
                     dto.Password);
 
+            // Save the user.
             await _authRepository.CreateUserAsync(user);
 
+            // Generate JWT.
             var token = _jwtHelper.GenerateToken(user);
 
             return new AuthResponseDto

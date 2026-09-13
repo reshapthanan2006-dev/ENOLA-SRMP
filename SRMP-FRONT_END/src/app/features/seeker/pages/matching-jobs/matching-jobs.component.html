@@ -1,3 +1,4 @@
+
 <section class="matching-job-page">
 
   <header class="page-header">
@@ -97,14 +98,10 @@
   <!-- Job Loaded -->
   } @else if (job) {
 
-    <div class="job-workspace">
-
-
-      <!-- Job Overview -->
+          <!-- Job Overview -->
       <div class="job-overview">
 
         <div>
-
           <p class="eyebrow">
             Job opportunity
           </p>
@@ -114,23 +111,84 @@
           </h3>
 
           <p class="location">
-
             <span aria-hidden="true">
               &#8226;
             </span>
-
             {{ job.location }}
+          </p>
+        </div>
 
+
+        <div class="job-actions">
+
+          <app-score-badge
+            [score]="job.matchScore">
+          </app-score-badge>
+
+
+          <button
+            type="button"
+            class="apply-button"
+            (click)="applyForJob()"
+            [disabled]="isApplying || isApplied">
+
+            @if (isApplying) {
+
+              Applying...
+
+            } @else if (isApplied) {
+
+              Applied
+
+            } @else {
+
+              Apply
+
+            }
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      @if (applyMessage) {
+
+        <div
+          class="apply-feedback success-feedback"
+          role="status">
+
+          <span aria-hidden="true">
+            &#10003;
+          </span>
+
+          <p>
+            {{ applyMessage }}
           </p>
 
         </div>
 
+      }
 
-        <app-score-badge
-          [score]="job.matchScore">
-        </app-score-badge>
 
-      </div>
+      @if (applyErrorMessage) {
+
+        <div
+          class="apply-feedback error-feedback"
+          role="alert">
+
+          <span aria-hidden="true">
+            !
+          </span>
+
+          <p>
+            {{ applyErrorMessage }}
+          </p>
+
+        </div>
+
+      }
 
 
       <!-- Main Content -->
@@ -275,7 +333,7 @@
 
       </div>
 
-    </div>
+    
 
 
   <!-- Empty State -->

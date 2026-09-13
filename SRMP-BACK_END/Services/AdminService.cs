@@ -38,15 +38,9 @@ namespace SRMP.Services
         }
 
         public async Task<AdminUserDto> UpdateUserStatusAsync(
-     int userId,
-     UpdateUserStatusDto dto)
+            int userId,
+            UpdateUserStatusDto dto)
         {
-            if (!dto.IsActive.HasValue)
-            {
-                throw new InvalidOperationException(
-                    "IsActive is required.");
-            }
-
             var user = await _adminRepository.GetUserByIdAsync(userId);
 
             if (user == null)
@@ -55,7 +49,7 @@ namespace SRMP.Services
                     "User not found.");
             }
 
-            user.IsActive = dto.IsActive.Value;
+            user.IsActive = dto.IsActive;
 
             await _adminRepository.UpdateUserAsync(user);
 

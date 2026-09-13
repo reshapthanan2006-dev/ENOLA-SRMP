@@ -1,0 +1,261 @@
+<section class="contact-requests-page">
+
+  <header class="page-header">
+
+    <div>
+      <p class="eyebrow">
+        Employer workspace
+      </p>
+
+      <h1>
+        Sent Contact Requests
+      </h1>
+
+      <p class="page-subtitle">
+        Track contact requests sent to applicants.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="loadContactRequests()"
+      [disabled]="isLoading">
+
+      Refresh
+
+    </button>
+
+  </header>
+
+
+  @if (isLoading) {
+
+    <div
+      class="state-card loading-state"
+      role="status">
+
+      <div class="spinner"></div>
+
+      <h3>
+        Loading contact requests
+      </h3>
+
+      <p>
+        Please wait while we load your sent requests.
+      </p>
+
+    </div>
+
+  } @else if (errorMessage) {
+
+    <div
+      class="state-card error-state"
+      role="alert">
+
+      <div class="state-icon">
+        !
+      </div>
+
+      <h3>
+        Unable to load contact requests
+      </h3>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="loadContactRequests()">
+
+        Try Again
+
+      </button>
+
+    </div>
+
+  } @else if (contactRequests.length === 0) {
+
+    <div class="state-card empty-state">
+
+      <div
+        class="empty-icon"
+        aria-hidden="true">
+
+        &#9993;
+
+      </div>
+
+      <h3>
+        No contact requests sent yet
+      </h3>
+
+      <p>
+        Contact requests sent to applicants will appear here.
+      </p>
+
+    </div>
+
+  } @else {
+
+    <div class="requests-grid">
+
+      @for (
+        request of contactRequests;
+        track request.contactRequestId
+      ) {
+
+        <article class="request-card">
+
+          <div class="card-header">
+
+            <div>
+
+              <p class="request-label">
+                Contact Request
+              </p>
+
+              <h2>
+                Request #{{ request.contactRequestId }}
+              </h2>
+
+            </div>
+
+
+            <span
+              class="status-badge"
+              [class.pending]="isPending(request)"
+              [class.accepted]="isAccepted(request)"
+              [class.declined]="isDeclined(request)">
+
+              {{ request.status }}
+
+            </span>
+
+          </div>
+
+
+          <div class="request-details">
+
+            <div class="detail-item">
+
+              <span class="detail-label">
+                Candidate ID
+              </span>
+
+              <strong>
+                {{ request.jobSeekerId }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span class="detail-label">
+                Application ID
+              </span>
+
+              <strong>
+                {{ request.applicationId }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item detail-wide">
+
+              <span class="detail-label">
+                Sent On
+              </span>
+
+              <strong>
+                {{ request.createdAt | date:'medium' }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="request-result"
+            [class.pending-result]="isPending(request)"
+            [class.accepted-result]="isAccepted(request)"
+            [class.declined-result]="isDeclined(request)">
+
+            @if (isPending(request)) {
+
+              <span
+                class="result-icon"
+                aria-hidden="true">
+                &#8226;
+              </span>
+
+              <div>
+
+                <strong>
+                  Waiting for response
+                </strong>
+
+                <p>
+                  The candidate has not responded yet.
+                </p>
+
+              </div>
+
+            } @else if (isAccepted(request)) {
+
+              <span
+                class="result-icon"
+                aria-hidden="true">
+                &#10003;
+              </span>
+
+              <div>
+
+                <strong>
+                  Request accepted
+                </strong>
+
+                <p>
+                  The candidate accepted your contact request.
+                </p>
+
+              </div>
+
+            } @else {
+
+              <span
+                class="result-icon"
+                aria-hidden="true">
+                &times;
+              </span>
+
+              <div>
+
+                <strong>
+                  Request declined
+                </strong>
+
+                <p>
+                  The candidate declined your contact request.
+                </p>
+
+              </div>
+
+            }
+
+          </div>
+
+        </article>
+
+      }
+
+    </div>
+
+  }
+
+</section>

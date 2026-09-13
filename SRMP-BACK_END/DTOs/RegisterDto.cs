@@ -19,7 +19,6 @@ namespace SRMP.DTOs
         public string Password { get; set; } = string.Empty;
 
         [Required]
-        [EnumDataType(typeof(UserRole))]
-        public UserRole? Role { get; set; }
+        public UserRole Role { get; set; }
     }
 }
