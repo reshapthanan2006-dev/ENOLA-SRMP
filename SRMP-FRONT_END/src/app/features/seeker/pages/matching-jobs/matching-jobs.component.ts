@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
 import { MatchingJob } from '../../../matching/models/matching-job.model';
 import { MatchingService } from '../../../matching/services/matching.service';
 import { ScoreBadgeComponent } from '../../../../shared/components/score-badge/score-badge.component';
@@ -16,7 +16,8 @@ import { HighlightDirective } from '../../../../shared/directives/highlight.dire
     SkillListPipe,
     ExperienceYearsPipe,
     ShortTextPipe,
-    HighlightDirective
+    HighlightDirective,
+    NavbarComponent
   ],
   templateUrl: './matching-jobs.component.html',
   styleUrl: './matching-jobs.component.css'

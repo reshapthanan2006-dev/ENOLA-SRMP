@@ -1,0 +1,173 @@
+<header class="topbar">
+
+  <button
+    type="button"
+    class="menu-button"
+    aria-label="Open navigation menu"
+    (click)="toggleMenu()"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <a
+    class="topbar-brand"
+    [routerLink]="user ? authService.getHomeRoute() : '/login'"
+  >
+    <span class="brand-logo">E</span>
+
+    <span class="brand-name">
+      ENOLA SRMP
+    </span>
+  </a>
+
+  @if (user) {
+    <div class="topbar-user">
+      <span>{{ user.fullName }}</span>
+    </div>
+  }
+
+</header>
+
+@if (isMenuOpen) {
+
+  <button
+    type="button"
+    class="sidebar-backdrop"
+    aria-label="Close navigation menu"
+    (click)="closeMenu()"
+  ></button>
+
+}
+
+<aside
+  class="sidebar"
+  [class.sidebar-open]="isMenuOpen"
+>
+
+  <div class="sidebar-header">
+
+    <div>
+      <span class="sidebar-title">
+        ENOLA
+      </span>
+
+      <span class="sidebar-subtitle">
+        Smart Recruitment
+      </span>
+    </div>
+
+    <button
+      type="button"
+      class="close-button"
+      aria-label="Close navigation menu"
+      (click)="closeMenu()"
+    >
+      ×
+    </button>
+
+  </div>
+
+  @if (user) {
+
+    <div class="sidebar-user">
+
+      <div class="user-avatar">
+        {{ user.fullName.charAt(0).toUpperCase() }}
+      </div>
+
+      <div>
+        <strong>{{ user.fullName }}</strong>
+        <span>{{ user.role }}</span>
+      </div>
+
+    </div>
+
+    <nav class="sidebar-links">
+
+      @if (user.role === 'Administrator') {
+
+        <a
+          routerLink="/admin/dashboard"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          Dashboard
+        </a>
+
+        <a
+          routerLink="/admin/users"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          User Management
+        </a>
+
+      }
+
+      @if (user.role === 'JobSeeker') {
+
+        <a
+          routerLink="/seeker/dashboard"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          Dashboard
+        </a>
+
+        <a
+          routerLink="/seeker/profile"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          Profile
+        </a>
+
+        <a
+          routerLink="/seeker/cv"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          CV
+        </a>
+
+        <a
+          routerLink="/seeker/matching-jobs"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          Matching Jobs
+        </a>
+
+      }
+
+      @if (user.role === 'Employer') {
+
+        <a
+          routerLink="/employer/applicants"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          Applicants
+        </a>
+
+      }
+
+    </nav>
+
+    <div class="sidebar-footer">
+
+      <button
+        type="button"
+        class="logout-button"
+        (click)="logout()"
+      >
+        Logout
+      </button>
+
+    </div>
+
+  }
+
+</aside>

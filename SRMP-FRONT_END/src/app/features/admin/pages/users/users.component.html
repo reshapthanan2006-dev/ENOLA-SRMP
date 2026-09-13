@@ -1,0 +1,118 @@
+<app-navbar></app-navbar>
+
+<div class="admin-page">
+
+  <main class="users-content">
+
+    @if (isLoading) {
+      <div class="state-card">
+        Loading users...
+      </div>
+    }
+
+    @if (errorMessage) {
+      <div class="error-card">
+        <p>{{ errorMessage }}</p>
+
+        <button
+          type="button"
+          (click)="loadUsers()"
+        >
+          Try Again
+        </button>
+      </div>
+    }
+
+    @if (!isLoading && !errorMessage) {
+
+      @if (users.length === 0) {
+        <div class="state-card">
+          No users found.
+        </div>
+      } @else {
+
+        <div class="table-wrapper">
+          <table>
+
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              @for (user of users; track user.userId) {
+                <tr>
+
+                  <td>
+                    {{ user.fullName }}
+                  </td>
+
+                  <td>
+                    {{ user.email }}
+                  </td>
+
+                  <td>
+                    {{ user.role }}
+                  </td>
+
+                  <td>
+                    <span
+                      class="status-badge"
+                      [class.active]="user.isActive"
+                      [class.inactive]="!user.isActive"
+                    >
+                      {{ user.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                  </td>
+
+                  <td class="created-date">
+                    {{ user.createdAt | date:'MMM d, y, h:mm a' }}
+                  </td>
+
+                  <td>
+                    @if (isCurrentUser(user)) {
+
+                      <span class="current-user-label">
+                        Current Account
+                      </span>
+
+                    } @else {
+
+                      <button
+                        type="button"
+                        class="status-button"
+                        [disabled]="actionUserId === user.userId"
+                        (click)="toggleUserStatus(user)"
+                      >
+                        @if (actionUserId === user.userId) {
+                          Updating...
+                        } @else {
+                          {{ user.isActive ? 'Deactivate' : 'Activate' }}
+                        }
+                      </button>
+
+                    }
+                  </td>
+
+                </tr>
+              }
+
+            </tbody>
+
+          </table>
+        </div>
+
+      }
+
+    }
+
+  </main>
+
+</div>

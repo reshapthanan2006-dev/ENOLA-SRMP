@@ -9,7 +9,7 @@ import {
   Validators
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-
+import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
 import { SkillRowComponent } from '../../components/skill-row/skill-row.component';
 import {
   SeekerProfile,
@@ -20,7 +20,7 @@ import { SeekerProfileService } from '../../services/seeker-profile.service';
 @Component({
   selector: 'app-seeker-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, SkillRowComponent],
+  imports: [ReactiveFormsModule, SkillRowComponent,NavbarComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })

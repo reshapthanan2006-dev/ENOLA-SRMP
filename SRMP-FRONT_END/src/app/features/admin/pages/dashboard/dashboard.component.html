@@ -1,0 +1,87 @@
+<app-navbar></app-navbar>
+
+<div class="admin-page">
+
+  <main class="dashboard-content">
+
+    @if (isLoading) {
+      <div class="state-message">
+        Loading dashboard...
+      </div>
+    }
+
+    @if (errorMessage) {
+      <div class="error-message">
+        <p>{{ errorMessage }}</p>
+
+        <button
+          type="button"
+          (click)="loadDashboard()"
+        >
+          Try Again
+        </button>
+      </div>
+    }
+
+    @if (!isLoading && !errorMessage && dashboard) {
+
+      <section class="welcome-section">
+        <h2>System Overview</h2>
+        <p>
+          View the current recruitment platform statistics.
+        </p>
+      </section>
+
+      <section class="stats-grid">
+
+        <article class="stat-card">
+          <span class="stat-label">
+            Total Users
+          </span>
+
+          <strong class="stat-value">
+            {{ dashboard.totalUsers }}
+          </strong>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-label">
+            Total Vacancies
+          </span>
+
+          <strong class="stat-value">
+            {{ dashboard.totalVacancies }}
+          </strong>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-label">
+            Total Applications
+          </span>
+
+          <strong class="stat-value">
+            {{ dashboard.totalApplications }}
+          </strong>
+        </article>
+
+      </section>
+
+      <section class="quick-actions">
+        <h2>Quick Actions</h2>
+
+        <a
+          routerLink="/admin/users"
+          class="action-card"
+        >
+          <strong>Manage Users</strong>
+          <span>
+            View, activate, or deactivate platform users.
+          </span>
+        </a>
+      </section>
+
+    }
+
+  </main>
+
+</div>
