@@ -20,6 +20,12 @@ export const routes: Routes = [
         .then(routes => routes.seekerRoutes)
   },
   {
+    path: 'employer',
+    loadChildren: () =>
+      import('./features/employer/employer.routes')
+        .then(routes => routes.employerRoutes)
+  },
+  {
     path: '',
     pathMatch: 'full',
     redirectTo: 'login'
