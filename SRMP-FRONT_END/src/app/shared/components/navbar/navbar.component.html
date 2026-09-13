@@ -133,11 +133,36 @@
         </a>
 
         <a
-          routerLink="/seeker/matching-jobs"
+          routerLink="/seeker/applications"
           routerLinkActive="active"
           (click)="closeMenu()"
         >
-          Matching Jobs
+          Applications
+        </a>
+
+        <a
+          routerLink="/seeker/contact-requests"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          Contact Requests
+        </a>
+
+        <a
+          class="notification-menu-link"
+          routerLink="/seeker/notifications"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          <span>Notifications</span>
+
+          @if (unreadCount$ | async; as unreadCount) {
+            @if (unreadCount > 0) {
+              <span class="notification-badge">
+                {{ unreadCount }}
+              </span>
+            }
+          }
         </a>
 
       }
@@ -145,11 +170,27 @@
       @if (user.role === 'Employer') {
 
         <a
-          routerLink="/employer/applicants"
+          routerLink="/employer/dashboard"
           routerLinkActive="active"
           (click)="closeMenu()"
         >
-          Applicants
+          Dashboard
+        </a>
+
+        <a
+          routerLink="/employer/company-profile"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          Company Profile
+        </a>
+
+        <a
+          routerLink="/employer/contact-requests"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          Contact Requests
         </a>
 
       }

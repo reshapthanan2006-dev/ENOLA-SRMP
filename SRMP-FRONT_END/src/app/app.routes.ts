@@ -28,13 +28,16 @@ export const routes: Routes = [
 
   {
     path: 'seeker',
+
     canActivate: [
       authGuard,
       roleGuard
     ],
+
     data: {
       roles: ['JobSeeker']
     },
+
     loadChildren: () =>
       import(
         './features/seeker/seeker.routes'
@@ -44,153 +47,45 @@ export const routes: Routes = [
   },
 
   // =========================
-  // EMPLOYER DASHBOARD
+  // EMPLOYER
   // =========================
 
   {
-    path: 'employer/dashboard',
+    path: 'employer',
+
     canActivate: [
       authGuard,
       roleGuard
     ],
+
     data: {
       roles: ['Employer']
     },
-    loadComponent: () =>
+
+    loadChildren: () =>
       import(
-        './features/employer/pages/dashboard/dashboard.component'
+        './features/employer/employer.routes'
       ).then(
-        (m) => m.DashboardComponent
+        (m) => m.employerRoutes
       )
   },
 
   // =========================
-  // EMPLOYER COMPANY PROFILE
-  // =========================
-
-  {
-    path: 'employer/company-profile',
-    canActivate: [
-      authGuard,
-      roleGuard
-    ],
-    data: {
-      roles: ['Employer']
-    },
-    loadComponent: () =>
-      import(
-        './features/employer/pages/company-profile/company-profile.component'
-      ).then(
-        (m) => m.CompanyProfileComponent
-      )
-  },
-
-  // =========================
-  // EMPLOYER APPLICATIONS
-  // =========================
-
-  {
-    path: 'employer/vacancies/:jobVacancyId/applications',
-    canActivate: [
-      authGuard,
-      roleGuard
-    ],
-    data: {
-      roles: ['Employer']
-    },
-    loadComponent: () =>
-      import(
-        './features/employer/pages/applications/applications.component'
-      ).then(
-        (m) => m.ApplicationsComponent
-      )
-  },
-
-  // =========================
-  // EMPLOYER RANKED APPLICANTS
-  // =========================
-
-  {
-    path: 'employer/vacancies/:jobVacancyId/applicants',
-    canActivate: [
-      authGuard,
-      roleGuard
-    ],
-    data: {
-      roles: ['Employer']
-    },
-    loadComponent: () =>
-      import(
-        './features/employer/pages/applicants/applicants.component'
-      ).then(
-        (m) => m.ApplicantsComponent
-      )
-  },
-
-  // =========================
-  // EMPLOYER APPLICANT PROFILE
-  // =========================
-
-  {
-    path: 'employer/vacancies/:jobVacancyId/applicants/:jobSeekerId',
-    canActivate: [
-      authGuard,
-      roleGuard
-    ],
-    data: {
-      roles: ['Employer']
-    },
-    loadComponent: () =>
-      import(
-        './features/employer/pages/applicant-profile/applicant-profile.component'
-      ).then(
-        (m) => m.ApplicantProfileComponent
-      )
-  },
-
-  // =========================
-  // EMPLOYER CONTACT REQUESTS
-  // =========================
-
-  {
-    path: 'employer/contact-requests',
-    canActivate: [
-      authGuard,
-      roleGuard
-    ],
-    data: {
-      roles: ['Employer']
-    },
-    loadComponent: () =>
-      import(
-        './features/employer/pages/contact-requests/contact-requests.component'
-      ).then(
-        (m) => m.ContactRequestsComponent
-      )
-  },
-
-  // Member-1 navbar currently has this old link.
-  // Redirect safely instead of opening ApplicantsComponent
-  // without a vacancy id.
-  {
-    path: 'employer/applicants',
-    redirectTo: 'employer/dashboard',
-    pathMatch: 'full'
-  },
-
-  // =========================
-  // ADMIN
+  // ADMIN DASHBOARD
   // =========================
 
   {
     path: 'admin/dashboard',
+
     canActivate: [
       authGuard,
       roleGuard
     ],
+
     data: {
       roles: ['Administrator']
     },
+
     loadComponent: () =>
       import(
         './features/admin/pages/dashboard/dashboard.component'
@@ -199,15 +94,22 @@ export const routes: Routes = [
       )
   },
 
+  // =========================
+  // ADMIN USERS
+  // =========================
+
   {
     path: 'admin/users',
+
     canActivate: [
       authGuard,
       roleGuard
     ],
+
     data: {
       roles: ['Administrator']
     },
+
     loadComponent: () =>
       import(
         './features/admin/pages/users/users.component'
@@ -226,8 +128,13 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
 
+  // =========================
+  // FALLBACK
+  // =========================
+
   {
     path: '**',
     redirectTo: 'login'
   }
+
 ];

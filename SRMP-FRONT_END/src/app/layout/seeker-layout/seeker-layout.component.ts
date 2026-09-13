@@ -5,22 +5,10 @@ import {
   inject
 } from '@angular/core';
 
-import {
-  Router,
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet
-} from '@angular/router';
+import { RouterOutlet } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { AsyncPipe } from '@angular/common';
-
-import {
-  takeUntilDestroyed
-} from '@angular/core/rxjs-interop';
-
-import {
-  AuthService
-} from '../../core/auth/auth.service';
+import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 
 import {
   NotificationStateService
@@ -35,20 +23,12 @@ import {
   standalone: true,
   imports: [
     RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
-    AsyncPipe
+    NavbarComponent
   ],
   templateUrl: './seeker-layout.component.html',
   styleUrl: './seeker-layout.component.css'
 })
 export class SeekerLayoutComponent implements OnInit {
-
-  private readonly authService =
-    inject(AuthService);
-
-  private readonly router =
-    inject(Router);
 
   private readonly notificationService =
     inject(NotificationService);
@@ -58,9 +38,6 @@ export class SeekerLayoutComponent implements OnInit {
 
   private readonly destroyRef =
     inject(DestroyRef);
-
-  readonly unreadCount$ =
-    this.notificationStateService.unreadCount$;
 
   ngOnInit(): void {
     this.loadUnreadNotificationCount();
@@ -74,12 +51,12 @@ export class SeekerLayoutComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
+
         next: (notifications) => {
 
           const unreadCount =
             notifications.filter(
-              (notification) =>
-                !notification.isRead
+              notification => !notification.isRead
             ).length;
 
           this.notificationStateService
@@ -91,15 +68,5 @@ export class SeekerLayoutComponent implements OnInit {
             .resetUnreadCount();
         }
       });
-  }
-
-  logout(): void {
-
-    this.notificationStateService
-      .resetUnreadCount();
-
-    this.authService.logout();
-
-    this.router.navigate(['/login']);
   }
 }
