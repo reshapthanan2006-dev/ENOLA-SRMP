@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-
+import { Router} from '@angular/router';
+import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
 import { AdminService } from '../../services/admin.service';
 import { AdminUser } from '../../models/admin-user';
 import { AuthService } from '../../../../core/auth/auth.service';
@@ -9,7 +9,7 @@ import { AuthService } from '../../../../core/auth/auth.service';
   selector: 'app-users',
   standalone: true,
   imports: [
-    RouterLink
+    NavbarComponent
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
