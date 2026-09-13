@@ -1,9 +1,18 @@
 <div class="score-badge">
 
   <span class="score-label">Match score</span>
+
   <div class="score-value">
     {{ score | number:'1.0-2' }}%
   </div>
+
+  @if (mediumMinimum !== null && highMinimum !== null) {
+    <div
+      class="score-band"
+      [appScoreColor]="score | matchBand:mediumMinimum:highMinimum">
+      {{ score | matchBand:mediumMinimum:highMinimum }}
+    </div>
+  }
 
   <div class="score-bar">
     <div

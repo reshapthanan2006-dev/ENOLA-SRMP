@@ -25,9 +25,9 @@ export const seekerRoutes: Routes = [
         .then(component => component.CvComponent)
   },
   {
-    path: 'matching-jobs',
-    loadComponent: () =>
-      import('./pages/matching-jobs/matching-jobs.component')
-        .then(component => component.MatchingJobsComponent)
+  path: 'matching-jobs/:jobVacancyId',
+  loadComponent: () =>
+    import('./pages/matching-jobs/matching-jobs.component')
+      .then(component => component.MatchingJobsComponent)
   }
 ];

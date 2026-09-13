@@ -1,38 +1,60 @@
 .score-badge {
   width: 100%;
   max-width: 176px;
-  color: #0f172a;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #2a282c;
+  font-family: Arial, sans-serif;
 }
 
 .score-label {
   display: block;
-  margin-bottom: 7px;
-  color: #64748b;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+  color: #3c364f;
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
 .score-value {
+  margin-bottom: 7px;
+  color: #8576ab;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.score-band {
+  display: inline-block;
   margin-bottom: 9px;
-  color: #2563eb;
-  font-size: 1.32rem;
-  font-weight: 800;
-  line-height: 1;
+  padding: 4px 9px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.score-low {
+  background-color: #ffe7e4;
+  color: #3c364f;
+}
+
+.score-medium {
+  background-color: #d7b9d9;
+  color: #2a282c;
+}
+
+.score-high {
+  background-color: #b193c1;
+  color: #2a282c;
 }
 
 .score-bar {
   width: 100%;
   height: 9px;
   overflow: hidden;
-  background-color: #dbeafe;
+  background-color: #d7b9d9;
   border-radius: 999px;
 }
 
 .score-progress {
   height: 100%;
-  background-color: #2563eb;
+  background-color: #8576ab;
   border-radius: 999px;
 }
