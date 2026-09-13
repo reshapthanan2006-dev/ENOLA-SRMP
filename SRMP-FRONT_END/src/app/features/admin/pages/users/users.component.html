@@ -72,9 +72,9 @@
                     </span>
                   </td>
 
-                  <td>
-                    {{ user.createdAt }}
-                  </td>
+                  <td class="created-date">
+                       {{ user.createdAt | date:'MMM d, y, h:mm a' }}
+                   </td>
 
                   <td>
                     <button

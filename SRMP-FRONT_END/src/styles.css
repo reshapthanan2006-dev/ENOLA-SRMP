@@ -1,18 +1,23 @@
 :root {
-  --color-primary: #8576ab;
   --color-primary-soft: #b193c1;
+  --color-primary: #8576ab;
   --color-primary-light: #d7b9d9;
-
   --color-accent: #ffe7e4;
-
   --color-dark: #3c364f;
   --color-darkest: #2a282c;
 
   --color-white: #ffffff;
-
   --color-page-bg: #f8f6fa;
   --color-border: #e6ddeb;
   --color-muted: #756f7f;
+
+  /* Semantic feedback */
+  --color-danger: #b42318;
+  --color-danger-bg: #ffe7e4;
+  --color-danger-border: #efb8b2;
+
+  --color-success: #15803d;
+  --color-success-bg: #f0fdf4;
 
   --shadow-sm: 0 2px 8px rgba(60, 54, 79, 0.08);
   --shadow-md: 0 8px 24px rgba(60, 54, 79, 0.12);
@@ -55,4 +60,22 @@ textarea {
 button,
 a {
   -webkit-tap-highlight-color: transparent;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(133, 118, 171, 0.28);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+::selection {
+  background: var(--color-primary-light);
+  color: var(--color-darkest);
 }

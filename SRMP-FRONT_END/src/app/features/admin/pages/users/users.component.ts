@@ -4,12 +4,13 @@ import { NavbarComponent } from '../../../../shared/components/navbar/navbar.com
 import { AdminService } from '../../services/admin.service';
 import { AdminUser } from '../../models/admin-user';
 import { AuthService } from '../../../../core/auth/auth.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-users',
   standalone: true,
   imports: [
-    NavbarComponent
+    NavbarComponent,DatePipe
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
