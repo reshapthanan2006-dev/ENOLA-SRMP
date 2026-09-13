@@ -1,113 +1,282 @@
-<app-navbar></app-navbar>
 <section class="page-shell">
+
   <header class="page-header">
+
     <div>
-      <p class="eyebrow">Job Seeker</p>
-      <h1>My Profile</h1>
+      <p class="eyebrow">Job Seeker Profile</p>
+
+      <h1>Build Your Profile</h1>
+
       <p class="subtitle">
-        Keep your skills, experience, education, and location up to date.
+        Keep your skills, experience, education and location
+        ready for better job matching.
       </p>
     </div>
 
-    <span class="status-pill" [class.saved]="profileExists">
-      {{ profileExists ? 'Profile created' : 'Profile not created' }}
+    <span
+      class="status-pill"
+      [class.saved]="profileExists"
+    >
+      <span class="status-dot"></span>
+
+      {{
+        profileExists
+          ? 'Profile ready'
+          : 'Profile incomplete'
+      }}
     </span>
+
   </header>
 
   @if (isLoading) {
-    <div class="state-card">Loading profile...</div>
+
+    <div class="state-card">
+      <div class="loading-icon">◌</div>
+
+      <div>
+        <strong>Loading your profile</strong>
+        <p>Please wait a moment...</p>
+      </div>
+    </div>
+
   } @else {
+
     @if (errorMessage) {
-      <div class="message error-message" role="alert">
+      <div
+        class="message error-message"
+        role="alert"
+      >
         {{ errorMessage }}
       </div>
     }
 
     @if (successMessage) {
-      <div class="message success-message" role="status">
+      <div
+        class="message success-message"
+        role="status"
+      >
         {{ successMessage }}
       </div>
     }
 
-    <form class="profile-card" [formGroup]="profileForm" (ngSubmit)="submitProfile()">
+    <form
+      class="profile-card"
+      [formGroup]="profileForm"
+      (ngSubmit)="submitProfile()"
+    >
+
+      <!-- SKILLS -->
+
       <section class="form-section">
+
         <div class="section-heading">
-          <div>
-            <h2>Skills</h2>
-            <p>Add at least one skill used for job matching.</p>
+
+          <div class="heading-with-icon">
+
+            <div class="section-icon">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M8 7h8M8 12h5M8 17h8M5 7h.01M5 12h.01M5 17h.01"
+                />
+              </svg>
+            </div>
+
+            <div>
+              <h2>Skills</h2>
+
+              <p>
+                Add the skills employers should use
+                when matching you with vacancies.
+              </p>
+            </div>
+
           </div>
 
-          <button class="secondary-button" type="button" (click)="addSkill()">
-            + Add skill
+          <button
+            class="secondary-button"
+            type="button"
+            (click)="addSkill()"
+          >
+            <span>+</span>
+            Add Skill
           </button>
+
         </div>
 
-        <div class="skills-list" formArrayName="skills">
-          @for (control of skillControls; track $index) {
+        <div
+          class="skills-list"
+          formArrayName="skills"
+        >
+          @for (
+            control of skillControls;
+            track $index
+          ) {
+
             <app-skill-row
               [control]="control"
               [index]="$index"
               [canRemove]="skillControls.length > 1"
               (remove)="removeSkill($index)"
             />
+
           }
         </div>
+
       </section>
 
-      <section class="form-section form-grid">
-        <div class="field-group">
-          <label for="experienceYears">Experience (years)</label>
-          <input
-            id="experienceYears"
-            type="number"
-            min="0"
-            max="50"
-            formControlName="experienceYears"
-          />
-          @if (
-            profileForm.get('experienceYears')?.touched &&
-            profileForm.get('experienceYears')?.invalid
-          ) {
-            <small class="field-error">Enter a value from 0 to 50.</small>
-          }
+      <!-- DETAILS -->
+
+      <section class="form-section">
+
+        <div class="details-heading">
+
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M6 4h12v16H6V4Zm3 4h6M9 12h6M9 16h4"
+              />
+            </svg>
+          </div>
+
+          <div>
+            <h2>Career Details</h2>
+
+            <p>
+              Tell us a little more about your background.
+            </p>
+          </div>
+
         </div>
 
-        <div class="field-group">
-          <label for="location">Location</label>
-          <input
-            id="location"
-            type="text"
-            maxlength="100"
-            formControlName="location"
-            placeholder="Example: Jaffna"
-          />
-        </div>
+        <div class="form-grid">
 
-        <div class="field-group full-width">
-          <label for="education">Education</label>
-          <textarea
-            id="education"
-            rows="4"
-            maxlength="200"
-            formControlName="education"
-            placeholder="Example: BSc in Information Technology"
-          ></textarea>
-          @if (
-            profileForm.get('education')?.touched &&
-            profileForm.get('education')?.invalid
-          ) {
-            <small class="field-error">
-              Education is required and must be 200 characters or fewer.
+          <!-- EXPERIENCE -->
+
+          <div class="field-group">
+
+            <label for="experienceYears">
+              <span class="field-icon">💼</span>
+              Experience
+            </label>
+
+            <div class="input-with-suffix">
+
+              <input
+                id="experienceYears"
+                type="number"
+                min="0"
+                max="50"
+                formControlName="experienceYears"
+              />
+
+              <span>years</span>
+
+            </div>
+
+            @if (
+              profileForm.get('experienceYears')?.touched &&
+              profileForm.get('experienceYears')?.invalid
+            ) {
+              <small class="field-error">
+                Enter a value from 0 to 50.
+              </small>
+            }
+
+          </div>
+
+          <!-- LOCATION -->
+
+          <div class="field-group">
+
+            <label for="location">
+              <span class="field-icon">📍</span>
+              Location
+            </label>
+
+            <input
+              id="location"
+              type="text"
+              maxlength="100"
+              formControlName="location"
+              placeholder="Example: Jaffna"
+            />
+
+            <small class="field-hint">
+              Your current preferred location.
             </small>
-          }
+
+          </div>
+
+          <!-- EDUCATION -->
+
+          <div class="field-group full-width">
+
+            <label for="education">
+              <span class="field-icon">🎓</span>
+              Education
+            </label>
+
+            <textarea
+              id="education"
+              rows="4"
+              maxlength="200"
+              formControlName="education"
+              placeholder="Example: BSc in Information Technology"
+            ></textarea>
+
+            <div class="field-footer">
+
+              @if (
+                profileForm.get('education')?.touched &&
+                profileForm.get('education')?.invalid
+              ) {
+                <small class="field-error">
+                  Education is required and must be
+                  200 characters or fewer.
+                </small>
+              } @else {
+                <small class="field-hint">
+                  Add your latest or most relevant qualification.
+                </small>
+              }
+
+            </div>
+
+          </div>
+
         </div>
+
       </section>
+
+      <!-- ACTION -->
 
       <div class="form-actions">
-        <button class="primary-button" type="submit" [disabled]="isSaving">
-          {{ isSaving ? 'Saving...' : (profileExists ? 'Update Profile' : 'Create Profile') }}
+
+        <div class="save-note">
+          <span>✓</span>
+          Your profile information is used for matching.
+        </div>
+
+        <button
+          class="primary-button"
+          type="submit"
+          [disabled]="isSaving"
+        >
+          {{
+            isSaving
+              ? 'Saving...'
+              : (
+                  profileExists
+                    ? 'Update Profile'
+                    : 'Create Profile'
+                )
+          }}
         </button>
+
       </div>
+
     </form>
+
   }
+
 </section>

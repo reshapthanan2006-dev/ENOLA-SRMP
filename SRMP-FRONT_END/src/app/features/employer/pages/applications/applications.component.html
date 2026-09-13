@@ -1,0 +1,289 @@
+<section class="applications-page">
+
+  <header class="page-header">
+
+    <div>
+      <p class="eyebrow">
+        Employer workspace
+      </p>
+
+      <h1>
+        Applications
+      </h1>
+
+      <p class="page-subtitle">
+        Review applications received for this vacancy.
+      </p>
+    </div>
+
+    <div class="header-actions">
+
+      <button
+        type="button"
+        class="refresh-button"
+        (click)="loadApplications()"
+        [disabled]="isLoading">
+
+        Refresh
+
+      </button>
+
+      <button
+        type="button"
+        class="ranked-button"
+        (click)="viewRankedApplicants()"
+        [disabled]="!jobVacancyId">
+
+        View Ranked Applicants
+
+      </button>
+
+    </div>
+
+  </header>
+
+
+  @if (isLoading) {
+
+    <div
+      class="state-card loading-state"
+      role="status">
+
+      <div class="spinner"></div>
+
+      <h3>
+        Loading applications
+      </h3>
+
+      <p>
+        Please wait while we load applicants for this vacancy.
+      </p>
+
+    </div>
+
+  } @else if (errorMessage) {
+
+    <div
+      class="state-card error-state"
+      role="alert">
+
+      <div class="state-icon">
+        !
+      </div>
+
+      <h3>
+        Unable to load applications
+      </h3>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
+      @if (jobVacancyId) {
+
+        <button
+          type="button"
+          class="retry-button"
+          (click)="loadApplications()">
+
+          Try Again
+
+        </button>
+
+      }
+
+    </div>
+
+  } @else if (applications.length === 0) {
+
+    <div class="state-card empty-state">
+
+      <div
+        class="empty-icon"
+        aria-hidden="true">
+
+        &#128196;
+
+      </div>
+
+      <h3>
+        No applications yet
+      </h3>
+
+      <p>
+        Applications submitted for this vacancy will appear here.
+      </p>
+
+    </div>
+
+  } @else {
+
+    <div class="summary-grid">
+
+      <div class="summary-card">
+
+        <span class="summary-label">
+          Total
+        </span>
+
+        <strong>
+          {{ applications.length }}
+        </strong>
+
+      </div>
+
+
+      <div class="summary-card pending-summary">
+
+        <span class="summary-label">
+          Pending
+        </span>
+
+        <strong>
+          {{ getPendingCount() }}
+        </strong>
+
+      </div>
+
+
+      <div class="summary-card shortlisted-summary">
+
+        <span class="summary-label">
+          Shortlisted
+        </span>
+
+        <strong>
+          {{ getShortlistedCount() }}
+        </strong>
+
+      </div>
+
+
+      <div class="summary-card accepted-summary">
+
+        <span class="summary-label">
+          Accepted
+        </span>
+
+        <strong>
+          {{ getAcceptedCount() }}
+        </strong>
+
+      </div>
+
+
+      <div class="summary-card rejected-summary">
+
+        <span class="summary-label">
+          Rejected
+        </span>
+
+        <strong>
+          {{ getRejectedCount() }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="applications-list">
+
+      @for (
+        application of applications;
+        track application.applicationId
+      ) {
+
+        <article class="application-card">
+
+          <div class="card-header">
+
+            <div>
+
+              <p class="application-label">
+                Application
+              </p>
+
+              <h2>
+                Application #{{ application.applicationId }}
+              </h2>
+
+            </div>
+
+
+            <span
+              class="status-badge"
+              [class.pending]="
+                application.status === 'Pending'
+              "
+              [class.shortlisted]="
+                application.status === 'Shortlisted'
+              "
+              [class.accepted]="
+                application.status === 'Accepted'
+              "
+              [class.rejected]="
+                application.status === 'Rejected'
+              ">
+
+              {{ application.status }}
+
+            </span>
+
+          </div>
+
+
+          <div class="application-details">
+
+            <div class="detail-item">
+
+              <span class="detail-label">
+                Job Seeker ID
+              </span>
+
+              <strong>
+                {{ application.jobSeekerId }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span class="detail-label">
+                Vacancy ID
+              </span>
+
+              <strong>
+                {{ application.jobVacancyId }}
+              </strong>
+
+            </div>
+
+
+            <div class="detail-item detail-wide">
+
+              <span class="detail-label">
+                Applied On
+              </span>
+
+              <strong>
+                {{
+                  application.appliedAt
+                    | date:'medium'
+                }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </article>
+
+      }
+
+    </div>
+
+  }
+
+</section>

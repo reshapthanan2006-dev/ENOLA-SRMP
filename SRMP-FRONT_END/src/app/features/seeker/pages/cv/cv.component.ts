@@ -8,7 +8,7 @@ import { CvService } from '../../services/cv.service';
 @Component({
   selector: 'app-seeker-cv',
   standalone: true,
-  imports: [CvUploadComponent,NavbarComponent],
+  imports: [CvUploadComponent],
   templateUrl: './cv.component.html',
   styleUrl: './cv.component.css'
 })

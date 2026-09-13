@@ -1,12 +1,28 @@
-import { Component, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject
+} from '@angular/core';
+
 import {
   FormBuilder,
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
 
-import { AuthService } from '../../../../core/auth/auth.service';
+import {
+  Router,
+  RouterLink
+} from '@angular/router';
+
+import {
+  takeUntilDestroyed
+} from '@angular/core/rxjs-interop';
+
+import {
+  AuthService
+} from '../../../../core/auth/auth.service';
+
 import {
   RegisterRequest,
   RegistrationRole
@@ -23,48 +39,61 @@ import {
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  private readonly formBuilder = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
 
-  readonly RegistrationRole = RegistrationRole;
+  private readonly formBuilder =
+    inject(FormBuilder);
+
+  private readonly authService =
+    inject(AuthService);
+
+  private readonly router =
+    inject(Router);
+
+  private readonly destroyRef =
+    inject(DestroyRef);
+
+  readonly RegistrationRole =
+    RegistrationRole;
 
   isSubmitting = false;
   errorMessage = '';
 
-  registerForm = this.formBuilder.nonNullable.group({
-    fullName: [
-      '',
-      [
-        Validators.required,
-        Validators.maxLength(100)
-      ]
-    ],
+  registerForm =
+    this.formBuilder.nonNullable.group({
 
-    email: [
-      '',
-      [
-        Validators.required,
-        Validators.email,
-        Validators.maxLength(150)
-      ]
-    ],
+      fullName: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(100)
+        ]
+      ],
 
-    password: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(6)
-      ]
-    ],
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email,
+          Validators.maxLength(150)
+        ]
+      ],
 
-    role: [
-      RegistrationRole.JobSeeker,
-      Validators.required
-    ]
-  });
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6)
+        ]
+      ],
+
+      role: [
+        RegistrationRole.JobSeeker,
+        Validators.required
+      ]
+    });
 
   onSubmit(): void {
+
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
@@ -83,23 +112,31 @@ export class RegisterComponent {
       role: formValue.role
     };
 
-    this.authService.register(request).subscribe({
-    next: () => {
-  this.isSubmitting = false;
+    this.authService
+      .register(request)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
 
-  const homeRoute =
-    this.authService.getHomeRoute();
+        next: () => {
 
-  this.router.navigateByUrl(homeRoute);
-},
+          this.isSubmitting = false;
 
-      error: error => {
-        this.isSubmitting = false;
+          const homeRoute =
+            this.authService.getHomeRoute();
 
-        this.errorMessage =
-          error?.error?.message ??
-          'Unable to create your account. Please try again.';
-      }
-    });
+          this.router.navigateByUrl(homeRoute);
+        },
+
+        error: error => {
+
+          this.isSubmitting = false;
+
+          this.errorMessage =
+            error?.error?.message ??
+            'Unable to create your account. Please try again.';
+        }
+      });
   }
 }

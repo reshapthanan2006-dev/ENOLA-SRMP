@@ -10,7 +10,7 @@ import { SeekerProfileService } from '../../services/seeker-profile.service';
 @Component({
   selector: 'app-seeker-dashboard',
   standalone: true,
-  imports: [RouterLink,NavbarComponent],
+  imports: [RouterLink,],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

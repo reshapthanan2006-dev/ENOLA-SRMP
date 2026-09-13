@@ -1,0 +1,117 @@
+<div class="dashboard-page">
+
+<section class="hero">
+
+  <div class="hero-top">
+
+    <div>
+      <p class="eyebrow">Employer Portal</p>
+
+      <h1>Employer Dashboard</h1>
+
+      <p class="subtitle">
+        Manage your company profile, vacancies,
+        applicants and contact requests.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="logout-button"
+      (click)="logout()"
+    >
+      Logout
+    </button>
+
+  </div>
+
+</section>
+
+  <section class="dashboard-grid">
+
+    <a
+      class="dashboard-card"
+      routerLink="/employer/company-profile"
+    >
+      <div class="card-icon">🏢</div>
+
+      <div>
+        <h2>Company Profile</h2>
+        <p>
+          View and manage your company information.
+        </p>
+      </div>
+
+      <span class="card-link">
+        Manage profile →
+      </span>
+    </a>
+
+    <div class="dashboard-card">
+      <div class="card-icon">💼</div>
+
+      <div>
+        <h2>Vacancies</h2>
+        <p>
+          Create, update and manage job vacancies.
+        </p>
+      </div>
+
+      <span class="card-muted">
+        Vacancy module
+      </span>
+    </div>
+
+    <div class="dashboard-card">
+      <div class="card-icon">👥</div>
+
+      <div>
+        <h2>Applicants</h2>
+        <p>
+          Review applications and ranked candidates for your vacancies.
+        </p>
+      </div>
+
+      <span class="card-muted">
+        Open from a vacancy
+      </span>
+    </div>
+
+    <a
+      class="dashboard-card"
+      routerLink="/employer/contact-requests"
+    >
+      <div class="card-icon">✉️</div>
+
+      <div>
+        <h2>Contact Requests</h2>
+        <p>
+          Track contact requests sent to candidates.
+        </p>
+      </div>
+
+      <span class="card-link">
+        View requests →
+      </span>
+    </a>
+
+  </section>
+
+  <section class="next-step">
+    <div>
+      <p class="eyebrow">Recommended next step</p>
+      <h2>Complete your company profile</h2>
+      <p>
+        Keep your company information ready before managing job vacancies.
+      </p>
+    </div>
+
+    <a
+      routerLink="/employer/company-profile"
+      class="primary-button"
+    >
+      Company Profile
+    </a>
+  </section>
+
+</div>

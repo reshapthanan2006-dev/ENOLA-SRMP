@@ -1,46 +1,97 @@
-<app-navbar></app-navbar>
 <section class="page-shell">
+
   <header class="page-header">
+
     <div>
-      <p class="eyebrow">Job Seeker</p>
-      <h1>My CV</h1>
+      <p class="eyebrow">Job Seeker CV</p>
+
+      <h1>Manage Your CV</h1>
+
       <p class="subtitle">
-        Upload and manage the CV used with your job seeker account.
+        Upload and manage the CV employers use when reviewing your profile.
       </p>
     </div>
+
+    <span
+      class="status-pill"
+      [class.ready]="cv"
+    >
+      <span class="status-dot"></span>
+
+      {{ cv ? 'CV uploaded' : 'CV missing' }}
+    </span>
+
   </header>
 
   @if (errorMessage) {
-    <div class="message error-message" role="alert">
+    <div class="message error-message">
       {{ errorMessage }}
     </div>
   }
 
   @if (successMessage) {
-    <div class="message success-message" role="status">
+    <div class="message success-message">
       {{ successMessage }}
     </div>
   }
 
   @if (isLoading) {
-    <div class="state-card">Loading CV information...</div>
+
+    <div class="state-card">
+      Loading CV information...
+    </div>
+
   } @else {
+
     <div class="content-grid">
-      <section class="card">
+
+      <!-- UPLOAD CARD -->
+
+      <section class="card upload-card">
+
         <div class="card-heading">
-          <h2>{{ cv ? 'Replace CV' : 'Upload CV' }}</h2>
-          <p>
-            {{ cv
-              ? 'Uploading a new file replaces the current CV.'
-              : 'Choose a supported file and upload it.'
-            }}
-          </p>
+
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 16V4m0 0-4 4m4-4 4 4M5 15v4h14v-4"
+              />
+            </svg>
+          </div>
+
+          <div>
+            <p class="card-label">
+              Upload
+            </p>
+
+            <h2>
+              {{ cv ? 'Replace your CV' : 'Upload your CV' }}
+            </h2>
+
+            <p>
+              {{
+                cv
+                  ? 'Choose a new file to replace your current CV.'
+                  : 'Add your CV so employers can review your experience.'
+              }}
+            </p>
+          </div>
+
         </div>
 
-        <app-cv-upload
-          [disabled]="isUploading"
-          (fileSelected)="onFileSelected($event)"
-        />
+        <div class="upload-area">
+
+          <app-cv-upload
+            [disabled]="isUploading"
+            (fileSelected)="onFileSelected($event)"
+          />
+
+        </div>
+
+        <div class="upload-note">
+          <span>✓</span>
+          PDF, DOC and DOCX files up to 5 MB are supported.
+        </div>
 
         <button
           class="primary-button upload-button"
@@ -48,44 +99,111 @@
           [disabled]="!selectedFile || isUploading"
           (click)="uploadCv()"
         >
-          {{ isUploading ? 'Uploading...' : 'Upload CV' }}
+          {{
+            isUploading
+              ? 'Uploading...'
+              : (
+                  cv
+                    ? 'Replace CV'
+                    : 'Upload CV'
+                )
+          }}
         </button>
+
       </section>
 
-      <section class="card">
+      <!-- CURRENT CV -->
+
+      <section class="card current-card">
+
         <div class="card-heading">
-          <h2>Current CV</h2>
-          <p>Your stored CV metadata comes from the backend.</p>
+
+          <div class="card-icon document-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M7 3h7l4 4v14H7V3Zm7 0v5h5M10 13h5M10 17h5"
+              />
+            </svg>
+          </div>
+
+          <div>
+            <p class="card-label">
+              Current File
+            </p>
+
+            <h2>Current CV</h2>
+
+            <p>
+              Your latest stored CV information.
+            </p>
+          </div>
+
         </div>
 
         @if (cv) {
-          <dl class="metadata-list">
-            <div>
-              <dt>File name</dt>
-              <dd>{{ cv.originalFileName }}</dd>
+
+          <div class="file-preview">
+
+            <div class="file-icon">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M7 3h7l4 4v14H7V3Zm7 0v5h5"
+                />
+              </svg>
             </div>
+
+            <div class="file-main">
+
+              <strong>
+                {{ cv.originalFileName }}
+              </strong>
+
+              <span>
+                {{ formatFileSize(cv.fileSize) }}
+              </span>
+
+            </div>
+
+            <span class="ready-badge">
+              Ready
+            </span>
+
+          </div>
+
+          <dl class="metadata-list">
+
             <div>
               <dt>File type</dt>
-              <dd>{{ cv.contentType || 'Not provided' }}</dd>
+              <dd>
+                {{ cv.contentType || 'Not provided' }}
+              </dd>
             </div>
+
             <div>
               <dt>File size</dt>
-              <dd>{{ formatFileSize(cv.fileSize) }}</dd>
+              <dd>
+                {{ formatFileSize(cv.fileSize) }}
+              </dd>
             </div>
+
             <div>
               <dt>Uploaded</dt>
-              <dd>{{ formatDate(cv.uploadedAt) }}</dd>
+              <dd>
+                {{ formatDate(cv.uploadedAt) }}
+              </dd>
             </div>
+
           </dl>
 
           <div class="button-row">
+
             <button
               class="secondary-button"
               type="button"
               [disabled]="isDownloading"
               (click)="viewCv()"
             >
-              View
+              View CV
             </button>
 
             <button
@@ -94,7 +212,11 @@
               [disabled]="isDownloading"
               (click)="downloadCv()"
             >
-              {{ isDownloading ? 'Please wait...' : 'Download' }}
+              {{
+                isDownloading
+                  ? 'Please wait...'
+                  : 'Download'
+              }}
             </button>
 
             <button
@@ -103,16 +225,43 @@
               [disabled]="isDeleting"
               (click)="deleteCv()"
             >
-              {{ isDeleting ? 'Deleting...' : 'Delete' }}
+              {{
+                isDeleting
+                  ? 'Deleting...'
+                  : 'Delete'
+              }}
             </button>
+
           </div>
+
         } @else {
+
           <div class="empty-state">
-            <strong>No CV uploaded yet.</strong>
-            <p>Use the upload form to add your first CV.</p>
+
+            <div class="empty-icon">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M7 3h7l4 4v14H7V3Zm7 0v5h5M10 13h5M10 17h3"
+                />
+              </svg>
+            </div>
+
+            <strong>
+              No CV uploaded yet
+            </strong>
+
+            <p>
+              Choose a file from the upload section to add your first CV.
+            </p>
+
           </div>
+
         }
+
       </section>
+
     </div>
+
   }
+
 </section>

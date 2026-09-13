@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+
 import { environment } from '../../../environments/environment';
 
 import { LoginRequest } from '../models/login-request';
@@ -13,16 +14,17 @@ import { StorageService } from '../services/storage.service';
   providedIn: 'root'
 })
 export class AuthService {
+
   private readonly http = inject(HttpClient);
-  private readonly storageService =
-    inject(StorageService);
+  private readonly storageService = inject(StorageService);
 
   private readonly apiUrl =
-  `${environment.apiUrl}/Auth`;
+    `${environment.apiUrl}/Auth`;
 
   login(
     request: LoginRequest
   ): Observable<AuthResponse> {
+
     return this.http
       .post<AuthResponse>(
         `${this.apiUrl}/login`,
@@ -38,6 +40,7 @@ export class AuthService {
   register(
     request: RegisterRequest
   ): Observable<AuthResponse> {
+
     return this.http
       .post<AuthResponse>(
         `${this.apiUrl}/register`,
@@ -67,25 +70,26 @@ export class AuthService {
   }
 
   getHomeRoute(): string {
-  const user = this.getCurrentUser();
 
-  if (!user) {
-    return '/login';
-  }
+    const user = this.getCurrentUser();
 
-  switch (user.role) {
-    case 'Administrator':
-      return '/admin/dashboard';
-
-    case 'Employer':
-      return '/employer/applicants';
-
-    case 'JobSeeker':
-      return '/seeker/matching-jobs';
-
-    default:
+    if (!user) {
       return '/login';
-  }
-}
+    }
 
+    switch (user.role) {
+
+      case 'Administrator':
+        return '/admin/dashboard';
+
+      case 'Employer':
+        return '/employer/dashboard';
+
+      case 'JobSeeker':
+        return '/seeker/dashboard';
+
+      default:
+        return '/login';
+    }
+  }
 }

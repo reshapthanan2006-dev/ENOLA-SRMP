@@ -1,0 +1,225 @@
+<section class="company-profile-page">
+
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">EMPLOYER WORKSPACE</span>
+      <h1>Company Profile</h1>
+      <p>View and manage your company information.</p>
+    </div>
+  </header>
+
+  @if (successMessage && !isFormVisible) {
+
+    <div class="message-card success-card">
+      <strong>{{ successMessage }}</strong>
+    </div>
+
+  }
+
+  @if (isLoading) {
+
+    <div class="message-card">
+      <p>Loading company profile...</p>
+    </div>
+
+  } @else if (errorMessage) {
+
+    <div class="message-card error-card">
+      <strong>Unable to load company profile</strong>
+      <p>{{ errorMessage }}</p>
+    </div>
+
+  } @else {
+
+    @if (isFormVisible) {
+
+      <div class="company-card">
+
+        <div class="company-header">
+          <div>
+            <span class="company-label">
+              {{ company ? 'EDIT COMPANY' : 'CREATE COMPANY' }}
+            </span>
+
+            <h2>
+              {{ company ? 'Update Company Profile' : 'Create Company Profile' }}
+            </h2>
+          </div>
+        </div>
+
+        @if (saveErrorMessage) {
+
+          <div class="form-message error-message">
+            {{ saveErrorMessage }}
+          </div>
+
+        }
+
+        <form [formGroup]="companyForm">
+
+          <div class="form-group">
+
+            <label for="companyName">
+              Company Name
+            </label>
+
+            <input
+              id="companyName"
+              type="text"
+              formControlName="companyName"
+              maxlength="150"
+              placeholder="Enter company name"
+            />
+
+            @if (
+              companyForm.controls.companyName.touched &&
+              companyForm.controls.companyName.hasError('required')
+            ) {
+              <small class="validation-message">
+                Company name is required.
+              </small>
+            }
+
+            @if (
+              companyForm.controls.companyName.touched &&
+              companyForm.controls.companyName.hasError('maxlength')
+            ) {
+              <small class="validation-message">
+                Company name cannot exceed 150 characters.
+              </small>
+            }
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="description">
+              Description
+            </label>
+
+            <textarea
+              id="description"
+              formControlName="description"
+              maxlength="1000"
+              rows="6"
+              placeholder="Enter company description"
+            ></textarea>
+
+            @if (
+              companyForm.controls.description.touched &&
+              companyForm.controls.description.hasError('maxlength')
+            ) {
+              <small class="validation-message">
+                Description cannot exceed 1000 characters.
+              </small>
+            }
+
+          </div>
+
+          <div class="form-actions">
+
+            <button
+              type="button"
+              class="secondary-button"
+              [disabled]="isSaving"
+              (click)="cancelForm()"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              class="primary-button"
+              [disabled]="isSaving"
+              (click)="saveCompany()"
+            >
+              @if (isSaving) {
+                Saving...
+              } @else {
+                {{ company ? 'Update Company' : 'Create Company' }}
+              }
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    } @else if (company) {
+
+      <div class="company-card">
+
+        <div class="company-header">
+
+          <div>
+            <span class="company-label">COMPANY</span>
+            <h2>{{ company.companyName }}</h2>
+          </div>
+
+          <button
+            type="button"
+            class="primary-button"
+            (click)="openEditForm()"
+          >
+            Edit Company
+          </button>
+
+        </div>
+
+        <div class="company-section">
+
+          <h3>Description</h3>
+
+          <p>
+            {{ company.description || 'No description provided.' }}
+          </p>
+
+        </div>
+
+        <div class="company-details">
+
+          <p>
+            <strong>Company ID:</strong>
+            {{ company.employerCompanyId }}
+          </p>
+
+          <p>
+            <strong>Created:</strong>
+            {{ company.createdAt | date:'medium' }}
+          </p>
+
+          <p>
+            <strong>Last Updated:</strong>
+            {{ company.updatedAt | date:'medium' }}
+          </p>
+
+        </div>
+
+      </div>
+
+    } @else {
+
+      <div class="message-card empty-card">
+
+        <strong>No company profile found.</strong>
+
+        <p>
+          Create your company profile to start managing vacancies.
+        </p>
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="openCreateForm()"
+        >
+          Create Company Profile
+        </button>
+
+      </div>
+
+    }
+
+  }
+
+</section>

@@ -1,5 +1,4 @@
 
-<app-navbar></app-navbar>
 <section class="matching-job-page">
 
   <header class="page-header">
@@ -55,12 +54,44 @@
           <p class="location"><span aria-hidden="true">&#8226;</span> {{ job.location }}</p>
         </div>
 
-        <app-score-badge
-          [score]="job.matchScore">
-        </app-score-badge>
+<div class="job-actions">
+
+  <app-score-badge
+    [score]="job.matchScore">
+  </app-score-badge>
+
+  <button
+    type="button"
+    class="apply-button"
+    (click)="applyForJob()"
+    [disabled]="isApplying || isApplied">
+
+    @if (isApplying) {
+      Applying...
+    } @else if (isApplied) {
+      Applied
+    } @else {
+      Apply
+    }
+
+  </button>
+
+</div>
 
       </div>
+        @if (applyMessage) {
+  <div class="apply-feedback success-feedback" role="status">
+    <span aria-hidden="true">&#10003;</span>
+    <p>{{ applyMessage }}</p>
+  </div>
+}
 
+@if (applyErrorMessage) {
+  <div class="apply-feedback error-feedback" role="alert">
+    <span aria-hidden="true">!</span>
+    <p>{{ applyErrorMessage }}</p>
+  </div>
+}
       <div class="job-content">
         <div class="job-main">
           <section class="content-section description-section">

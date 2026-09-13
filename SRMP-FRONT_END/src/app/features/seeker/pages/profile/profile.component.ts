@@ -20,7 +20,7 @@ import { SeekerProfileService } from '../../services/seeker-profile.service';
 @Component({
   selector: 'app-seeker-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, SkillRowComponent,NavbarComponent],
+  imports: [ReactiveFormsModule, SkillRowComponent,],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
