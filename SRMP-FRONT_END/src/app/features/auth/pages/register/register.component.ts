@@ -15,9 +15,13 @@ import {
   RouterLink
 } from '@angular/router';
 
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  takeUntilDestroyed
+} from '@angular/core/rxjs-interop';
 
-import { AuthService } from '../../../../core/auth/auth.service';
+import {
+  AuthService
+} from '../../../../core/auth/auth.service';
 
 import {
   RegisterRequest,
@@ -36,47 +40,57 @@ import {
 })
 export class RegisterComponent {
 
-  private readonly formBuilder = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
+  private readonly formBuilder =
+    inject(FormBuilder);
 
-  readonly RegistrationRole = RegistrationRole;
+  private readonly authService =
+    inject(AuthService);
+
+  private readonly router =
+    inject(Router);
+
+  private readonly destroyRef =
+    inject(DestroyRef);
+
+  readonly RegistrationRole =
+    RegistrationRole;
 
   isSubmitting = false;
   errorMessage = '';
 
-  registerForm = this.formBuilder.nonNullable.group({
-    fullName: [
-      '',
-      [
-        Validators.required,
-        Validators.maxLength(100)
-      ]
-    ],
+  registerForm =
+    this.formBuilder.nonNullable.group({
 
-    email: [
-      '',
-      [
-        Validators.required,
-        Validators.email,
-        Validators.maxLength(150)
-      ]
-    ],
+      fullName: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(100)
+        ]
+      ],
 
-    password: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(6)
-      ]
-    ],
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email,
+          Validators.maxLength(150)
+        ]
+      ],
 
-    role: [
-      RegistrationRole.JobSeeker,
-      Validators.required
-    ]
-  });
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6)
+        ]
+      ],
+
+      role: [
+        RegistrationRole.JobSeeker,
+        Validators.required
+      ]
+    });
 
   onSubmit(): void {
 
@@ -104,38 +118,18 @@ export class RegisterComponent {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
-        next: (response) => {
+
+        next: () => {
 
           this.isSubmitting = false;
 
-          switch (response.role) {
+          const homeRoute =
+            this.authService.getHomeRoute();
 
-            case 'JobSeeker':
-              this.router.navigate([
-                '/seeker/dashboard'
-              ]);
-              break;
-
-            case 'Employer':
-              this.router.navigate([
-                '/employer/dashboard'
-              ]);
-              break;
-
-            case 'Administrator':
-              this.router.navigate([
-                '/admin/dashboard'
-              ]);
-              break;
-
-            default:
-              this.router.navigate([
-                '/login'
-              ]);
-          }
+          this.router.navigateByUrl(homeRoute);
         },
 
-        error: (error) => {
+        error: error => {
 
           this.isSubmitting = false;
 

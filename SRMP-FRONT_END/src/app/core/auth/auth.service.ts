@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -16,9 +16,7 @@ import { StorageService } from '../services/storage.service';
 export class AuthService {
 
   private readonly http = inject(HttpClient);
-
-  private readonly storageService =
-    inject(StorageService);
+  private readonly storageService = inject(StorageService);
 
   private readonly apiUrl =
     `${environment.apiUrl}/Auth`;
@@ -33,7 +31,7 @@ export class AuthService {
         request
       )
       .pipe(
-        tap((response) =>
+        tap(response =>
           this.storageService.saveAuth(response)
         )
       );
@@ -49,7 +47,7 @@ export class AuthService {
         request
       )
       .pipe(
-        tap((response) =>
+        tap(response =>
           this.storageService.saveAuth(response)
         )
       );
@@ -69,5 +67,29 @@ export class AuthService {
 
   getToken(): string | null {
     return this.storageService.getToken();
+  }
+
+  getHomeRoute(): string {
+
+    const user = this.getCurrentUser();
+
+    if (!user) {
+      return '/login';
+    }
+
+    switch (user.role) {
+
+      case 'Administrator':
+        return '/admin/dashboard';
+
+      case 'Employer':
+        return '/employer/dashboard';
+
+      case 'JobSeeker':
+        return '/seeker/dashboard';
+
+      default:
+        return '/login';
+    }
   }
 }

@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
 import { MatchResult } from '../../../matching/models/match-result.model';
 import { MatchingService } from '../../../matching/services/matching.service';
 
@@ -16,7 +16,8 @@ import { SkillListPipe } from '../../../../shared/pipes/skill-list.pipe';
   standalone: true,
   imports: [
     ScoreBadgeComponent,
-    SkillListPipe
+    SkillListPipe,
+    NavbarComponent
   ],
   templateUrl: './applicants.component.html',
   styleUrl: './applicants.component.css'

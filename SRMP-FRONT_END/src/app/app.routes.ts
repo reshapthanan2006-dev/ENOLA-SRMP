@@ -44,7 +44,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // EMPLOYER - DASHBOARD
+  // EMPLOYER DASHBOARD
   // =========================
 
   {
@@ -65,7 +65,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // EMPLOYER - COMPANY PROFILE
+  // EMPLOYER COMPANY PROFILE
   // =========================
 
   {
@@ -86,7 +86,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // EMPLOYER - APPLICATIONS
+  // EMPLOYER APPLICATIONS
   // =========================
 
   {
@@ -107,7 +107,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // EMPLOYER - RANKED APPLICANTS
+  // EMPLOYER RANKED APPLICANTS
   // =========================
 
   {
@@ -128,7 +128,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // EMPLOYER - APPLICANT PROFILE
+  // EMPLOYER APPLICANT PROFILE
   // =========================
 
   {
@@ -149,7 +149,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // EMPLOYER - CONTACT REQUESTS
+  // EMPLOYER CONTACT REQUESTS
   // =========================
 
   {
@@ -167,6 +167,15 @@ export const routes: Routes = [
       ).then(
         (m) => m.ContactRequestsComponent
       )
+  },
+
+  // Member-1 navbar currently has this old link.
+  // Redirect safely instead of opening ApplicantsComponent
+  // without a vacancy id.
+  {
+    path: 'employer/applicants',
+    redirectTo: 'employer/dashboard',
+    pathMatch: 'full'
   },
 
   // =========================
@@ -190,6 +199,23 @@ export const routes: Routes = [
       )
   },
 
+  {
+    path: 'admin/users',
+    canActivate: [
+      authGuard,
+      roleGuard
+    ],
+    data: {
+      roles: ['Administrator']
+    },
+    loadComponent: () =>
+      import(
+        './features/admin/pages/users/users.component'
+      ).then(
+        (m) => m.UsersComponent
+      )
+  },
+
   // =========================
   // DEFAULT
   // =========================
@@ -204,5 +230,4 @@ export const routes: Routes = [
     path: '**',
     redirectTo: 'login'
   }
-
 ];

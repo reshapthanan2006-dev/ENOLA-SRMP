@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-
+import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
 import { AdminService } from '../../services/admin.service';
 import { AdminDashboard } from '../../models/admin-dashboard';
 import { AuthService } from '../../../../core/auth/auth.service';
@@ -8,7 +8,7 @@ import { AuthService } from '../../../../core/auth/auth.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink,NavbarComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

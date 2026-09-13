@@ -1,0 +1,100 @@
+<nav class="app-navbar">
+  <div class="navbar-container">
+
+    <a
+      class="brand"
+      [routerLink]="user ? authService.getHomeRoute() : '/login'"
+    >
+      <span class="brand-logo">E</span>
+
+      <span class="brand-name">
+        ENOLA
+        <small>SRMP</small>
+      </span>
+    </a>
+
+    @if (user) {
+
+      <div class="nav-links">
+
+        @if (user.role === 'Administrator') {
+          <a
+            routerLink="/admin/dashboard"
+            routerLinkActive="active"
+          >
+            Dashboard
+          </a>
+
+          <a
+            routerLink="/admin/users"
+            routerLinkActive="active"
+          >
+            Users
+          </a>
+        }
+
+        @if (user.role === 'JobSeeker') {
+          <a
+            routerLink="/seeker/dashboard"
+            routerLinkActive="active"
+          >
+            Dashboard
+          </a>
+
+          <a
+            routerLink="/seeker/profile"
+            routerLinkActive="active"
+          >
+            Profile
+          </a>
+
+          <a
+            routerLink="/seeker/cv"
+            routerLinkActive="active"
+          >
+            CV
+          </a>
+
+          <a
+            routerLink="/seeker/matching-jobs"
+            routerLinkActive="active"
+          >
+            Matching Jobs
+          </a>
+        }
+
+        @if (user.role === 'Employer') {
+          <a
+            routerLink="/employer/applicants"
+            routerLinkActive="active"
+          >
+            Applicants
+          </a>
+        }
+
+      </div>
+
+      <div class="navbar-account">
+        <div class="account-text">
+          <span class="account-name">
+            {{ user.fullName }}
+          </span>
+
+          <span class="account-role">
+            {{ user.role }}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          class="logout-button"
+          (click)="logout()"
+        >
+          Logout
+        </button>
+      </div>
+
+    }
+
+  </div>
+</nav>
