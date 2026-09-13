@@ -15,13 +15,9 @@ import {
   RouterLink
 } from '@angular/router';
 
-import {
-  takeUntilDestroyed
-} from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import {
-  AuthService
-} from '../../../../core/auth/auth.service';
+import { AuthService } from '../../../../core/auth/auth.service';
 
 import {
   RegisterRequest,
@@ -40,65 +36,52 @@ import {
 })
 export class RegisterComponent {
 
-  private readonly formBuilder =
-    inject(FormBuilder);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
-  private readonly authService =
-    inject(AuthService);
-
-  private readonly router =
-    inject(Router);
-
-  private readonly destroyRef =
-    inject(DestroyRef);
-
-  readonly RegistrationRole =
-    RegistrationRole;
+  readonly RegistrationRole = RegistrationRole;
 
   isSubmitting = false;
   errorMessage = '';
 
-  registerForm =
-    this.formBuilder.nonNullable.group({
-
-      fullName: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(100)
-        ]
-      ],
-
-      email: [
-        '',
-        [
-          Validators.required,
-          Validators.email,
-          Validators.maxLength(150)
-        ]
-      ],
-
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(6)
-        ]
-      ],
-
-      role: [
-        RegistrationRole.JobSeeker,
-        Validators.required
+  registerForm = this.formBuilder.nonNullable.group({
+    fullName: [
+      '',
+      [
+        Validators.required,
+        Validators.maxLength(100)
       ]
+    ],
 
-    });
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        Validators.maxLength(150)
+      ]
+    ],
+
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(6)
+      ]
+    ],
+
+    role: [
+      RegistrationRole.JobSeeker,
+      Validators.required
+    ]
+  });
 
   onSubmit(): void {
 
     if (this.registerForm.invalid) {
-
       this.registerForm.markAllAsTouched();
-
       return;
     }
 
@@ -109,52 +92,47 @@ export class RegisterComponent {
       this.registerForm.getRawValue();
 
     const request: RegisterRequest = {
-
       fullName: formValue.fullName,
       email: formValue.email,
       password: formValue.password,
       role: formValue.role
-
     };
 
     this.authService
       .register(request)
       .pipe(
-        takeUntilDestroyed(
-          this.destroyRef
-        )
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
-
         next: (response) => {
 
           this.isSubmitting = false;
 
-          if (
-            response.role === 'JobSeeker'
-          ) {
+          switch (response.role) {
 
-            this.router.navigate([
-              '/seeker/applications'
-            ]);
+            case 'JobSeeker':
+              this.router.navigate([
+                '/seeker/dashboard'
+              ]);
+              break;
 
-            return;
+            case 'Employer':
+              this.router.navigate([
+                '/employer/dashboard'
+              ]);
+              break;
+
+            case 'Administrator':
+              this.router.navigate([
+                '/admin/dashboard'
+              ]);
+              break;
+
+            default:
+              this.router.navigate([
+                '/login'
+              ]);
           }
-
-          if (
-            response.role === 'Employer'
-          ) {
-
-            this.router.navigate([
-              '/employer/contact-requests'
-            ]);
-
-            return;
-          }
-
-          this.router.navigate([
-            '/login'
-          ]);
         },
 
         error: (error) => {
@@ -165,7 +143,6 @@ export class RegisterComponent {
             error?.error?.message ??
             'Unable to create your account. Please try again.';
         }
-
       });
   }
 }

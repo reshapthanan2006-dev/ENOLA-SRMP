@@ -15,17 +15,10 @@ import {
   RouterLink
 } from '@angular/router';
 
-import {
-  takeUntilDestroyed
-} from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import {
-  AuthService
-} from '../../../../core/auth/auth.service';
-
-import {
-  LoginRequest
-} from '../../../../core/models/login-request';
+import { AuthService } from '../../../../core/auth/auth.service';
+import { LoginRequest } from '../../../../core/models/login-request';
 
 @Component({
   selector: 'app-login',
@@ -39,109 +32,81 @@ import {
 })
 export class LoginComponent {
 
-  private readonly formBuilder =
-    inject(FormBuilder);
-
-  private readonly authService =
-    inject(AuthService);
-
-  private readonly router =
-    inject(Router);
-
-  private readonly destroyRef =
-    inject(DestroyRef);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   isSubmitting = false;
   errorMessage = '';
 
-  loginForm =
-    this.formBuilder.nonNullable.group({
-
-      email: [
-        '',
-        [
-          Validators.required,
-          Validators.email
-        ]
-      ],
-
-      password: [
-        '',
-        Validators.required
+  loginForm = this.formBuilder.nonNullable.group({
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email
       ]
+    ],
 
-    });
+    password: [
+      '',
+      Validators.required
+    ]
+  });
 
   onSubmit(): void {
 
     if (this.loginForm.invalid) {
-
       this.loginForm.markAllAsTouched();
-
       return;
     }
 
     this.isSubmitting = true;
     this.errorMessage = '';
 
+    const formValue = this.loginForm.getRawValue();
+
     const request: LoginRequest = {
-
-      email:
-        this.loginForm.getRawValue().email,
-
-      password:
-        this.loginForm.getRawValue().password
+      email: formValue.email,
+      password: formValue.password
     };
 
     this.authService
       .login(request)
       .pipe(
-        takeUntilDestroyed(
-          this.destroyRef
-        )
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
-
         next: (response) => {
 
           this.isSubmitting = false;
 
-          if (
-            response.role === 'JobSeeker'
-          ) {
+          switch (response.role) {
 
-            this.router.navigate([
-              '/seeker/applications'
-            ]);
+            case 'JobSeeker':
+              this.router.navigate([
+                '/seeker/dashboard'
+              ]);
+              break;
 
-            return;
+            case 'Employer':
+              this.router.navigate([
+                '/employer/dashboard'
+              ]);
+              break;
+
+            case 'Administrator':
+              this.router.navigate([
+                '/admin/dashboard'
+              ]);
+              break;
+
+            default:
+              this.router.navigate([
+                '/login'
+              ]);
           }
-
-          if (
-            response.role === 'Employer'
-          ) {
-
-            this.router.navigate([
-              '/employer/contact-requests'
-            ]);
-
-            return;
-          }
-
-          if (
-            response.role === 'Administrator'
-          ) {
-
-            this.router.navigate([
-              '/admin/dashboard'
-            ]);
-
-            return;
-          }
-
-          this.router.navigate([
-            '/login'
-          ]);
         },
 
         error: (error) => {
@@ -152,7 +117,6 @@ export class LoginComponent {
             error?.error?.message ??
             'Unable to login. Please check your email and password.';
         }
-
       });
   }
 }

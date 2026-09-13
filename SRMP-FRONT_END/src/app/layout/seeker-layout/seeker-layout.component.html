@@ -1,0 +1,81 @@
+<div class="app-shell">
+
+  <header class="topbar">
+
+    <a
+      class="brand"
+      routerLink="/seeker/dashboard"
+    >
+      ENOLA SRMP
+    </a>
+
+    <nav class="nav-links">
+
+      <a
+        routerLink="/seeker/dashboard"
+        routerLinkActive="active"
+      >
+        Dashboard
+      </a>
+
+      <a
+        routerLink="/seeker/profile"
+        routerLinkActive="active"
+      >
+        Profile
+      </a>
+
+      <a
+        routerLink="/seeker/cv"
+        routerLinkActive="active"
+      >
+        CV
+      </a>
+
+      <a
+        routerLink="/seeker/applications"
+        routerLinkActive="active"
+      >
+        Applications
+      </a>
+
+      <a
+        routerLink="/seeker/contact-requests"
+        routerLinkActive="active"
+      >
+        Contact Requests
+      </a>
+
+      <a
+        class="notification-link"
+        routerLink="/seeker/notifications"
+        routerLinkActive="active"
+      >
+        Notifications
+
+        @if (unreadCount$ | async; as unreadCount) {
+          @if (unreadCount > 0) {
+            <span class="notification-badge">
+              {{ unreadCount }}
+            </span>
+          }
+        }
+      </a>
+
+      <button
+        type="button"
+        class="logout-button"
+        (click)="logout()"
+      >
+        Logout
+      </button>
+
+    </nav>
+
+  </header>
+
+  <main class="page-content">
+    <router-outlet />
+  </main>
+
+</div>

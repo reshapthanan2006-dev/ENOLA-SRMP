@@ -8,17 +8,24 @@ import { RegisterComponent } from './features/auth/pages/register/register.compo
 
 export const routes: Routes = [
 
+  // =========================
   // AUTH
+  // =========================
+
   {
     path: 'login',
     component: LoginComponent
   },
+
   {
     path: 'register',
     component: RegisterComponent
   },
 
+  // =========================
   // JOB SEEKER
+  // =========================
+
   {
     path: 'seeker',
     canActivate: [
@@ -36,7 +43,31 @@ export const routes: Routes = [
       )
   },
 
+  // =========================
+  // EMPLOYER - DASHBOARD
+  // =========================
+
+  {
+    path: 'employer/dashboard',
+    canActivate: [
+      authGuard,
+      roleGuard
+    ],
+    data: {
+      roles: ['Employer']
+    },
+    loadComponent: () =>
+      import(
+        './features/employer/pages/dashboard/dashboard.component'
+      ).then(
+        (m) => m.DashboardComponent
+      )
+  },
+
+  // =========================
   // EMPLOYER - COMPANY PROFILE
+  // =========================
+
   {
     path: 'employer/company-profile',
     canActivate: [
@@ -54,7 +85,10 @@ export const routes: Routes = [
       )
   },
 
+  // =========================
   // EMPLOYER - APPLICATIONS
+  // =========================
+
   {
     path: 'employer/vacancies/:jobVacancyId/applications',
     canActivate: [
@@ -72,7 +106,10 @@ export const routes: Routes = [
       )
   },
 
+  // =========================
   // EMPLOYER - RANKED APPLICANTS
+  // =========================
+
   {
     path: 'employer/vacancies/:jobVacancyId/applicants',
     canActivate: [
@@ -90,7 +127,10 @@ export const routes: Routes = [
       )
   },
 
+  // =========================
   // EMPLOYER - APPLICANT PROFILE
+  // =========================
+
   {
     path: 'employer/vacancies/:jobVacancyId/applicants/:jobSeekerId',
     canActivate: [
@@ -108,7 +148,10 @@ export const routes: Routes = [
       )
   },
 
+  // =========================
   // EMPLOYER - CONTACT REQUESTS
+  // =========================
+
   {
     path: 'employer/contact-requests',
     canActivate: [
@@ -126,7 +169,10 @@ export const routes: Routes = [
       )
   },
 
+  // =========================
   // ADMIN
+  // =========================
+
   {
     path: 'admin/dashboard',
     canActivate: [
@@ -144,7 +190,10 @@ export const routes: Routes = [
       )
   },
 
+  // =========================
   // DEFAULT
+  // =========================
+
   {
     path: '',
     redirectTo: 'login',
