@@ -8,9 +8,9 @@ import { RegisterComponent } from './features/auth/pages/register/register.compo
 
 export const routes: Routes = [
 
-  // =========================
+  // =====================================================
   // AUTH
-  // =========================
+  // =====================================================
 
   {
     path: 'login',
@@ -22,23 +22,10 @@ export const routes: Routes = [
     component: RegisterComponent
   },
 
-  {
-    path: 'forgot-password',
-    loadComponent: () =>
-      import('./features/auth/pages/forgot-password/forgot-password.component')
-        .then((m) => m.ForgotPasswordComponent)
-  },
 
-  {
-    path: 'reset-password',
-    loadComponent: () =>
-      import('./features/auth/pages/reset-password/reset-password.component')
-        .then((m) => m.ResetPasswordComponent)
-  },
-
-  // =========================
+  // =====================================================
   // JOB SEEKER
-  // =========================
+  // =====================================================
 
   {
     path: 'seeker',
@@ -60,9 +47,10 @@ export const routes: Routes = [
       )
   },
 
-  // =========================
+
+  // =====================================================
   // EMPLOYER
-  // =========================
+  // =====================================================
 
   {
     path: 'employer',
@@ -84,12 +72,14 @@ export const routes: Routes = [
       )
   },
 
-  // =========================
+
+  // =====================================================
   // PUBLIC JOBS
-  // =========================
+  // =====================================================
 
   {
     path: 'jobs',
+
     loadChildren: () =>
       import(
         './features/jobs/jobs.routes'
@@ -98,12 +88,13 @@ export const routes: Routes = [
       )
   },
 
-  // =========================
-  // ADMIN DASHBOARD
-  // =========================
+
+  // =====================================================
+  // ADMIN
+  // =====================================================
 
   {
-    path: 'admin/dashboard',
+    path: 'admin',
 
     canActivate: [
       authGuard,
@@ -114,41 +105,18 @@ export const routes: Routes = [
       roles: ['Administrator']
     },
 
-    loadComponent: () =>
+    loadChildren: () =>
       import(
-        './features/admin/pages/dashboard/dashboard.component'
+        './features/admin/admin.routes'
       ).then(
-        (m) => m.DashboardComponent
+        (m) => m.adminRoutes
       )
   },
 
-  // =========================
-  // ADMIN USERS
-  // =========================
 
-  {
-    path: 'admin/users',
-
-    canActivate: [
-      authGuard,
-      roleGuard
-    ],
-
-    data: {
-      roles: ['Administrator']
-    },
-
-    loadComponent: () =>
-      import(
-        './features/admin/pages/users/users.component'
-      ).then(
-        (m) => m.UsersComponent
-      )
-  },
-
-  // =========================
+  // =====================================================
   // DEFAULT
-  // =========================
+  // =====================================================
 
   {
     path: '',
@@ -156,9 +124,10 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
 
-  // =========================
+
+  // =====================================================
   // FALLBACK
-  // =========================
+  // =====================================================
 
   {
     path: '**',

@@ -1,0 +1,31 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f8f5fb;
+}
+
+.page-content {
+  min-height: calc(100vh - 68px);
+  margin-left: 0;
+
+  transition:
+    margin-left 0.26s ease;
+}
+
+/* Sidebar open */
+app-navbar.sidebar-visible + .page-content {
+  margin-left: 290px;
+}
+
+/* Mobile = sidebar overlay */
+@media (max-width: 600px) {
+
+  .page-content {
+    min-height: calc(100dvh - 62px);
+    margin-left: 0;
+  }
+
+  app-navbar.sidebar-visible + .page-content {
+    margin-left: 0;
+  }
+}
