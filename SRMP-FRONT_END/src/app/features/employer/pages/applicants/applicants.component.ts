@@ -8,16 +8,14 @@ import { MatchingService } from '../../../matching/services/matching.service';
 import { ApplicationService } from '../../../seeker/services/application.service';
 import { ContactRequestService } from '../../../seeker/services/contact-request.service';
 
-import { ScoreBadgeComponent } from '../../../../shared/components/score-badge/score-badge.component';
-import { SkillListPipe } from '../../../../shared/pipes/skill-list.pipe';
+import { ApplicantRowComponent } from '../../components/applicant-row/applicant-row.component';
 
 
 @Component({
   selector: 'app-applicants',
   standalone: true,
 imports: [
-  ScoreBadgeComponent,
-  SkillListPipe
+  ApplicantRowComponent
 ],
   templateUrl: './applicants.component.html',
   styleUrl: './applicants.component.css'

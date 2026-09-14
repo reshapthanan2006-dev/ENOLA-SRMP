@@ -6,6 +6,8 @@ import { environment } from '../../../environments/environment';
 
 import { LoginRequest } from '../models/login-request';
 import { RegisterRequest } from '../models/register-request';
+import { ForgotPasswordRequest } from '../models/forgot-password-request';
+import { ResetPasswordRequest } from '../models/reset-password-request';
 import { AuthResponse } from '../models/auth-response';
 import { AuthUser } from '../models/auth-user';
 import { StorageService } from '../services/storage.service';
@@ -51,6 +53,24 @@ export class AuthService {
           this.storageService.saveAuth(response)
         )
       );
+  }
+
+  forgotPassword(
+    request: ForgotPasswordRequest
+  ): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(
+      `${this.apiUrl}/forgot-password`,
+      request
+    );
+  }
+
+  resetPassword(
+    request: ResetPasswordRequest
+  ): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(
+      `${this.apiUrl}/reset-password`,
+      request
+    );
   }
 
   logout(): void {
