@@ -1,9 +1,12 @@
 <header class="topbar">
 
+  <!-- HAMBURGER -->
   <button
     type="button"
     class="menu-button"
-    aria-label="Open navigation menu"
+    [class.menu-active]="isMenuOpen"
+    [attr.aria-expanded]="isMenuOpen"
+    aria-label="Toggle navigation menu"
     (click)="toggleMenu()"
   >
     <span></span>
@@ -11,6 +14,8 @@
     <span></span>
   </button>
 
+
+  <!-- BRAND -->
   <a
     class="topbar-brand"
     [routerLink]="user ? authService.getHomeRoute() : '/login'"
@@ -27,9 +32,14 @@
   </a>
 
 
+  <!-- CURRENT USER -->
   @if (user) {
 
     <div class="topbar-user">
+
+      <div class="topbar-avatar">
+        {{ user.fullName.charAt(0).toUpperCase() }}
+      </div>
 
       <span>
         {{ user.fullName }}
@@ -42,9 +52,10 @@
 </header>
 
 
-<!-- =========================
-     BACKDROP
-     ========================= -->
+<!-- =====================================================
+     MOBILE BACKDROP
+     Desktop-la hidden.
+     ===================================================== -->
 
 @if (isMenuOpen) {
 
@@ -58,23 +69,27 @@
 }
 
 
-<!-- =========================
+<!-- =====================================================
      SIDEBAR
-     ========================= -->
+     ===================================================== -->
 
 <aside
   class="sidebar"
   [class.sidebar-open]="isMenuOpen"
 >
 
-  <!-- SIDEBAR HEADER -->
+  <!-- SIDEBAR BRAND -->
 
   <div class="sidebar-header">
 
-    <div>
+    <div class="sidebar-brand-mark">
+      E
+    </div>
+
+    <div class="sidebar-brand-copy">
 
       <span class="sidebar-title">
-        ENOLA
+        ENOLA SRMP
       </span>
 
       <span class="sidebar-subtitle">
@@ -83,31 +98,19 @@
 
     </div>
 
-
-    <button
-      type="button"
-      class="close-button"
-      aria-label="Close navigation menu"
-      (click)="closeMenu()"
-    >
-      ×
-    </button>
-
   </div>
 
 
   @if (user) {
 
-    <!-- =========================
-         USER INFO
-         ========================= -->
+    <!-- =================================================
+         USER INFORMATION
+         ================================================= -->
 
     <div class="sidebar-user">
 
       <div class="user-avatar">
-
         {{ user.fullName.charAt(0).toUpperCase() }}
-
       </div>
 
 
@@ -126,96 +129,147 @@
     </div>
 
 
-    <!-- =========================
-         NAVIGATION
-         ========================= -->
+    <!-- =================================================
+         NAVIGATION LINKS
+         ================================================= -->
 
     <nav class="sidebar-links">
 
 
-      <!-- =========================
-           ADMIN
-           ========================= -->
+      <!-- ===============================================
+           ADMINISTRATOR
+           =============================================== -->
 
       @if (user.role === 'Administrator') {
+
+        <div class="nav-section-label">
+          ADMINISTRATION
+        </div>
 
         <a
           routerLink="/admin/dashboard"
           routerLinkActive="active"
-          (click)="closeMenu()"
+          [routerLinkActiveOptions]="{ exact: true }"
         >
-          Dashboard
+          <span class="nav-icon">
+            D
+          </span>
+
+          <span>
+            Dashboard
+          </span>
         </a>
 
 
         <a
           routerLink="/admin/users"
           routerLinkActive="active"
-          (click)="closeMenu()"
         >
-          User Management
+          <span class="nav-icon">
+            U
+          </span>
+
+          <span>
+            User Management
+          </span>
         </a>
 
       }
 
 
-      <!-- =========================
+      <!-- ===============================================
            JOB SEEKER
-           ========================= -->
+           =============================================== -->
 
       @if (user.role === 'JobSeeker') {
+
+        <div class="nav-section-label">
+          JOB SEEKER
+        </div>
+
 
         <a
           routerLink="/seeker/dashboard"
           routerLinkActive="active"
-          (click)="closeMenu()"
+          [routerLinkActiveOptions]="{ exact: true }"
         >
-          Dashboard
+          <span class="nav-icon">
+            D
+          </span>
+
+          <span>
+            Dashboard
+          </span>
         </a>
 
 
         <a
           routerLink="/seeker/profile"
           routerLinkActive="active"
-          (click)="closeMenu()"
         >
-          Profile
+          <span class="nav-icon">
+            P
+          </span>
+
+          <span>
+            Profile
+          </span>
         </a>
 
 
         <a
           routerLink="/seeker/cv"
           routerLinkActive="active"
-          (click)="closeMenu()"
         >
-          CV
+          <span class="nav-icon">
+            C
+          </span>
+
+          <span>
+            CV
+          </span>
         </a>
 
 
         <a
           routerLink="/seeker/jobs"
           routerLinkActive="active"
-          (click)="closeMenu()"
         >
-          Search Jobs
+          <span class="nav-icon">
+            J
+          </span>
+
+          <span>
+            Search Jobs
+          </span>
         </a>
 
 
         <a
           routerLink="/seeker/applications"
           routerLinkActive="active"
-          (click)="closeMenu()"
         >
-          Applications
+          <span class="nav-icon">
+            A
+          </span>
+
+          <span>
+            Applications
+          </span>
         </a>
 
 
         <a
           routerLink="/seeker/contact-requests"
           routerLinkActive="active"
-          (click)="closeMenu()"
         >
-          Contact Requests
+          <span class="nav-icon">
+            R
+          </span>
+
+          <span>
+            Contact Requests
+          </span>
         </a>
 
 
@@ -223,11 +277,18 @@
           class="notification-menu-link"
           routerLink="/seeker/notifications"
           routerLinkActive="active"
-          (click)="closeMenu()"
         >
 
-          <span>
-            Notifications
+          <span class="nav-link-main">
+
+            <span class="nav-icon">
+              N
+            </span>
+
+            <span>
+              Notifications
+            </span>
+
           </span>
 
 
@@ -251,45 +312,71 @@
       }
 
 
-      <!-- =========================
+      <!-- ===============================================
            EMPLOYER
-           ========================= -->
+           =============================================== -->
 
       @if (user.role === 'Employer') {
+
+        <div class="nav-section-label">
+          EMPLOYER
+        </div>
+
 
         <a
           routerLink="/employer/dashboard"
           routerLinkActive="active"
-          (click)="closeMenu()"
+          [routerLinkActiveOptions]="{ exact: true }"
         >
-          Dashboard
+          <span class="nav-icon">
+            D
+          </span>
+
+          <span>
+            Dashboard
+          </span>
         </a>
 
 
         <a
           routerLink="/employer/company-profile"
           routerLinkActive="active"
-          (click)="closeMenu()"
         >
-          Company Profile
+          <span class="nav-icon">
+            C
+          </span>
+
+          <span>
+            Company Profile
+          </span>
         </a>
 
 
         <a
           routerLink="/employer/vacancies"
           routerLinkActive="active"
-          (click)="closeMenu()"
         >
-          Vacancies
+          <span class="nav-icon">
+            V
+          </span>
+
+          <span>
+            Vacancies
+          </span>
         </a>
 
 
         <a
           routerLink="/employer/contact-requests"
           routerLinkActive="active"
-          (click)="closeMenu()"
         >
-          Contact Requests
+          <span class="nav-icon">
+            R
+          </span>
+
+          <span>
+            Contact Requests
+          </span>
         </a>
 
       }
@@ -297,9 +384,9 @@
     </nav>
 
 
-    <!-- =========================
+    <!-- =================================================
          LOGOUT
-         ========================= -->
+         ================================================= -->
 
     <div class="sidebar-footer">
 
@@ -308,7 +395,13 @@
         class="logout-button"
         (click)="logout()"
       >
-        Logout
+        <span class="logout-icon">
+          ↪
+        </span>
+
+        <span>
+          Logout
+        </span>
       </button>
 
     </div>

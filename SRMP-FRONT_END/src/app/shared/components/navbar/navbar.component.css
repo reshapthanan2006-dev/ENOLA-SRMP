@@ -2,10 +2,17 @@
   display: block;
 }
 
+
+/* =====================================================
+   TOP NAVBAR
+   ===================================================== */
+
 .topbar {
   position: sticky;
+
   top: 0;
-  z-index: 900;
+
+  z-index: 1200;
 
   height: 68px;
 
@@ -16,32 +23,60 @@
 
   padding: 0 28px;
 
-  background: var(--color-white);
-  border-bottom: 1px solid var(--color-border);
+  background:
+    rgba(255, 255, 255, 0.97);
 
-  box-shadow: var(--shadow-sm);
+  border-bottom:
+    1px solid
+    var(--color-border);
+
+  box-shadow:
+    0 3px 14px
+    rgba(58, 48, 72, 0.08);
+
+  backdrop-filter:
+    blur(12px);
 }
 
+
+/* =====================================================
+   HAMBURGER BUTTON
+   ===================================================== */
+
 .menu-button {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
 
   display: flex;
   flex-direction: column;
+
   align-items: center;
   justify-content: center;
 
   gap: 5px;
 
+  flex-shrink: 0;
+
   padding: 0;
 
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border:
+    1px solid
+    var(--color-border);
 
-  background: var(--color-white);
+  border-radius: 11px;
+
+  background:
+    var(--color-white);
 
   cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
+
 
 .menu-button span {
   width: 20px;
@@ -49,12 +84,38 @@
 
   border-radius: 999px;
 
-  background: var(--color-dark);
+  background:
+    var(--color-dark);
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
-.menu-button:hover {
-  background: var(--color-primary-light);
+
+.menu-button:hover,
+.menu-button.menu-active {
+  border-color:
+    var(--color-primary-soft);
+
+  background:
+    var(--color-primary-light);
+
+  box-shadow:
+    0 5px 14px
+    rgba(133, 118, 171, 0.16);
 }
+
+
+.menu-button:active {
+  transform:
+    scale(0.96);
+}
+
+
+/* =====================================================
+   TOPBAR BRAND
+   ===================================================== */
 
 .topbar-brand {
   display: flex;
@@ -62,100 +123,177 @@
 
   gap: 10px;
 
-  color: var(--color-darkest);
+  color:
+    var(--color-darkest);
 
   text-decoration: none;
 }
 
+
 .brand-logo {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
 
   display: grid;
+
   place-items: center;
+
+  flex-shrink: 0;
 
   border-radius: 10px;
 
-  background: var(--color-primary);
-  color: var(--color-white);
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-primary),
+      var(--color-primary-dark)
+    );
 
-  font-weight: 800;
+  color:
+    var(--color-white);
+
+  font-weight: 900;
 
   box-shadow:
-    0 4px 10px rgba(133, 118, 171, 0.25);
+    0 5px 13px
+    rgba(109, 90, 152, 0.25);
 }
+
 
 .brand-name {
-  font-size: 16px;
-  font-weight: 800;
+  color:
+    var(--color-darkest);
 
-  letter-spacing: 0.02em;
+  font-size: 16px;
+
+  font-weight: 900;
+
+  letter-spacing:
+    0.02em;
 }
+
+
+/* =====================================================
+   TOPBAR USER
+   ===================================================== */
 
 .topbar-user {
   margin-left: auto;
 
-  color: var(--color-dark);
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  color:
+    var(--color-dark);
 
   font-size: 14px;
-  font-weight: 700;
+
+  font-weight: 750;
 }
+
+
+.topbar-avatar {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  background:
+    var(--color-primary-light);
+
+  color:
+    var(--color-primary-dark);
+
+  font-size: 13px;
+
+  font-weight: 900;
+}
+
+
+/* =====================================================
+   SIDEBAR
+   ===================================================== */
 
 .sidebar {
   position: fixed;
 
-  top: 0;
+  top: 68px;
   left: 0;
 
   z-index: 1100;
 
   width: 290px;
-  height: 100vh;
+
+  height:
+    calc(100vh - 68px);
 
   display: flex;
+
   flex-direction: column;
 
-  background: var(--color-white);
-
-  border-right: 1px solid var(--color-border);
-
-  box-shadow:
-    8px 0 30px rgba(60, 54, 79, 0.14);
-
-  transform: translateX(-105%);
-
-  transition: transform 0.25s ease;
-}
-
-.sidebar.sidebar-open {
-  transform: translateX(0);
-}
-
-.sidebar-backdrop {
-  position: fixed;
-
-  inset: 0;
-
-  z-index: 1050;
-
-  border: 0;
+  overflow: hidden;
 
   background:
-    rgba(42, 40, 44, 0.42);
+    var(--color-white);
 
-  cursor: default;
+  border-right:
+    1px solid
+    var(--color-border);
+
+  box-shadow:
+    10px 8px 34px
+    rgba(60, 54, 79, 0.13);
+
+  transform:
+    translateX(-105%);
+
+  transition:
+    transform 0.26s ease;
 }
 
+
+.sidebar.sidebar-open {
+  transform:
+    translateX(0);
+}
+
+
+/* =====================================================
+   DESKTOP BACKDROP
+   ===================================================== */
+
+.sidebar-backdrop {
+  display: none;
+}
+
+
+/* =====================================================
+   SIDEBAR HEADER
+   ===================================================== */
+
 .sidebar-header {
-  min-height: 82px;
+  min-height: 78px;
 
   display: flex;
+
   align-items: center;
-  justify-content: space-between;
 
-  padding: 18px 20px;
+  gap: 12px;
 
-  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+
+  padding:
+    15px 20px;
+
+  border-bottom:
+    1px solid
+    var(--color-border);
 
   background:
     linear-gradient(
@@ -164,227 +302,574 @@
       var(--color-primary-soft)
     );
 
-  color: var(--color-white);
+  color:
+    var(--color-white);
 }
+
+
+.sidebar-brand-mark {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.28);
+
+  border-radius: 11px;
+
+  background:
+    rgba(255, 255, 255, 0.15);
+
+  color:
+    var(--color-white);
+
+  font-size: 16px;
+
+  font-weight: 900;
+}
+
+
+.sidebar-brand-copy {
+  min-width: 0;
+}
+
 
 .sidebar-title,
 .sidebar-subtitle {
   display: block;
 }
 
-.sidebar-title {
-  font-size: 18px;
-  font-weight: 800;
 
-  letter-spacing: 0.08em;
+.sidebar-title {
+  color:
+    var(--color-white);
+
+  font-size: 15px;
+
+  font-weight: 900;
+
+  letter-spacing:
+    0.06em;
 }
+
 
 .sidebar-subtitle {
   margin-top: 4px;
 
+  color:
+    rgba(255, 255, 255, 0.83);
+
   font-size: 11px;
 
-  opacity: 0.9;
+  font-weight: 600;
 }
 
-.close-button {
-  width: 34px;
-  height: 34px;
 
-  border: 0;
-  border-radius: 8px;
-
-  background:
-    rgba(255, 255, 255, 0.16);
-
-  color: var(--color-white);
-
-  font-size: 24px;
-
-  cursor: pointer;
-}
+/* =====================================================
+   SIDEBAR USER
+   ===================================================== */
 
 .sidebar-user {
   display: flex;
+
   align-items: center;
 
   gap: 12px;
 
-  padding: 20px;
+  flex-shrink: 0;
 
-  border-bottom: 1px solid var(--color-border);
+  padding:
+    18px 20px;
+
+  border-bottom:
+    1px solid
+    var(--color-border);
+
+  background:
+    #fdfbfe;
 }
 
+
 .user-avatar {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
 
   display: grid;
+
   place-items: center;
 
   flex-shrink: 0;
 
   border-radius: 50%;
 
-  background: var(--color-primary-light);
-  color: var(--color-dark);
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-primary-light),
+      #eadff0
+    );
+
+  color:
+    var(--color-primary-dark);
 
   font-size: 16px;
-  font-weight: 800;
+
+  font-weight: 900;
 }
 
-.sidebar-user strong,
-.sidebar-user span {
+
+.user-details {
+  min-width: 0;
+}
+
+
+.user-details strong,
+.user-details span {
   display: block;
 }
 
-.sidebar-user strong {
-  color: var(--color-darkest);
+
+.user-details strong {
+  overflow: hidden;
+
+  color:
+    var(--color-darkest);
 
   font-size: 14px;
+
+  font-weight: 800;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
 }
 
-.sidebar-user span {
+
+.user-details span {
   margin-top: 3px;
 
-  color: var(--color-primary);
+  color:
+    var(--color-primary);
 
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+
+  font-weight: 750;
 }
 
+
+/* =====================================================
+   NAVIGATION
+   ===================================================== */
+
 .sidebar-links {
+  flex: 1;
+
   display: flex;
+
   flex-direction: column;
 
   gap: 5px;
 
-  padding: 18px 14px;
+  overflow-y: auto;
 
-  flex: 1;
+  padding:
+    16px 14px;
 }
 
+
+.sidebar-links::-webkit-scrollbar {
+  width: 5px;
+}
+
+
+.sidebar-links::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+
+  background:
+    #d6cbe0;
+}
+
+
+.nav-section-label {
+  margin:
+    5px 10px 8px;
+
+  color:
+    #9588a0;
+
+  font-size: 10px;
+
+  font-weight: 900;
+
+  letter-spacing:
+    0.12em;
+}
+
+
 .sidebar-links a {
+  min-height: 46px;
+
   display: flex;
+
   align-items: center;
 
-  min-height: 44px;
+  gap: 11px;
 
-  padding: 0 14px;
+  padding:
+    0 13px;
 
-  border-radius: 9px;
+  border-left:
+    4px solid
+    transparent;
 
-  color: var(--color-dark);
+  border-radius: 10px;
 
-  font-size: 14px;
-  font-weight: 650;
+  color:
+    var(--color-dark);
+
+  font-size: 13px;
+
+  font-weight: 700;
 
   text-decoration: none;
 
   transition:
     background-color 0.18s ease,
     color 0.18s ease,
-    padding-left 0.18s ease;
+    border-color 0.18s ease,
+    transform 0.18s ease;
 }
+
 
 .sidebar-links a:hover {
-  padding-left: 18px;
+  background:
+    var(--color-accent);
 
-  background: var(--color-accent);
+  color:
+    var(--color-darkest);
 
-  color: var(--color-darkest);
+  transform:
+    translateX(2px);
 }
+
 
 .sidebar-links a.active {
-  background: var(--color-primary-light);
-  color: var(--color-darkest);
+  border-left-color:
+    var(--color-primary);
 
-  border-left: 4px solid var(--color-primary);
+  background:
+    var(--color-primary-light);
+
+  color:
+    var(--color-primary-dark);
+
+  font-weight: 850;
 }
+
+
+/* =====================================================
+   NAV ICONS
+   ===================================================== */
+
+.nav-icon {
+  width: 29px;
+  height: 29px;
+
+  display: grid;
+
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 8px;
+
+  background:
+    #f0e9f4;
+
+  color:
+    var(--color-primary-dark);
+
+  font-size: 11px;
+
+  font-weight: 900;
+}
+
+
+.sidebar-links a.active .nav-icon {
+  background:
+    var(--color-primary);
+
+  color:
+    var(--color-white);
+}
+
+
+/* =====================================================
+   NOTIFICATIONS
+   ===================================================== */
+
+.notification-menu-link {
+  justify-content: space-between;
+}
+
+
+.nav-link-main {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+}
+
+
+.notification-badge {
+  min-width: 22px;
+  height: 22px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding:
+    0 7px;
+
+  border-radius: 999px;
+
+  background:
+    var(--color-primary);
+
+  color:
+    var(--color-white);
+
+  font-size: 10px;
+
+  font-weight: 900;
+}
+
+
+/* =====================================================
+   SIDEBAR FOOTER
+   ===================================================== */
 
 .sidebar-footer {
-  padding: 16px 18px;
+  flex-shrink: 0;
 
-  border-top: 1px solid var(--color-border);
+  padding:
+    14px 18px 18px;
+
+  border-top:
+    1px solid
+    var(--color-border);
+
+  background:
+    #fdfbfe;
 }
+
 
 .logout-button {
   width: 100%;
 
-  padding: 11px 14px;
+  min-height: 44px;
 
-  border: 1px solid var(--color-primary-soft);
-  border-radius: 9px;
+  display: flex;
 
-  background: var(--color-white);
+  align-items: center;
+  justify-content: center;
 
-  color: var(--color-dark);
+  gap: 9px;
 
-  font-weight: 700;
+  padding:
+    10px 14px;
+
+  border:
+    1px solid
+    var(--color-primary-soft);
+
+  border-radius: 10px;
+
+  background:
+    var(--color-white);
+
+  color:
+    var(--color-dark);
+
+  font: inherit;
+
+  font-size: 13px;
+
+  font-weight: 800;
 
   cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
 }
+
 
 .logout-button:hover {
-  border-color: var(--color-primary);
+  border-color:
+    var(--color-primary);
 
-  background: var(--color-accent);
+  background:
+    var(--color-primary-light);
+
+  color:
+    var(--color-primary-dark);
+
+  transform:
+    translateY(-1px);
 }
 
-@media (max-width: 600px) {
+
+.logout-icon {
+  font-size: 17px;
+
+  font-weight: 900;
+}
+
+
+/* =====================================================
+   TABLET
+   ===================================================== */
+
+@media (max-width: 900px) {
+
   .topbar {
-    height: 62px;
-    padding: 0 14px;
+    padding:
+      0 20px;
   }
 
-  .menu-button {
-    width: 38px;
-    height: 38px;
+}
+
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width: 600px) {
+
+  .topbar {
+    height: 62px;
+
+    gap: 10px;
+
+    padding:
+      0 14px;
   }
+
+
+  .menu-button {
+    width: 39px;
+    height: 39px;
+
+    border-radius: 9px;
+  }
+
 
   .brand-logo {
     width: 36px;
     height: 36px;
+
+    border-radius: 9px;
   }
+
 
   .brand-name {
     font-size: 14px;
   }
 
+
   .topbar-user {
     display: none;
   }
 
+
   .sidebar {
-    width: min(290px, 88vw);
+    top: 62px;
+
+    width:
+      min(290px, 88vw);
+
+    height:
+      calc(100dvh - 62px);
   }
+
+
+  /*
+    Mobile-la mattum backdrop visible.
+    Top navbar + hamburger backdrop mela irukkum.
+  */
+
+  .sidebar-backdrop {
+    position: fixed;
+
+    top: 62px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    z-index: 1000;
+
+    display: block;
+
+    padding: 0;
+
+    border: 0;
+
+    background:
+      rgba(42, 40, 44, 0.35);
+
+    cursor: pointer;
+  }
+
 
   .sidebar-header {
-    min-height: 74px;
+    min-height: 72px;
+
+    padding:
+      13px 18px;
   }
 
-  .notification-menu-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+
+  .sidebar-user {
+    padding:
+      16px 18px;
+  }
+
+
+  .sidebar-links {
+    padding:
+      14px 12px;
+  }
+
 }
 
-.notification-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 
-  min-width: 22px;
-  height: 22px;
-  padding: 0 7px;
+/* =====================================================
+   SMALL MOBILE
+   ===================================================== */
 
-  border-radius: 999px;
+@media (max-width: 420px) {
 
-  background: var(--color-primary);
-  color: var(--color-white);
+  .brand-name {
+    font-size: 13px;
+  }
 
-  font-size: 11px;
-  font-weight: 800;
-}
+
+  .sidebar {
+    width: 86vw;
+  }
+
 }

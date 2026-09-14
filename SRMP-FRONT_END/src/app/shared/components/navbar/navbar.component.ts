@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, HostBinding, inject } from '@angular/core';
 
 import {
   Router,
@@ -14,17 +14,25 @@ import {
   NotificationStateService
 } from '../../../core/services/notification.service';
 
+
 @Component({
   selector: 'app-navbar',
+
   standalone: true,
+
   imports: [
     RouterLink,
     RouterLinkActive,
     AsyncPipe
   ],
+
   templateUrl: './navbar.component.html',
+
   styleUrl: './navbar.component.css'
+
 })
+
+
 export class NavbarComponent {
 
   readonly authService =
@@ -36,21 +44,29 @@ export class NavbarComponent {
   private readonly notificationStateService =
     inject(NotificationStateService);
 
+
   readonly unreadCount$ =
     this.notificationStateService.unreadCount$;
+
 
   user: AuthUser | null =
     this.authService.getCurrentUser();
 
-  isMenuOpen = false;
+
+  // Sidebar default-aa OPEN
+  isMenuOpen = true;
+
 
   toggleMenu(): void {
-    this.isMenuOpen = !this.isMenuOpen;
+    this.isMenuOpen =
+      !this.isMenuOpen;
   }
+
 
   closeMenu(): void {
     this.isMenuOpen = false;
   }
+
 
   logout(): void {
 
@@ -61,6 +77,14 @@ export class NavbarComponent {
 
     this.isMenuOpen = false;
 
-    this.router.navigate(['/login']);
+    this.router.navigate([
+      '/login'
+    ]);
   }
+
+  @HostBinding('class.sidebar-visible')
+  get sidebarVisible(): boolean {
+    return this.isMenuOpen;
+}
+
 }
