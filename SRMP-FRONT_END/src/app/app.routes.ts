@@ -22,6 +22,20 @@ export const routes: Routes = [
     component: RegisterComponent
   },
 
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./features/auth/pages/forgot-password/forgot-password.component')
+        .then((m) => m.ForgotPasswordComponent)
+  },
+
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./features/auth/pages/reset-password/reset-password.component')
+        .then((m) => m.ResetPasswordComponent)
+  },
+
   // =========================
   // JOB SEEKER
   // =========================
