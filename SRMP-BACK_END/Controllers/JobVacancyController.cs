@@ -117,7 +117,9 @@ namespace SRMP.Controllers
                 Id = vacancy.JobVacancyId,
                 RequiredSkills = requiredSkills,
                 RequiredExperienceYears =
-                    vacancy.RequiredExperience
+                    vacancy.RequiredExperience,
+                RequiredEducation = vacancy.RequiredEducation,
+                Location = vacancy.Location
             };
 
             var matchResult = _matchingService.CalculateMatch(

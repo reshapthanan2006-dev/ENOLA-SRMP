@@ -7,14 +7,14 @@ import {
 import {
   takeUntilDestroyed
 } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { MatchingJob } from '../../../matching/models/matching-job.model';
 import { MatchingService } from '../../../matching/services/matching.service';
 import { ApplicationService } from '../../services/application.service';
 
 import { ScoreBadgeComponent } from '../../../../shared/components/score-badge/score-badge.component';
-import { SkillListPipe } from '../../../../shared/pipes/skill-list.pipe';
+import { SkillGapComponent } from '../../components/skill-gap/skill-gap.component';
 import { ExperienceYearsPipe } from '../../../../shared/pipes/experience-years.pipe';
 import { ShortTextPipe } from '../../../../shared/pipes/short-text.pipe';
 import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
@@ -24,7 +24,7 @@ import { HighlightDirective } from '../../../../shared/directives/highlight.dire
   standalone: true,
   imports: [
     ScoreBadgeComponent,
-    SkillListPipe,
+    SkillGapComponent,
     ExperienceYearsPipe,
     ShortTextPipe,
     HighlightDirective
@@ -49,6 +49,7 @@ export class MatchingJobsComponent implements OnInit {
     private matchingService: MatchingService,
     private applicationService: ApplicationService,
     private route: ActivatedRoute,
+    private router: Router,
     private destroyRef: DestroyRef
   ) { }
 
@@ -106,6 +107,12 @@ export class MatchingJobsComponent implements OnInit {
         }
 
       });
+  }
+
+  onSkillSelected(skill: string): void {
+    this.router.navigate(['/seeker/profile'], {
+      queryParams: { skill }
+    });
   }
 
   checkAlreadyApplied(

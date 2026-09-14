@@ -125,31 +125,10 @@
         </div>
 
         <aside class="missing-skills" [appHighlight]="job.missingSkills.length > 0">
-          <div class="insight-heading">
-            <span class="insight-icon" aria-hidden="true">i</span>
-            <div>
-              <p class="insight-label">Profile review</p>
-              <h4>Match insights</h4>
-              <p class="section-helper">Skills to review for this opportunity.</p>
-            </div>
-          </div>
-
-          @if (job.missingSkills.length > 0) {
-
-            <div class="skills-result">
-              <span class="result-label">Missing skills</span>
-              <p>{{ job.missingSkills | skillList }}</p>
-            </div>
-
-          } @else {
-
-            <div class="skills-result complete-result">
-              <span class="result-check" aria-hidden="true">&#10003;</span>
-              <p>Your profile covers every required skill.</p>
-            </div>
-
-          }
-
+          <app-skill-gap
+            [missingSkills]="job.missingSkills"
+            (skillSelected)="onSkillSelected($event)">
+          </app-skill-gap>
         </aside>
       </div>
 

@@ -1,0 +1,77 @@
+<article class="applicant-card">
+  <div class="applicant-info">
+    <div class="candidate-heading">
+      <div>
+        <p class="candidate-label">Candidate</p>
+        <h3>Candidate #{{ applicant.jobSeekerId }}</h3>
+      </div>
+
+      <span
+        class="application-status"
+        [class.pending-status]="applicant.status === 'Pending'"
+        [class.shortlisted-status]="applicant.status === 'Shortlisted'"
+        [class.accepted-status]="applicant.status === 'Accepted'"
+        [class.rejected-status]="applicant.status === 'Rejected'"
+      >
+        {{ applicant.status }}
+      </span>
+    </div>
+
+    @if (applicant.missingSkills.length > 0) {
+      <p class="skill-gap">
+        <span>Missing skills</span>
+        {{ applicant.missingSkills | skillList }}
+      </p>
+    } @else {
+      <p class="no-skill-gap">No missing skills</p>
+    }
+
+    <div class="status-control">
+      <label [for]="'status-' + applicant.applicationId">
+        Application Status
+      </label>
+
+      <select
+        [id]="'status-' + applicant.applicationId"
+        [value]="applicant.status"
+        [disabled]="updatingApplicationId !== null"
+        (change)="onStatusChanged($any($event.target).value)"
+      >
+        @for (status of applicationStatuses; track status) {
+          <option [value]="status">{{ status }}</option>
+        }
+      </select>
+
+      @if (updatingApplicationId === applicant.applicationId) {
+        <span class="updating-text">Updating...</span>
+      }
+    </div>
+  </div>
+
+  <div class="applicant-actions">
+    <app-score-badge [score]="applicant.matchScore"></app-score-badge>
+
+    <button
+      type="button"
+      class="view-profile-button"
+      (click)="viewProfile.emit(applicant.jobSeekerId)"
+    >
+      View Profile
+    </button>
+
+    <button
+      type="button"
+      class="contact-button"
+      [disabled]="sendingContactApplicationId !== null || contactRequestSent"
+      (click)="contactCandidate.emit(applicant)"
+    >
+      @if (sendingContactApplicationId === applicant.applicationId) {
+        Sending...
+      } @else if (contactRequestSent) {
+        Request Sent
+      } @else {
+        Contact Candidate
+      }
+    </button>
+  </div>
+</article>

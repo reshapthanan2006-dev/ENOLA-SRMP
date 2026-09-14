@@ -1,9 +1,11 @@
-<div class="score-badge">
+<div class="score-badge" [appScoreColor]="score">
 
   <span class="score-label">Match score</span>
   <div class="score-value">
     {{ score | number:'1.0-2' }}%
   </div>
+
+  <span class="score-label">{{ score | matchBand }}</span>
 
   <div class="score-bar">
     <div
