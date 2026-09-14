@@ -5,6 +5,8 @@
     {{ score | number:'1.0-2' }}%
   </div>
 
+  <span class="score-label">{{ score | matchBand }}</span>
+
   <div class="score-bar">
     <div
       class="score-progress"
