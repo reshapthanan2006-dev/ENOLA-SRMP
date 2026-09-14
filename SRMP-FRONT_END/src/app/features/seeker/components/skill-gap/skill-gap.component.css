@@ -1,0 +1,49 @@
+.skill-gap {
+  padding: 20px;
+  border: 1px solid #ecd7a9;
+  border-radius: 10px;
+  background: #fffbf2;
+  color: #0f172a;
+}
+
+h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+p {
+  margin: 0;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.skill-button {
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #b9cdfd;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #2563eb;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.skill-button:hover {
+  border-color: #2563eb;
+  background: #dbeafe;
+}
+
+.skill-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
